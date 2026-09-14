@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useReveal } from '../../hooks/useReveal';
 import { useImgFallback } from '../../hooks/useImgFallback';
 import { scrollToId } from '../../utils/scrollToId';
-import HERO_VIDEO from '../../assets/videos/hero.mp4'
 import './Hero.css';
 
 const HERO_IMG =
   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=80';
+const HERO_VIDEO =
+  'https://res.cloudinary.com/m11daqfd/video/upload/v1789411627/hero.mp4';
 
 
 
