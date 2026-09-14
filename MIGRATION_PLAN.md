@@ -1,4 +1,4 @@
-# FaroSair — Migration Plan (Phase 0 Audit)
+# FaroSayr — Migration Plan (Phase 0 Audit)
 
 > Source: single-page static site (`index.html`, `style.css`, `script.js`) provided as pasted
 > content, no repo on disk, no git history. Russian-language travel agency site,
