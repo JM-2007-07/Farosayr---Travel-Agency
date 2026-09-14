@@ -1,0 +1,40 @@
+/* =========================================================
+   FaroSair — Design Tokens (preserved verbatim from the
+   original static site — do not rename/replace these)
+   ========================================================= */
+:root {
+  --dark-blue: #0b1f3a;
+  --dark-blue-2: #0e2647;
+  --ocean-blue: #14406b;
+  --ocean-blue-2: #1b5a8c;
+  --turquoise: #2fd9c4;
+  --turquoise-dim: #1fa895;
+  --gold: #d4af6a;
+  --white: #ffffff;
+  --light-gray: #f4f7fa;
+  --text-dark: #0f1f33;
+  --text-mid: #4a5b72;
+  --text-on-dark: #c9d6e5;
+
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --shadow-soft: 0 20px 50px -20px rgba(11, 31, 58, 0.25);
+  --shadow-card: 0 10px 30px -12px rgba(11, 31, 58, 0.18);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --header-h: 84px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

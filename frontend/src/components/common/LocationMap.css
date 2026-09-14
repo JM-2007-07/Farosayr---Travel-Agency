@@ -1,0 +1,180 @@
+.location-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  overflow: hidden;
+}
+
+.location-map canvas {
+  outline: none;
+}
+
+.yandex-farosayr-marker {
+  position: relative;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.yandex-marker-pulse {
+  position: absolute;
+  top: -34px;
+  left: -34px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(47, 217, 196, 0.22);
+  animation: yandexMarkerPulse 2.2s ease-out infinite;
+}
+
+.yandex-marker-pin {
+  position: absolute;
+  top: -27px;
+  left: -27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border: 4px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50% 50% 50% 0;
+  background: linear-gradient(
+    135deg,
+    #2fd9c4 0%,
+    #1fa895 100%
+  );
+  box-shadow:
+    0 12px 28px rgba(11, 31, 58, 0.3),
+    0 4px 10px rgba(47, 217, 196, 0.35);
+  transform: rotate(-45deg);
+}
+
+.yandex-marker-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  transform: rotate(45deg);
+}
+
+.yandex-marker-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #0b1f3a;
+}
+
+.yandex-marker-label {
+  position: absolute;
+  top: -92px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 145px;
+  padding: 10px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 13px;
+  background: rgba(11, 31, 58, 0.9);
+  box-shadow: 0 12px 30px rgba(11, 31, 58, 0.2);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: #ffffff;
+  transform: translateX(-50%);
+}
+
+.yandex-marker-label::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  border-right: 1px solid rgba(255, 255, 255, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(11, 31, 58, 0.9);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.yandex-marker-label strong {
+  color: #2fd9c4;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.yandex-marker-label span {
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--font-body);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.location-map-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  padding: 20px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(47, 217, 196, 0.1),
+      transparent 55%
+    ),
+    #e8eef0;
+  color: #0b1f3a;
+  font-size: 13px;
+  text-align: center;
+}
+
+.location-map-error svg {
+  flex-shrink: 0;
+  color: #1fa895;
+  font-size: 24px;
+}
+
+@keyframes yandexMarkerPulse {
+  0% {
+    opacity: 0.75;
+    transform: scale(0.65);
+  }
+
+  70% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+
+@media (max-width: 720px) {
+  .location-map {
+    min-height: 250px;
+  }
+
+  .yandex-marker-label {
+    top: -82px;
+    min-width: 125px;
+    padding: 8px 10px;
+  }
+
+  .yandex-marker-label strong {
+    font-size: 12px;
+  }
+
+  .yandex-marker-label span {
+    font-size: 9px;
+  }
+}

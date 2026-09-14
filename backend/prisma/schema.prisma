@@ -1,0 +1,304 @@
+// FaroSair — Database Schema (Phase: Database Schema + Migrations + Seed)
+//
+// Builds on the Prisma + PostgreSQL Foundation phase (generator/datasource
+// only, no models). This file adds the full business schema. No API CRUD,
+// no auth logic lives here — this is data shape only.
+//
+// ID strategy: every model uses a string UUID primary key
+// (`@default(uuid())`), generated client-side by Prisma rather than a
+// Postgres extension — simplest option that still satisfies "use UUIDs
+// consistently", with no dependency on pgcrypto/uuid-ossp being enabled on
+// the target database.
+//
+// Timestamps: models with a "Минимально" field list in the spec that
+// explicitly included createdAt/updatedAt have both. TourImage, BookingItem
+// and Favorite were specified without an explicit field list (or without
+// timestamps) — for these, `createdAt` only was added per the general rule
+// ("immutable entities need only createdAt"), since a tour image, an order
+// line item, and a favorite entry are all effectively immutable once
+// created (you delete/recreate them, you don't edit them in place).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// ---------------------------------------------------------------------
+// User
+// ---------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  // Hash only — never a plaintext "password" field. Nothing writes to this
+  // column yet; bcrypt/auth logic is the next phase, not this one.
+  passwordHash String
+  role         UserRole @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings  Booking[]
+  reviews   Review[]
+  favorites Favorite[]
+}
+
+// ---------------------------------------------------------------------
+// Destination / Tour / TourImage
+// ---------------------------------------------------------------------
+
+model Destination {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tours Tour[]
+}
+
+model Tour {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String
+  // Decimal, never Float, for money — see BookingItem.unitPrice for why
+  // this field alone isn't enough to reconstruct historical order pricing.
+  price       Decimal  @db.Decimal(10, 2)
+  duration    String
+  location    String
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  destinationId String
+  // Restrict: a destination with tours attached can't be deleted out from
+  // under them — the caller must reassign or remove the tours first. This
+  // avoids silently orphaning or cascading away tours just because someone
+  // deleted a destination.
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Restrict)
+
+  images       TourImage[]
+  deals        Deal[]
+  bookingItems BookingItem[]
+  reviews      Review[]
+  favorites    Favorite[]
+
+  @@index([destinationId])
+}
+
+model TourImage {
+  id        String   @id @default(uuid())
+  url       String
+  alt       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tourId String
+  // Cascade: an image has no independent meaning once its tour is gone —
+  // explicitly required by the spec ("images must not become orphan
+  // records").
+  tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@index([tourId])
+}
+
+// ---------------------------------------------------------------------
+// Deal
+// ---------------------------------------------------------------------
+
+model Deal {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  image       String
+  price       Decimal  @db.Decimal(10, 2)
+  oldPrice    Decimal  @db.Decimal(10, 2)
+  // Percentage (e.g. 30 for "-30%"), not a money amount — Int is correct
+  // here, unlike price/oldPrice.
+  discount    Int
+  startsAt    DateTime
+  endsAt      DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Optional on purpose: a deal doesn't have to be tied to one specific
+  // tour (e.g. a general site-wide promotion). When it is tied to a tour
+  // and that tour is deleted, SetNull keeps the deal record (rather than
+  // Cascade-deleting a marketing asset because of an unrelated tour
+  // deletion) and just detaches it — valid here specifically because this
+  // relation is optional; SetNull is not usable on a required relation.
+  tourId String?
+  tour   Tour?   @relation(fields: [tourId], references: [id], onDelete: SetNull)
+
+  @@index([tourId])
+}
+
+// ---------------------------------------------------------------------
+// Booking / BookingItem
+// ---------------------------------------------------------------------
+
+model Booking {
+  id            String        @id @default(uuid())
+  status        BookingStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  totalAmount   Decimal       @db.Decimal(10, 2)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  userId String
+  // Restrict: bookings are historical business/financial records. Deleting
+  // a user must not silently delete or orphan their booking history —
+  // explicitly called out in the spec. A real deletion flow would need to
+  // handle this deliberately (anonymize, soft-delete the user, etc.),
+  // which is out of scope for this phase.
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  items BookingItem[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model BookingItem {
+  id        String   @id @default(uuid())
+  quantity  Int      @default(1)
+  // Price at the moment of purchase — deliberately duplicated from
+  // Tour.price rather than derived from it later, so a booking's historical
+  // total stays correct even if Tour.price changes afterwards. This is the
+  // field the spec specifically calls out for this reason.
+  unitPrice   Decimal @db.Decimal(10, 2)
+  totalPrice  Decimal @db.Decimal(10, 2)
+  createdAt   DateTime @default(now())
+
+  bookingId String
+  // Cascade: a line item has no meaning without its parent booking.
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  tourId String
+  // Restrict, not Cascade/SetNull: unlike TourImage or Deal, a
+  // BookingItem is a financial record. Silently nulling or cascading it
+  // away when a Tour is deleted would corrupt booking history — the tour
+  // must be handled deliberately (e.g. soft-deleted) if it has order
+  // history, which is a future concern, not this schema's job to hide.
+  tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Restrict)
+
+  @@index([bookingId])
+  @@index([tourId])
+}
+
+// ---------------------------------------------------------------------
+// Review
+// ---------------------------------------------------------------------
+
+model Review {
+  id        String   @id @default(uuid())
+  // 1–5 expected range. Prisma's stable schema language has no native
+  // CHECK-constraint attribute to express this at the schema level as of
+  // the Prisma version pinned in package.json — documented as a known
+  // limitation in the phase report rather than silently skipped or faked
+  // with an unsupported attribute. A CHECK constraint can be added later
+  // via a manually-edited migration SQL file if desired.
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  // Restrict: same historical-integrity reasoning as Booking — a user's
+  // reviews are records other users may be relying on; deleting the user
+  // shouldn't silently vanish them.
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  tourId String
+  // Cascade here (unlike userId above): a review has no meaning once the
+  // tour it's about no longer exists.
+  tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  // One review per user per tour.
+  @@unique([userId, tourId])
+  @@index([userId])
+  @@index([tourId])
+}
+
+// ---------------------------------------------------------------------
+// Favorite
+// ---------------------------------------------------------------------
+
+model Favorite {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  // Cascade: unlike Booking/Review, a favorite is just a live preference,
+  // not a historical business record — nothing meaningful is lost by
+  // clearing it when the user is deleted.
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tourId String
+  tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  // Prevents the same user favoriting the same tour twice.
+  @@unique([userId, tourId])
+  @@index([userId])
+  @@index([tourId])
+}
+
+// ---------------------------------------------------------------------
+// Standalone entities (no required relation to User)
+// ---------------------------------------------------------------------
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model FAQ {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

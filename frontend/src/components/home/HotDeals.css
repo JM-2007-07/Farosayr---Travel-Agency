@@ -1,0 +1,109 @@
+.deals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+.deal-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid #eef2f6;
+  transition:
+    transform 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+.deal-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 26px 50px -16px rgba(11, 31, 58, 0.25);
+}
+.deal-media {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+  display: block;
+}
+.deal-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease);
+}
+.deal-card:hover .deal-media img {
+  transform: scale(1.1);
+}
+.deal-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: linear-gradient(135deg, #e8555a, #c23a44);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 13px;
+  border-radius: 100px;
+}
+.deal-body {
+  padding: 22px 24px 26px;
+}
+.deal-body h3 {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+.deal-body > p {
+  color: var(--text-mid);
+  font-size: 13.8px;
+  margin-bottom: 16px;
+}
+.deal-countdown {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.deal-countdown .unit {
+  background: var(--light-gray);
+  border-radius: 8px;
+  padding: 8px 4px;
+  text-align: center;
+  flex: 1;
+}
+.deal-countdown .unit strong {
+  display: block;
+  font-family: var(--font-display);
+  color: var(--dark-blue);
+  font-size: 16px;
+}
+.deal-countdown .unit span {
+  font-size: 10px;
+  color: var(--text-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.deal-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.deal-price .old {
+  text-decoration: line-through;
+  color: #a6b3c2;
+  font-size: 13px;
+  margin-right: 8px;
+}
+.deal-price .new {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ocean-blue);
+  font-size: 19px;
+}
+
+@media (max-width: 980px) {
+  .deals-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .deals-grid {
+    grid-template-columns: 1fr;
+  }
+}

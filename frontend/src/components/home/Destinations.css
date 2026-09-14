@@ -1,0 +1,234 @@
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 26px;
+}
+.dest-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.45s var(--ease),
+    box-shadow 0.45s var(--ease);
+}
+.dest-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 26px 50px -16px rgba(11, 31, 58, 0.28);
+}
+.dest-media {
+  position: relative;
+  height: 210px;
+  overflow: hidden;
+  display: block;
+}
+.dest-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease);
+}
+.dest-card:hover .dest-media img {
+  transform: scale(1.12);
+}
+.dest-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(11, 31, 58, 0.72);
+  color: var(--turquoise);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  padding: 6px 11px;
+  border-radius: 100px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.dest-body {
+  padding: 20px 22px 24px;
+}
+.dest-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.dest-top h3 {
+  font-size: 19px;
+}
+.dest-rating {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 600;
+}
+.dest-body p {
+  color: var(--text-mid);
+  font-size: 13.8px;
+  margin-bottom: 18px;
+  min-height: 42px;
+}
+.dest-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dest-price {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ocean-blue);
+}
+.dest-btn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--turquoise-dim);
+  border-bottom: 1.5px solid transparent;
+  transition: border-color 0.3s;
+}
+.dest-btn:hover {
+  border-color: var(--turquoise-dim);
+}
+
+@media (max-width: 1180px) {
+  .dest-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .dest-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .dest-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.dest-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dest-location-icon {
+  font-size: 17px !important;
+  color: var(--turquoise);
+}
+
+.dest-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--white);
+  transition:
+    background 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+.dest-arrow svg {
+  font-size: 19px;
+}
+
+.dest-card:hover .dest-arrow {
+  background: var(--turquoise);
+  border-color: var(--turquoise);
+  color: var(--dark-blue);
+  transform: translate(3px, -3px);
+}
+
+.dest-detail {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dest-detail-icon {
+  flex-shrink: 0;
+  font-size: 15px !important;
+  color: var(--turquoise);
+}
+
+.dest-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--turquoise-dim);
+  border-bottom: 1.5px solid transparent;
+  transition:
+    color 0.3s var(--ease),
+    border-color 0.3s var(--ease);
+}
+
+.dest-btn-arrow {
+  font-size: 17px !important;
+  transition: transform 0.3s var(--ease);
+}
+
+.dest-btn:hover {
+  border-color: var(--turquoise-dim);
+}
+
+.dest-btn:hover .dest-btn-arrow {
+  transform: translate(3px, -3px);
+}
+
+.dest-book {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: rgba(47, 217, 196, 0.07);
+  color: var(--dark-blue);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background 0.3s var(--ease),
+    color 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+.dest-book > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dest-book-icon {
+  font-size: 17px !important;
+  color: var(--turquoise-dim);
+  transition: color 0.3s var(--ease);
+}
+
+.dest-book-arrow {
+  font-size: 17px !important;
+  transition: transform 0.3s var(--ease);
+}
+
+.dest-book:hover {
+  background: var(--dark-blue);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+.dest-book:hover .dest-book-icon {
+  color: var(--turquoise);
+}
+
+.dest-book:hover .dest-book-arrow {
+  transform: translate(3px, -3px);
+}

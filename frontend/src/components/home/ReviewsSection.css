@@ -1,0 +1,83 @@
+.reviews {
+  background: linear-gradient(160deg, var(--ocean-blue) 0%, var(--dark-blue) 100%);
+  color: var(--white);
+}
+.reviews-slider {
+  max-width: 720px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.reviews-track {
+  display: flex;
+  transition: transform 0.6s var(--ease);
+}
+.review-card {
+  min-width: 100%;
+  padding: 20px 20px 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.review-stars {
+  color: var(--gold);
+  letter-spacing: 4px;
+  font-size: 16px;
+}
+.review-card p {
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--white);
+  max-width: 560px;
+  font-weight: 300;
+}
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--turquoise), var(--gold));
+  color: var(--dark-blue);
+  font-family: var(--font-display);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.review-author div {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.review-author strong {
+  font-size: 14.5px;
+}
+.review-author span {
+  font-size: 12.5px;
+  color: var(--text-on-dark);
+}
+.reviews-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 34px;
+}
+.reviews-dots button {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition:
+    background 0.3s,
+    transform 0.3s;
+}
+.reviews-dots button.active {
+  background: var(--turquoise);
+  transform: scale(1.3);
+}

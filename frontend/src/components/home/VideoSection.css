@@ -1,0 +1,88 @@
+.video-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.video-card img {
+  width: 100%;
+  height: 460px;
+  object-fit: cover;
+}
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 31, 58, 0.3), rgba(11, 31, 58, 0.75));
+}
+.play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(6px);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  transition:
+    transform 0.35s var(--ease),
+    background 0.35s;
+}
+.play-btn svg {
+  width: 30px;
+  height: 30px;
+  margin-left: 4px;
+}
+.play-btn:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: rgba(255, 255, 255, 0.28);
+}
+.play-btn::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  animation: pulseRing 2.4s ease-out infinite;
+}
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.video-caption {
+  position: absolute;
+  left: 40px;
+  bottom: 34px;
+  color: var(--white);
+  max-width: 420px;
+}
+.video-caption h3 {
+  color: var(--white);
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.video-caption p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14.5px;
+}
+
+@media (max-width: 720px) {
+  .video-card img {
+    height: 320px;
+  }
+  .video-caption {
+    left: 20px;
+    bottom: 20px;
+  }
+}

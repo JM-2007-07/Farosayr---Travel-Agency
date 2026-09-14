@@ -1,0 +1,117 @@
+
+.search-section {
+  position: relative;
+  z-index: 5;
+  margin-top: -35px;
+  padding-bottom: 80px;
+}
+.search-card {
+  position: relative;
+  padding: 34px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24px 70px rgba(11, 31, 58, 0.16);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.search-heading {
+  margin-bottom: 26px;
+}
+.search-kicker {
+  display: block;
+  margin-bottom: 7px;
+  color: #2FD9C4;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.search-heading h2 {
+  margin: 0 0 7px;
+  color: #0B1F3A;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.15;
+}
+.search-heading p {
+  margin: 0;
+  color: rgba(11, 31, 58, 0.58);
+  font-size: 14px;
+}
+.search-fields {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr 1.15fr 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.search-fields .MuiInputBase-root {
+  font-family: inherit;
+}
+.search-fields .MuiSelect-select {
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+}
+.btn-search {
+  min-height: 58px;
+  min-width: 150px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 14px;
+  padding: 0 22px;
+  background: linear-gradient(135deg, #2FD9C4, #21BFAE);
+  color: #0B1F3A;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 10px 25px rgba(47, 217, 196, 0.25);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.25s ease;
+}
+.btn-search:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 32px rgba(47, 217, 196, 0.34);
+}
+.btn-search:active {
+  transform: translateY(0);
+}
+.btn-search:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+@media (max-width: 1200px) {
+  .search-fields {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .btn-search {
+    width: 100%;
+  }
+}
+@media (max-width: 700px) {
+  .search-section {
+    margin-top: -35px;
+    padding-bottom: 55px;
+  }
+  .search-card {
+    padding: 24px 18px;
+    border-radius: 20px;
+  }
+  .search-heading h2 {
+    font-size: 24px;
+  }
+  .search-fields {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .btn-search {
+    width: 100%;
+  }
+}

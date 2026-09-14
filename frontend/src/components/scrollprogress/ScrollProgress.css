@@ -1,0 +1,10 @@
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--turquoise), var(--gold));
+  width: 0%;
+  z-index: 1001;
+  transition: width 0.1s linear;
+}

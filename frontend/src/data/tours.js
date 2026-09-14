@@ -1,0 +1,43 @@
+// Extracted verbatim from the original #tours markup (4 featured-tour cards).
+export const TOURS = [
+  {
+    id: 'dubai-desert-skyline',
+    location: 'Дубай, ОАЭ',
+    rating: 4.8,
+    title: 'Роскошь пустыни и небоскрёбов',
+    description: 'Сафари на джипах, смотровая Burj Khalifa, шоппинг в Dubai Mall.',
+    duration: '7 дней / 6 ночей',
+    price: 899,
+    image: 'https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=900&q=80',
+  },
+  {
+    id: 'maldives-lagoon',
+    location: 'Мальдивы',
+    rating: 5.0,
+    title: 'Романтика бирюзовой лагуны',
+    description: 'Виллы на воде, snorkeling с морскими черепахами, спа-программа для двоих.',
+    duration: '5 дней / 4 ночи',
+    price: 1549,
+    image: 'https://images.unsplash.com/photo-1541480601022-2308c0f02487?auto=format&fit=crop&w=900&q=80',
+  },
+  {
+    id: 'egypt-pyramids-sea',
+    location: 'Хургада, Египет',
+    rating: 4.7,
+    title: 'Пирамиды и Красное море',
+    description: 'Экскурсия в Гизу, дайвинг-сафари, вечерний ужин на яхте по Нилу.',
+    duration: '6 дней / 5 ночей',
+    price: 429,
+    image: 'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=900&q=80',
+  },
+  {
+    id: 'thailand-islands-asia',
+    location: 'Пхукет, Таиланд',
+    rating: 4.8,
+    title: 'Острова, храмы и вкус Азии',
+    description: 'Экскурсия на острова Пхи-Пхи, тайский массаж, кулинарный мастер-класс.',
+    duration: '8 дней / 7 ночей',
+    price: 699,
+    image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=900&q=80',
+  },
+];
