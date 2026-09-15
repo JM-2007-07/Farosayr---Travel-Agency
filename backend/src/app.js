@@ -12,6 +12,13 @@ import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'FaroSayr Backend is working on Vercel',
+  });
+});
+
 // --- security headers ---
 app.use(helmet());
 
