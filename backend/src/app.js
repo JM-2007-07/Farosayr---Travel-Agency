@@ -19,6 +19,15 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/__debug', (req, res) => {
+  res.json({
+    url: req.url,
+    originalUrl: req.originalUrl,
+    path: req.path,
+    baseUrl: req.baseUrl,
+  });
+});
+
 // --- security headers ---
 app.use(helmet());
 
