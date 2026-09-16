@@ -39,7 +39,7 @@ export function getAuthCookieOptions() {
     // "same-site" for cookie purposes as long as it's the same registrable
     // domain in production); 'none' would be needed only for a genuinely
     // cross-site deployment, which isn't this project's setup.
-    sameSite: 'lax',
+    sameSite: env.isProduction ? 'none' : 'lax',
     // Matches the JWT_EXPIRES_IN default (7d). These are two independent
     // settings (jsonwebtoken parses '7d'-style strings; this needs a raw
     // ms number, and pulling in a duration-parsing library just for this
