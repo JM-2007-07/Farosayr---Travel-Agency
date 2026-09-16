@@ -185,3 +185,57 @@
 .route-plane-core {
   opacity: 0.95;
 }
+.route-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.route-path-mobile {
+  display: none;
+}
+
+.route-plane-mobile {
+  display: none;
+}
+
+.route-plane {
+  filter:
+    drop-shadow(0 0 5px rgba(47, 217, 196, 1))
+    drop-shadow(0 0 12px rgba(47, 217, 196, 0.55))
+    drop-shadow(0 0 20px rgba(255, 255, 255, 0.25));
+}
+
+.route-plane-body {
+  transform-origin: center;
+}
+
+.route-plane-core {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .route-line {
+    opacity: 0.65;
+  }
+
+  .route-path-desktop {
+    display: none;
+  }
+
+  .route-path-mobile {
+    display: block;
+  }
+
+  .route-plane-desktop {
+    display: none;
+  }
+
+  .route-plane-mobile {
+    display: block;
+  }
+}

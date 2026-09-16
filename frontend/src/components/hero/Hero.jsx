@@ -70,41 +70,95 @@ export default function Hero() {
         aria-hidden="true"
       >
         <path
-          id="routePath"
+          className="route-path route-path-desktop"
+          id="routePathDesktop"
           d="M -50 620 C 250 500, 400 700, 650 520 S 1050 320, 1300 380 S 1550 250 1700 180"
           fill="none"
-          stroke="url(#routeGrad)"
+          stroke="url(#routeGradDesktop)"
           strokeWidth="2.5"
           strokeDasharray="1 14"
           strokeLinecap="round"
         />
+
+        <path
+          className="route-path route-path-mobile"
+          id="routePathMobile"
+          d="M 120 650 C 330 600, 470 570, 650 500 S 930 330, 1160 190"
+          fill="none"
+          stroke="url(#routeGradMobile)"
+          strokeWidth="2.5"
+          strokeDasharray="1 14"
+          strokeLinecap="round"
+        />
+
         <defs>
-          <linearGradient id="routeGrad" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient
+            id="routeGradDesktop"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="0"
+          >
+            <stop offset="0" stopColor="#2FD9C4" />
+            <stop offset="1" stopColor="#D4AF6A" />
+          </linearGradient>
+
+          <linearGradient
+            id="routeGradMobile"
+            x1="0"
+            y1="1"
+            x2="1"
+            y2="0"
+          >
             <stop offset="0" stopColor="#2FD9C4" />
             <stop offset="1" stopColor="#D4AF6A" />
           </linearGradient>
         </defs>
-        <g className="route-plane" transform="rotate(90)">
+
+        <g className="route-plane route-plane-desktop">
           <path
             className="route-plane-body"
             d="M0-15C-2-10-3-5-3 0L-13 7C-14 8-13 10-11 9L-3 6L-3 13L-7 17C-8 18-7 20-5 19L0 16L5 19C7 20 8 18 7 17L3 13L3 6L11 9C13 10 14 8 13 7L3 0C3-5 2-10 0-15Z"
             fill="#FFFFFF"
           />
+
           <path
             className="route-plane-core"
             d="M0-13L1 2L9 7L2 5L2 13L0 15L-2 13L-2 5L-9 7L-1 2L0-13Z"
             fill="#2FD9C4"
           />
+
           <animateMotion
-            dur="14s"
+            dur="24s"
             repeatCount="indefinite"
             rotate="auto"
           >
-            <mpath href="#routePath" />
+            <mpath href="#routePathDesktop" />
+          </animateMotion>
+        </g>
+
+        <g className="route-plane route-plane-mobile">
+          <path
+            className="route-plane-body"
+            d="M0-15C-2-10-3-5-3 0L-13 7C-14 8-13 10-11 9L-3 6L-3 13L-7 17C-8 18-7 20-5 19L0 16L5 19C7 20 8 18 7 17L3 13L3 6L11 9C13 10 14 8 13 7L3 0C3-5 2-10 0-15Z"
+            fill="#FFFFFF"
+          />
+
+          <path
+            className="route-plane-core"
+            d="M0-13L1 2L9 7L2 5L2 13L0 15L-2 13L-2 5L-9 7L-1 2L0-13Z"
+            fill="#2FD9C4"
+          />
+
+          <animateMotion
+            dur="8s"
+            repeatCount="indefinite"
+            rotate="auto"
+          >
+            <mpath href="#routePathMobile" />
           </animateMotion>
         </g>
       </svg>
-
       <div className="container hero-content" ref={contentRef}>
         <p className={`hero-eyebrow reveal ${isInView ? 'in-view' : ''}`}>
           Ваш маяк в мире путешествий
