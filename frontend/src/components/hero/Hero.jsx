@@ -115,7 +115,7 @@ export default function Hero() {
           </linearGradient>
         </defs>
 
-        <g className="route-plane route-plane-desktop">
+        <g className="route-plane route-plane-desktop" transform='rotate(90)'>
           <path
             className="route-plane-body"
             d="M0-15C-2-10-3-5-3 0L-13 7C-14 8-13 10-11 9L-3 6L-3 13L-7 17C-8 18-7 20-5 19L0 16L5 19C7 20 8 18 7 17L3 13L3 6L11 9C13 10 14 8 13 7L3 0C3-5 2-10 0-15Z"
@@ -137,7 +137,7 @@ export default function Hero() {
           </animateMotion>
         </g>
 
-        <g className="route-plane route-plane-mobile">
+        <g className="route-plane route-plane-mobile" transform='rotate(90)'>
           <path
             className="route-plane-body"
             d="M0-15C-2-10-3-5-3 0L-13 7C-14 8-13 10-11 9L-3 6L-3 13L-7 17C-8 18-7 20-5 19L0 16L5 19C7 20 8 18 7 17L3 13L3 6L11 9C13 10 14 8 13 7L3 0C3-5 2-10 0-15Z"
