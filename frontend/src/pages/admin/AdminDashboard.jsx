@@ -83,11 +83,11 @@ function MetricCard({ metric, value }) {
   const Icon = metric.icon;
 
   return (
-    <Grid item xs={12} sm={6} lg={3}>
+    <Grid size={{ xs: 6, sm: 6, lg: 3 }}>
       <Paper
         className={`admin-metric-card admin-metric-card-${metric.tone}`}
         elevation={0}
-        sx={{width:'180px'}}
+        sx={{minWidth:'180px'}}
       >
         <div className="admin-metric-glow" />
         <div className="admin-metric-top">
