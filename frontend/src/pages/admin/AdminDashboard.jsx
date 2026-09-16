@@ -87,7 +87,7 @@ function MetricCard({ metric, value }) {
       <Paper
         className={`admin-metric-card admin-metric-card-${metric.tone}`}
         elevation={0}
-        sx={{width:'220px'}}
+        sx={{width:'180px'}}
       >
         <div className="admin-metric-glow" />
         <div className="admin-metric-top">
