@@ -96,7 +96,7 @@ export default function Hero() {
             fill="#2FD9C4"
           />
           <animateMotion
-            dur="24s"
+            dur="14s"
             repeatCount="indefinite"
             rotate="auto"
           >
