@@ -108,18 +108,18 @@ export default function Footer() {
             </p>
 
             <div className="footer-contact-list">
-              <a href="tel:+992000000000" className="footer-contact-item">
+              <a href="tel:+992112113377" className="footer-contact-item">
                 <span className="footer-contact-icon">
                   <PhoneOutlinedIcon />
                 </span>
-                <span>+992 00 000 00 00</span>
+                <span>+992 11 211 33 77</span>
               </a>
 
-              <a href="mailto:info@farosayr.tj" className="footer-contact-item">
+              <a href="farosayrtour@mail.r" className="footer-contact-item">
                 <span className="footer-contact-icon">
                   <EmailOutlinedIcon />
                 </span>
-                <span>info@farosayr.tj</span>
+                <span>farosayrtour@mail.ru</span>
               </a>
 
               <span className="footer-contact-item">

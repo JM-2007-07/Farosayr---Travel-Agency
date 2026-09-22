@@ -25,8 +25,9 @@ function mapReview(r) {
     id: r.id,
     stars: r.rating,
     text: r.comment,
-    author: r.user?.name ?? 'FaroSair Guest',
-    location: '',
+    author: r.user?.name ?? 'FaroSayr Guest',
+    tourTitle: r.tour?.title ?? '',
+    tourSlug: r.tour?.slug ?? '',
     initials: initialsFromName(r.user?.name),
   };
 }

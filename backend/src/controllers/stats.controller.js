@@ -5,8 +5,8 @@
 // data — but doing so wasn't requested for this sub-phase and would be
 // inventing business logic outside its scope).
 const STATS = [
-  { id: 'travelers', target: 5000, suffix: '+', label: 'Довольных туристов' },
-  { id: 'destinations', target: 150, suffix: '+', label: 'Направлений' },
+  { id: 'travelers', target: 250, suffix: '+', label: 'Путешественников' },
+  { id: 'destinations', target: 12, suffix: '', label: 'Направлений' },
   { id: 'positive-reviews', target: 98, suffix: '%', label: 'Положительных отзывов' },
   { id: 'support', target: 24, suffix: '/7', label: 'Поддержка клиентов' },
 ];

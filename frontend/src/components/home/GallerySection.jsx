@@ -45,7 +45,7 @@ export default function GallerySection() {
       <div className="container">
         <div className={`section-head reveal ${headInView ? 'in-view' : ''}`} ref={headRef}>
           <p className="eyebrow">Моменты путешествий</p>
-          <h2>Галерея FaroSair</h2>
+          <h2>Галерея FAROSAYR</h2>
           <p className="section-desc">Кадры, присланные нашими туристами со всего мира.</p>
         </div>
 

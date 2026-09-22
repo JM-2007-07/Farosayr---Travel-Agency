@@ -32,15 +32,15 @@ export default function AboutSection() {
         >
           <img src={ABOUT_IMG} alt="Команда FaroSair" onError={onError} />
           <div className="about-badge">
-            <strong>7+</strong>
-            <span>лет создаём путешествия мечты</span>
+            <strong>1+</strong>
+            <span>год создаём путешествия мечты</span>
           </div>
         </div>
         <div className={`about-content reveal ${contentInView ? 'in-view' : ''}`} ref={contentRef}>
           <p className="eyebrow">О компании</p>
           <h2>Мы — маяк на пути к вашему идеальному отпуску</h2>
           <p className="section-desc">
-            FaroSair основана в Душанбе командой, влюблённой в путешествия. Название
+            Farosayr основана в Душанбе командой, влюблённой в путешествия. Название
             компании происходит от слова «фарос» — маяк, указывающий путь морякам. Мы
             делаем то же самое для наших клиентов: освещаем путь к безопасным, ярким и
             незабываемым поездкам.

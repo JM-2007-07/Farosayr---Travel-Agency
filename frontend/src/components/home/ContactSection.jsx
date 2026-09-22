@@ -26,12 +26,12 @@ const CONTACT_INFO = [
   {
     icon: PhoneIcon,
     label: 'Телефон',
-    value: '+992 37 221 00 00',
+    value: '+992 11 211 33 77',
   },
   {
     icon: EmailIcon,
     label: 'Email',
-    value: 'hello@farosair.tj',
+    value: 'farosayrtour@mail.ru',
   },
   {
     icon: AccessTimeIcon,
