@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from 'react-i18next';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import { useReveal } from '../hooks/useReveal';
 import { useImgFallback } from '../hooks/useImgFallback';
@@ -9,8 +10,12 @@ import Lightbox from '../components/common/Lightbox';
 import AsyncState from '../components/common/AsyncState';
 
 function GalleryTile({ item, onOpen }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
+  // Gallery items are static config served by the backend with stable ids;
+  // captions are translated by id, falling back to the API value.
+  const alt = t(`galleryItems.${item.id}`, { defaultValue: item.alt });
 
   return (
     <button
@@ -18,20 +23,21 @@ function GalleryTile({ item, onOpen }) {
       className={`gallery-item reveal ${item.sizeClass ?? ''} ${isInView ? 'in-view' : ''} ${broken ? 'img-fallback' : ''}`}
       ref={ref}
       onClick={() => onOpen(item)}
-      aria-label={`Открыть фото: ${item.alt}`}
+      aria-label={t('galleryPage.openPhoto', { title: alt })}
     >
-      <img src={item.thumb} alt={item.alt} onError={onError} />
+      <img src={item.thumb} alt={alt} onError={onError} />
       <span className="gallery-item-overlay" aria-hidden="true">
         <span className="gallery-item-expand">
           <OpenInFullIcon sx={{ fontSize: 21 }} />
         </span>
       </span>
-      <span className="gallery-item-caption">{item.alt}</span>
+      <span className="gallery-item-caption">{alt}</span>
     </button>
   );
 }
 
 export default function Gallery() {
+  const { t } = useTranslation();
   const [heroRef, heroInView] = useReveal();
   const [gridRef, gridInView] = useReveal();
   const { activeItem, open, close } = useLightbox();
@@ -54,30 +60,28 @@ export default function Gallery() {
             ref={heroRef}
           >
             <span className="gallery-hero-eyebrow">
-              Путешествия в кадре
+              {t('galleryPage.eyebrow')}
             </span>
 
             <h1 style={{color:'white'}}>
-              Мир, который мы
-              <span> увидели вместе</span>
+              <Trans i18nKey="galleryPage.title" components={{ accent: <span /> }} />
             </h1>
 
             <p>
-              Вдохновляющие моменты наших путешественников — от солнечных
-              пляжей до древних городов и незабываемых приключений.
+              {t('galleryPage.text')}
             </p>
 
             <div className="gallery-hero-meta">
               <div>
                 <strong>{items.length || '—'}</strong>
-                <span>фотографий</span>
+                <span>{t('galleryPage.photos', { count: items.length })}</span>
               </div>
 
               <div className="gallery-hero-divider" />
 
               <div>
                 <strong>FAROSAYR</strong>
-                <span>ваш путь начинается здесь</span>
+                <span>{t('galleryPage.tagline')}</span>
               </div>
             </div>
           </div>
@@ -91,12 +95,12 @@ export default function Gallery() {
             ref={gridRef}
           >
             <div>
-              <span className="eyebrow">Истории путешествий</span>
-              <h2>Вдохновение для следующего маршрута</h2>
+              <span className="eyebrow">{t('galleryPage.sectionEyebrow')}</span>
+              <h2>{t('galleryPage.sectionTitle')}</h2>
             </div>
 
             <p>
-              Каждая фотография — это воспоминание, которое хочется сохранить.
+              {t('galleryPage.sectionText')}
             </p>
           </div>
 

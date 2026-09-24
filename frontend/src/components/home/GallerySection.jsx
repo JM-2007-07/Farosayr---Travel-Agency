@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import { getGalleryItems } from '../../services/galleryService';
 import { useReveal } from '../../hooks/useReveal';
@@ -9,8 +10,12 @@ import AsyncState from '../common/AsyncState';
 import './GallerySection.css';
 
 function GalleryTile({ item, onOpen }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
+  // Gallery items are static config served by the backend with stable ids;
+  // alt text is translated by id, falling back to the API value.
+  const alt = t(`galleryItems.${item.id}`, { defaultValue: item.alt });
 
   return (
     <div
@@ -25,9 +30,9 @@ function GalleryTile({ item, onOpen }) {
           onOpen(item);
         }
       }}
-      aria-label={`Открыть фото: ${item.alt}`}
+      aria-label={t('galleryPage.openPhoto', { title: alt })}
     >
-      <img src={item.thumb} alt={item.alt} onError={onError} />
+      <img src={item.thumb} alt={alt} onError={onError} />
       <span className="gallery-item-expand" aria-hidden="true">
         <OpenInFullIcon sx={{ fontSize: 22 }} />
       </span>
@@ -36,6 +41,7 @@ function GalleryTile({ item, onOpen }) {
 }
 
 export default function GallerySection() {
+  const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
   const { activeItem, open, close } = useLightbox();
   const { status, data: galleryItems, isLoading, isError } = useAsyncData(getGalleryItems, []);
@@ -44,9 +50,9 @@ export default function GallerySection() {
     <section className="section gallery" id="gallery">
       <div className="container">
         <div className={`section-head reveal ${headInView ? 'in-view' : ''}`} ref={headRef}>
-          <p className="eyebrow">Моменты путешествий</p>
-          <h2>Галерея FAROSAYR</h2>
-          <p className="section-desc">Кадры, присланные нашими туристами со всего мира.</p>
+          <p className="eyebrow">{t('home.gallery.eyebrow')}</p>
+          <h2>{t('home.gallery.title')}</h2>
+          <p className="section-desc">{t('home.gallery.text')}</p>
         </div>
 
         <AsyncState

@@ -78,12 +78,12 @@
 .nav-list {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 16px;
 }
 
 .nav-link {
   color: rgba(255, 255, 255, 0.82);
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 500;
   position: relative;
   padding: 6px 0;
@@ -115,7 +115,7 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
 }
 
 .account-wrapper {
@@ -551,6 +551,10 @@
   font-size: 20px;
 }
 
+.mobile-language {
+  margin-bottom: 28px;
+}
+
 .mobile-account {
   padding-top: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -669,7 +673,33 @@
   }
 }
 
-@media (max-width: 980px) {
+/* Tighter desktop spacing so the full navigation, language switcher and
+   CTA fit on one line in every language (RU needs the most width). */
+@media (min-width: 1181px) and (max-width: 1320px) {
+  .nav-list {
+    gap: 12px;
+  }
+
+  .nav-link {
+    font-size: 13.5px;
+  }
+
+  .header-actions {
+    gap: 10px;
+  }
+
+  .header-actions .btn-cta {
+    padding: 12px 18px;
+  }
+}
+
+.nav-link {
+  white-space: nowrap;
+}
+
+/* Below this width the full navigation no longer fits on one line in
+   RU/TJ, so the header switches to the burger + mobile menu. */
+@media (max-width: 1180px) {
   .nav {
     display: none;
   }
@@ -683,6 +713,11 @@
   }
 
   .account-wrapper {
+    display: none;
+  }
+
+  /* On mobile the language switcher lives in the mobile menu instead */
+  .header-actions .lang-switcher {
     display: none;
   }
 }

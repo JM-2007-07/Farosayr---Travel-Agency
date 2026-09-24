@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { useScrollState } from '../../hooks/useScrollState';
 import './BackToTop.css';
 
 // Ports the original: backToTop.classList.toggle('show', window.scrollY > 700)
 export default function BackToTop() {
+  const { t } = useTranslation();
   const { scrollY } = useScrollState();
   const show = scrollY > 700;
 
@@ -13,7 +15,7 @@ export default function BackToTop() {
   return (
     <button
       className={`back-to-top ${show ? 'show' : ''}`}
-      aria-label="Наверх"
+      aria-label={t('common.backToTop')}
       onClick={handleClick}
     >
       <svg viewBox="0 0 24 24" fill="none">

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useReveal } from '../../hooks/useReveal';
 import { useImgFallback } from '../../hooks/useImgFallback';
 import { scrollToId } from '../../utils/scrollToId';
@@ -6,14 +7,10 @@ import './AboutSection.css';
 const ABOUT_IMG =
   'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80';
 
-const ABOUT_POINTS = [
-  'Индивидуальный подход к каждому путешественнику',
-  'Прямые договоры с отелями и авиакомпаниями',
-  'Полное сопровождение — от визы до трансфера',
-  'Прозрачные цены без скрытых платежей',
-];
+const ABOUT_POINTS = ['personal', 'direct', 'fullSupport', 'transparent'];
 
 export default function AboutSection() {
+  const { t } = useTranslation();
   const [mediaRef, mediaInView] = useReveal();
   const [contentRef, contentInView] = useReveal();
   const [broken, onError] = useImgFallback();
@@ -30,28 +27,25 @@ export default function AboutSection() {
           className={`about-media reveal img-wrap ${mediaInView ? 'in-view' : ''} ${broken ? 'img-fallback' : ''}`}
           ref={mediaRef}
         >
-          <img src={ABOUT_IMG} alt="Команда FaroSair" onError={onError} />
+          <img src={ABOUT_IMG} alt={t('home.about.imageAlt')} onError={onError} />
           <div className="about-badge">
             <strong>1+</strong>
-            <span>год создаём путешествия мечты</span>
+            <span>{t('home.about.badge')}</span>
           </div>
         </div>
         <div className={`about-content reveal ${contentInView ? 'in-view' : ''}`} ref={contentRef}>
-          <p className="eyebrow">О компании</p>
-          <h2>Мы — маяк на пути к вашему идеальному отпуску</h2>
+          <p className="eyebrow">{t('home.about.eyebrow')}</p>
+          <h2>{t('home.about.title')}</h2>
           <p className="section-desc">
-            Farosayr основана в Душанбе командой, влюблённой в путешествия. Название
-            компании происходит от слова «фарос» — маяк, указывающий путь морякам. Мы
-            делаем то же самое для наших клиентов: освещаем путь к безопасным, ярким и
-            незабываемым поездкам.
+            {t('home.about.text')}
           </p>
           <ul className="about-list">
             {ABOUT_POINTS.map((point) => (
-              <li key={point}>{point}</li>
+              <li key={point}>{t(`home.about.points.${point}`)}</li>
             ))}
           </ul>
           <a href="#contact" className="btn btn-primary" onClick={handleContactClick}>
-            Связаться с нами
+            {t('common.contactUs')}
           </a>
         </div>
       </div>

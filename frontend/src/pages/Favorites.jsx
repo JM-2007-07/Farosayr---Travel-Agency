@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getFavorites, removeFavorite } from '../services/favoritesService';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { useAuth } from '../context/AuthContext';
@@ -7,6 +8,7 @@ import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
 
 function FavoritesList() {
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const { status, data: favorites, isLoading, isError } = useAsyncData(getFavorites, [isAuthenticated]);
   // Local optimistic removal so unfavoriting from this page updates
@@ -27,7 +29,7 @@ function FavoritesList() {
         isLoading={isLoading}
         isError={isError}
         isEmpty={status === 'success' && visible.length === 0}
-        emptyLabel="Вы ещё не добавили туры в избранное."
+        emptyLabel={t('favorites.empty')}
       />
       {status === 'success' && visible.length > 0 && (
         <div className="tours-grid">
@@ -47,11 +49,13 @@ function FavoritesList() {
 }
 
 export default function Favorites() {
+  const { t } = useTranslation();
+
   return (
     <div className="container" style={{ padding: '160px 0 100px' }}>
-      <p className="eyebrow">Личный кабинет</p>
-      <h1 style={{ marginBottom: 30 }}>Избранное</h1>
-      <RequireAuth prompt="Войдите в аккаунт, чтобы увидеть избранные туры.">
+      <p className="eyebrow">{t('account.personalArea')}</p>
+      <h1 style={{ marginBottom: 30 }}>{t('account.favorites')}</h1>
+      <RequireAuth prompt={t('favorites.signInPrompt')}>
         <FavoritesList />
       </RequireAuth>
     </div>

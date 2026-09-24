@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getReviews } from '../../services/reviewsService';
 import { useReveal } from '../../hooks/useReveal';
 import { useAsyncData } from '../../hooks/useAsyncData';
@@ -8,6 +9,7 @@ import './ReviewsSection.css';
 const AUTO_SLIDE_MS = 5500;
 
 export default function ReviewsSection() {
+  const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
   const [current, setCurrent] = useState(0);
   const intervalRef = useRef(null);
@@ -45,8 +47,8 @@ export default function ReviewsSection() {
     <section className="section reviews" id="reviews">
       <div className="container">
         <div className={`section-head light reveal ${headInView ? 'in-view' : ''}`} ref={headRef}>
-          <p className="eyebrow">Отзывы клиентов</p>
-          <h2>Нам доверяют путешественники по всему миру</h2>
+          <p className="eyebrow">{t('home.reviews.eyebrow')}</p>
+          <h2>{t('home.reviews.title')}</h2>
         </div>
 
         <AsyncState isLoading={isLoading} isError={isError} isEmpty={status === 'success' && count === 0} />
@@ -64,7 +66,7 @@ export default function ReviewsSection() {
               {reviews.map((review) => (
                 <div className="review-card" key={review.id}>
                   <div className="review-stars">{'★'.repeat(review.stars)}</div>
-                  <p>«{review.text}»</p>
+                  <p>{t('common.quoted', { text: review.text })}</p>
                   <div className="review-author">
                     <div className="avatar">{review.initials}</div>
                     <div>
@@ -81,7 +83,7 @@ export default function ReviewsSection() {
                 <button
                   key={review.id}
                   className={index === current ? 'active' : ''}
-                  aria-label={`Отзыв ${index + 1}`}
+                  aria-label={t('home.reviews.slide', { number: index + 1 })}
                   onClick={() => goTo(index)}
                 />
               ))}

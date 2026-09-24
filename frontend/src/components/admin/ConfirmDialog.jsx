@@ -1,4 +1,5 @@
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
 
 /**
  * Every destructive admin action (delete tour/destination/deal/review/
@@ -8,20 +9,30 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, B
  * what the user confirms here.
  */
 export default function ConfirmDialog({ open, title, resourceName, onConfirm, onCancel, loading }) {
+  const { t } = useTranslation();
+
   return (
     <Dialog open={open} onClose={onCancel}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Удалить {resourceName ? <strong>«{resourceName}»</strong> : 'этот элемент'}? Это действие необратимо.
+          {resourceName ? (
+            <Trans
+              i18nKey="admin.common.confirmDeleteNamed"
+              values={{ name: resourceName }}
+              components={{ strong: <strong /> }}
+            />
+          ) : (
+            t('admin.common.confirmDeleteGeneric')
+          )}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} disabled={loading}>
-          Отмена
+          {t('common.cancel')}
         </Button>
         <Button onClick={onConfirm} color="error" variant="contained" disabled={loading}>
-          {loading ? 'Удаление…' : 'Удалить'}
+          {loading ? t('common.deleting') : t('common.delete')}
         </Button>
       </DialogActions>
     </Dialog>

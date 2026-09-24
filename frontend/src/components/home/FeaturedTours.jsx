@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { getTours } from '../../services/toursService';
 import { useReveal } from '../../hooks/useReveal';
 import { useFavorites } from '../../hooks/useFavorites';
@@ -7,6 +8,7 @@ import AsyncState from '../common/AsyncState';
 import './FeaturedTours.css';
 
 export default function FeaturedTours() {
+  const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
   const { isFavorited, toggleFavorite } = useFavorites();
   const { status, data: tours, isLoading, isError } = useAsyncData(getTours, []);
@@ -17,10 +19,10 @@ export default function FeaturedTours() {
     <section className="section tours" id="tours">
       <div className="container">
         <div className={`section-head reveal ${headInView ? 'in-view' : ''}`} ref={headRef}>
-          <p className="eyebrow">Рекомендуем</p>
-          <h2>Популярные туры</h2>
+          <p className="eyebrow">{t('home.tours.eyebrow')}</p>
+          <h2>{t('common.popularTours')}</h2>
           <p className="section-desc">
-            Готовые маршруты, проверенные сотнями довольных путешественников.
+            {t('home.tours.text')}
           </p>
         </div>
 

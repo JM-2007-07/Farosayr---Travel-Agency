@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
 import TelegramIcon from '@mui/icons-material/Telegram';
@@ -13,17 +14,17 @@ import { subscribeToNewsletter } from '../../../services/newsletterService';
 import './Footer.css';
 
 const FOOTER_SECTIONS = [
-  { href: '#tours', label: 'Туры' },
-  { href: '#deals', label: 'Горячие предложения' },
-  { href: '#destinations', label: 'Направления' },
-  { href: '#reviews', label: 'Отзывы' },
+  { href: '#tours', labelKey: 'navigation.tours' },
+  { href: '#deals', labelKey: 'navigation.deals' },
+  { href: '#destinations', labelKey: 'navigation.destinations' },
+  { href: '#reviews', labelKey: 'navigation.reviews' },
 ];
 
 const FOOTER_COMPANY = [
-  { href: '#about', label: 'О нас' },
-  { href: '#gallery', label: 'Галерея' },
-  { href: '#faq', label: 'Вопросы' },
-  { href: '#contact', label: 'Контакты' },
+  { href: '#about', labelKey: 'navigation.about' },
+  { href: '#gallery', labelKey: 'navigation.gallery' },
+  { href: '#faq', labelKey: 'navigation.faq' },
+  { href: '#contact', labelKey: 'navigation.contact' },
 ];
 
 const SOCIAL_LINKS = [
@@ -50,6 +51,7 @@ const SOCIAL_LINKS = [
 ];
 
 export default function Footer() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -103,8 +105,7 @@ export default function Footer() {
             </a>
 
             <p className="footer-brand-description">
-              Туристическое агентство в Душанбе, которое помогает превращать
-              мечты о путешествиях в реальные маршруты.
+              {t('footer.description')}
             </p>
 
             <div className="footer-contact-list">
@@ -115,7 +116,7 @@ export default function Footer() {
                 <span>+992 11 211 33 77</span>
               </a>
 
-              <a href="farosayrtour@mail.r" className="footer-contact-item">
+              <a href="mailto:farosayrtour@mail.ru" className="footer-contact-item">
                 <span className="footer-contact-icon">
                   <EmailOutlinedIcon />
                 </span>
@@ -126,7 +127,7 @@ export default function Footer() {
                 <span className="footer-contact-icon">
                   <LocationOnOutlinedIcon />
                 </span>
-                <span>Душанбе, Таджикистан</span>
+                <span>{t('common.dushanbeTajikistan')}</span>
               </span>
             </div>
 
@@ -149,7 +150,7 @@ export default function Footer() {
           <div className="footer-col">
             <div className="footer-heading">
               <span className="footer-heading-line" />
-              <h4>Разделы</h4>
+              <h4>{t('footer.sections')}</h4>
             </div>
 
             <ul>
@@ -160,7 +161,7 @@ export default function Footer() {
                     onClick={(e) => handleNavClick(e, item.href)}
                   >
                     <ArrowForwardRoundedIcon />
-                    <span>{item.label}</span>
+                    <span>{t(item.labelKey)}</span>
                   </a>
                 </li>
               ))}
@@ -170,7 +171,7 @@ export default function Footer() {
           <div className="footer-col">
             <div className="footer-heading">
               <span className="footer-heading-line" />
-              <h4>Компания</h4>
+              <h4>{t('footer.company')}</h4>
             </div>
 
             <ul>
@@ -181,7 +182,7 @@ export default function Footer() {
                     onClick={(e) => handleNavClick(e, item.href)}
                   >
                     <ArrowForwardRoundedIcon />
-                    <span>{item.label}</span>
+                    <span>{t(item.labelKey)}</span>
                   </a>
                 </li>
               ))}
@@ -191,12 +192,11 @@ export default function Footer() {
           <div className="footer-col footer-newsletter">
             <div className="footer-heading">
               <span className="footer-heading-line" />
-              <h4>Будьте в курсе</h4>
+              <h4>{t('footer.stayInformed')}</h4>
             </div>
 
             <p>
-              Получайте лучшие предложения, новые маршруты и специальные цены
-              прямо на вашу почту.
+              {t('footer.newsletterText')}
             </p>
 
             <form className="newsletter-form" onSubmit={handleSubscribe}>
@@ -204,7 +204,7 @@ export default function Footer() {
                 <EmailOutlinedIcon />
                 <input
                   type="email"
-                  placeholder={subscribed ? 'Спасибо за подписку!' : 'Ваш email'}
+                  placeholder={subscribed ? t('footer.subscribed') : t('footer.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={submitting || subscribed}
@@ -214,7 +214,7 @@ export default function Footer() {
 
               <button
                 type="submit"
-                aria-label="Подписаться"
+                aria-label={t('footer.subscribe')}
                 disabled={submitting || subscribed}
               >
                 <ArrowForwardRoundedIcon />
@@ -222,7 +222,7 @@ export default function Footer() {
             </form>
 
             <span className="newsletter-note">
-              Без спама. Только путешествия и выгодные предложения.
+              {t('footer.newsletterNote')}
             </span>
           </div>
         </div>
@@ -241,29 +241,29 @@ export default function Footer() {
           </div>
 
           <div className="footer-route-text">
-            <span>Ваш путь</span>
-            <strong>начинается здесь</strong>
+            <span>{t('common.yourJourney')}</span>
+            <strong>{t('common.startsHere')}</strong>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
         <div className="container footer-bottom-inner">
-          <span>© 2026 Farosayr. Все права защищены.</span>
+          <span>{t('footer.rights')}</span>
 
           <div className="footer-bottom-links">
             <a href="#home" onClick={(e) => handleNavClick(e, '#home')}>
-              Главная
+              {t('navigation.home')}
             </a>
             <span />
             <a href="#contact" onClick={(e) => handleNavClick(e, '#contact')}>
-              Контакты
+              {t('navigation.contact')}
             </a>
           </div>
 
           <span className="footer-location">
             <LocationOnOutlinedIcon />
-            Душанбе, Таджикистан
+            {t('common.dushanbeTajikistan')}
           </span>
         </div>
       </div>

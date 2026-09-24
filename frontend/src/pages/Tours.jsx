@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded';
@@ -14,10 +15,10 @@ import AsyncState from '../components/common/AsyncState';
 import './Tours.css';
 
 const SORT_OPTIONS = [
-  { value: '', label: 'По умолчанию' },
-  { value: 'price_asc', label: 'Сначала дешевле' },
-  { value: 'price_desc', label: 'Сначала дороже' },
-  { value: 'newest', label: 'Сначала новые' },
+  { value: '', labelKey: 'tours.sortOptions.default' },
+  { value: 'price_asc', labelKey: 'tours.sortOptions.priceAsc' },
+  { value: 'price_desc', labelKey: 'tours.sortOptions.priceDesc' },
+  { value: 'newest', labelKey: 'tours.sortOptions.newest' },
 ];
 
 const EMPTY_FILTERS = {
@@ -29,6 +30,7 @@ const EMPTY_FILTERS = {
 };
 
 export default function Tours() {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState(EMPTY_FILTERS);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const { isFavorited, toggleFavorite } = useFavorites();
@@ -72,16 +74,14 @@ export default function Tours() {
           <div className="tours-hero-content">
             
 
-            <p className="eyebrow">Каталог путешествий</p>
+            <p className="eyebrow">{t('tours.eyebrow')}</p>
 
             <h1>
-              Найдите путешествие,
-              <span> которое запомнится</span>
+              <Trans i18nKey="tours.title" components={{ accent: <span /> }} />
             </h1>
 
             <p className="tours-hero-description">
-              Подберите идеальный тур по направлению, бюджету и вашим
-              предпочтениям. Мы позаботимся обо всём остальном.
+              {t('tours.text')}
             </p>
           </div>
         </div>
@@ -97,8 +97,8 @@ export default function Tours() {
                 </div>
 
                 <div>
-                  <span>Поиск путешествия</span>
-                  <p>Настройте параметры и найдите подходящий тур</p>
+                  <span>{t('tours.filterTitle')}</span>
+                  <p>{t('tours.filterText')}</p>
                 </div>
               </div>
 
@@ -107,7 +107,7 @@ export default function Tours() {
                 className="filter-reset"
                 onClick={handleReset}
               >
-                Сбросить
+                {t('tours.reset')}
               </button>
             </div>
 
@@ -115,7 +115,7 @@ export default function Tours() {
               <div className="tour-filter-field tour-filter-destination">
                 <label htmlFor="destination">
                   <LocationOnOutlinedIcon />
-                  Направление
+                  {t('common.destination')}
                 </label>
 
                 <select
@@ -124,7 +124,7 @@ export default function Tours() {
                   value={draft.destination}
                   onChange={handleChange}
                 >
-                  <option value="">Любое направление</option>
+                  <option value="">{t('tours.anyDestination')}</option>
 
                   {(destinations ?? []).map((destination) => (
                     <option key={destination.id} value={destination.slug}>
@@ -137,7 +137,7 @@ export default function Tours() {
               <div className="tour-filter-field">
                 <label htmlFor="minPrice">
                   <AttachMoneyRoundedIcon />
-                  Цена от
+                  {t('tours.priceFrom')}
                 </label>
 
                 <div className="filter-input-wrap">
@@ -157,7 +157,7 @@ export default function Tours() {
               <div className="tour-filter-field">
                 <label htmlFor="maxPrice">
                   <AttachMoneyRoundedIcon />
-                  Цена до
+                  {t('tours.priceTo')}
                 </label>
 
                 <div className="filter-input-wrap">
@@ -166,7 +166,7 @@ export default function Tours() {
                     id="maxPrice"
                     name="maxPrice"
                     min="0"
-                    placeholder="Без лимита"
+                    placeholder={t('tours.noLimit')}
                     value={draft.maxPrice}
                     onChange={handleChange}
                   />
@@ -177,7 +177,7 @@ export default function Tours() {
               <div className="tour-filter-field">
                 <label htmlFor="q">
                   <SearchRoundedIcon />
-                  Поиск
+                  {t('tours.search')}
                 </label>
 
                 <div className="filter-search-wrap">
@@ -186,7 +186,7 @@ export default function Tours() {
                     type="text"
                     id="q"
                     name="q"
-                    placeholder="Название тура..."
+                    placeholder={t('tours.searchPlaceholder')}
                     value={draft.q}
                     onChange={handleChange}
                   />
@@ -196,7 +196,7 @@ export default function Tours() {
               <div className="tour-filter-field">
                 <label htmlFor="sort">
                   <SortRoundedIcon />
-                  Сортировка
+                  {t('tours.sort')}
                 </label>
 
                 <select
@@ -207,7 +207,7 @@ export default function Tours() {
                 >
                   {SORT_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label}
+                      {t(option.labelKey)}
                     </option>
                   ))}
                 </select>
@@ -215,21 +215,23 @@ export default function Tours() {
 
               <button type="submit" className="tours-search-button">
                 <SearchRoundedIcon />
-                <span>Найти тур</span>
+                <span>{t('common.findTour')}</span>
               </button>
             </div>
 
             <div className="filter-card-footer">
               <div className="filter-footer-info">
                 <FilterAltOutlinedIcon />
-                <span>
-                  Фильтры применяются после нажатия кнопки «Найти»
-                </span>
+                <span>{t('tours.filterHint')}</span>
               </div>
 
               {status === 'success' && (
                 <div className="results-counter">
-                  Найдено <strong>{tours.length}</strong> туров
+                  <Trans
+                    i18nKey="tours.resultsCount"
+                    count={tours.length}
+                    components={{ strong: <strong /> }}
+                  />
                 </div>
               )}
             </div>
@@ -237,13 +239,13 @@ export default function Tours() {
 
           <div className="tours-list-header">
             <div>
-              <span className="tours-list-kicker">Наши предложения</span>
-              <h2>Популярные туры</h2>
+              <span className="tours-list-kicker">{t('tours.listKicker')}</span>
+              <h2>{t('common.popularTours')}</h2>
             </div>
 
             {status === 'success' && tours.length > 0 && (
               <span className="tours-list-count">
-                {tours.length} предложений
+                {t('common.offersCount', { count: tours.length })}
               </span>
             )}
           </div>
@@ -252,7 +254,7 @@ export default function Tours() {
             isLoading={isLoading}
             isError={isError}
             isEmpty={status === 'success' && tours.length === 0}
-            emptyLabel="По вашему запросу туров не найдено."
+            emptyLabel={t('tours.empty')}
           />
 
           {status === 'success' && tours.length > 0 && (

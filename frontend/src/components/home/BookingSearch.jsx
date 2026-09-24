@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useReveal } from '../../hooks/useReveal';
 import { scrollToId } from '../../utils/scrollToId';
 import {
@@ -17,30 +18,31 @@ import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalance
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import './BookingSearch.css';
 
+// Option values are stable ids; their labels are translated at render.
 const DESTINATIONS_OPTIONS = [
-  'Дубай, ОАЭ',
-  'Стамбул, Турция',
-  'Мальдивы',
-  'Хургада, Египет',
-  'Пхукет, Таиланд',
-  'Джидда, Саудовская Аравия',
-  'Москва, Россия',
-  'Самарканд, Узбекистан',
+  'dubai',
+  'istanbul',
+  'maldives',
+  'hurghada',
+  'phuket',
+  'jeddah',
+  'moscow',
+  'samarkand',
 ];
 
 const TRAVELERS_OPTIONS = [
-  '1 взрослый',
-  '2 взрослых',
-  '2 взрослых, 1 ребёнок',
-  '3–5 человек',
-  'Группа 6+',
+  'oneAdult',
+  'twoAdults',
+  'twoAdultsOneChild',
+  'threeToFive',
+  'groupSixPlus',
 ];
 
 const BUDGET_OPTIONS = [
-  'до $500',
-  '$500 – $1000',
-  '$1000 – $2000',
-  '$2000+',
+  'upTo500',
+  'from500To1000',
+  'from1000To2000',
+  'over2000',
 ];
 
 const IDLE = 'idle';
@@ -76,6 +78,7 @@ const fieldSx = {
 };
 
 export default function BookingSearch() {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [form, setForm] = useState({
     destination: '',
@@ -106,10 +109,10 @@ export default function BookingSearch() {
 
   const buttonLabel =
     status === SEARCHING
-      ? 'Ищем варианты…'
+      ? t('home.search.searching')
       : status === DONE
-        ? 'Готово! Свяжемся с вами'
-        : 'Найти тур';
+        ? t('home.search.done')
+        : t('common.findTour');
 
   return (
     <section className="search-section" id="booking">
@@ -120,20 +123,20 @@ export default function BookingSearch() {
           onSubmit={handleSubmit}
         >
           <div className="search-heading">
-            <span className="search-kicker">Ваше путешествие начинается здесь</span>
-            <h2>Найдите идеальный тур</h2>
-            <p>Укажите параметры поездки, а мы подберём лучшие варианты.</p>
+            <span className="search-kicker">{t('home.search.kicker')}</span>
+            <h2>{t('home.search.title')}</h2>
+            <p>{t('home.search.text')}</p>
           </div>
 
           <div className="search-fields">
             <FormControl fullWidth sx={fieldSx}>
-              <InputLabel id="destination-label">Направление</InputLabel>
+              <InputLabel id="destination-label">{t('common.destination')}</InputLabel>
               <Select
                 labelId="destination-label"
                 id="destination"
                 name="destination"
                 value={form.destination}
-                label="Направление"
+                label={t('common.destination')}
                 onChange={handleChange}
                 startAdornment={
                   <InputAdornment position="start">
@@ -142,11 +145,11 @@ export default function BookingSearch() {
                 }
               >
                 <MenuItem value="">
-                  Куда летим?
+                  {t('home.search.destinationPlaceholder')}
                 </MenuItem>
                 {DESTINATIONS_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>
-                    {option}
+                    {t(`home.search.destinationOptions.${option}`)}
                   </MenuItem>
                 ))}
               </Select>
@@ -155,7 +158,7 @@ export default function BookingSearch() {
             <TextField
   fullWidth
   type="date"
-  label="Дата вылета"
+  label={t('home.search.departDate')}
   name="depart"
   value={form.depart}
   onChange={handleChange}
@@ -189,7 +192,7 @@ export default function BookingSearch() {
 <TextField
   fullWidth
   type="date"
-  label="Дата возвращения"
+  label={t('home.search.returnDate')}
   name="return"
   value={form.return}
   onChange={handleChange}
@@ -221,13 +224,13 @@ export default function BookingSearch() {
 />
 
             <FormControl fullWidth sx={fieldSx}>
-              <InputLabel id="travelers-label">Путешественники</InputLabel>
+              <InputLabel id="travelers-label">{t('home.search.travelers')}</InputLabel>
               <Select
                 labelId="travelers-label"
                 id="travelers"
                 name="travelers"
                 value={form.travelers}
-                label="Путешественники"
+                label={t('home.search.travelers')}
                 onChange={handleChange}
                 startAdornment={
                   <InputAdornment position="start">
@@ -237,20 +240,20 @@ export default function BookingSearch() {
               >
                 {TRAVELERS_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>
-                    {option}
+                    {t(`home.search.travelerOptions.${option}`)}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
             <FormControl fullWidth sx={fieldSx}>
-              <InputLabel id="budget-label">Бюджет</InputLabel>
+              <InputLabel id="budget-label">{t('home.search.budget')}</InputLabel>
               <Select
                 labelId="budget-label"
                 id="budget"
                 name="budget"
                 value={form.budget}
-                label="Бюджет"
+                label={t('home.search.budget')}
                 onChange={handleChange}
                 startAdornment={
                   <InputAdornment position="start">
@@ -260,7 +263,7 @@ export default function BookingSearch() {
               >
                 {BUDGET_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>
-                    {option}
+                    {t(`home.search.budgetOptions.${option}`)}
                   </MenuItem>
                 ))}
               </Select>

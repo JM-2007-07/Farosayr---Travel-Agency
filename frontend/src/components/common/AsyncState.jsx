@@ -1,13 +1,17 @@
+import { useTranslation } from 'react-i18next';
+
 export default function AsyncState({
   isLoading,
   isError,
   isEmpty,
-  loadingLabel = 'Загрузка…',
-  errorLabel = 'Не удалось загрузить данные. Попробуйте обновить страницу.',
-  emptyLabel = 'Пока нет данных.',
+  loadingLabel,
+  errorLabel,
+  emptyLabel,
 }) {
-  if (isLoading) return <p className="section-desc">{loadingLabel}</p>;
-  if (isError) return <p className="section-desc">{errorLabel}</p>;
-  if (isEmpty) return <p className="section-desc">{emptyLabel}</p>;
+  const { t } = useTranslation();
+
+  if (isLoading) return <p className="section-desc">{loadingLabel ?? t('state.loading')}</p>;
+  if (isError) return <p className="section-desc">{errorLabel ?? t('state.error')}</p>;
+  if (isEmpty) return <p className="section-desc">{emptyLabel ?? t('state.empty')}</p>;
   return null;
 }

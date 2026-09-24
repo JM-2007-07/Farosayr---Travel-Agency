@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
@@ -13,9 +14,9 @@ import { getTourById } from '../services/toursService';
 import { createReview } from '../services/reviewsService';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { useImgFallback } from '../hooks/useImgFallback';
-import { ApiError } from '../services/api/client';
 import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
+import { getApiErrorMessage } from '../utils/getApiErrorMessage';
 import './TourDetails.css';
 
 const IDLE = 'idle';
@@ -23,6 +24,7 @@ const SUBMITTING = 'submitting';
 const SUBMITTED = 'submitted';
 
 function ReviewForm({ tour }) {
+  const { t } = useTranslation();
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [status, setStatus] = useState(IDLE);
@@ -45,11 +47,13 @@ function ReviewForm({ tour }) {
     } catch (err) {
       setStatus(IDLE);
 
-      if (err instanceof ApiError && err.status === 409) {
-        setError('Вы уже оставляли отзыв об этом туре.');
-      } else {
-        setError('Не удалось отправить отзыв. Попробуйте ещё раз.');
-      }
+      // The review form previously showed only its own fixed messages
+      // (never the raw backend text), so network/5xx map to the same fallback.
+      setError(
+        getApiErrorMessage(err, t, 'tourDetails.reviewError', {
+          409: 'tourDetails.alreadyReviewed',
+        }),
+      );
     }
   }
 
@@ -61,8 +65,8 @@ function ReviewForm({ tour }) {
         </div>
 
         <div>
-          <strong>Спасибо за ваш отзыв!</strong>
-          <p>Ваш отзыв успешно опубликован.</p>
+          <strong>{t('tourDetails.reviewSuccessTitle')}</strong>
+          <p>{t('tourDetails.reviewSuccessText')}</p>
         </div>
       </div>
     );
@@ -71,7 +75,7 @@ function ReviewForm({ tour }) {
   return (
     <form onSubmit={handleSubmit} className="review-form">
       <div className="review-rating-field">
-        <label htmlFor="rating">Ваша оценка</label>
+        <label htmlFor="rating">{t('tourDetails.ratingLabel')}</label>
 
         <select
           id="rating"
@@ -80,7 +84,7 @@ function ReviewForm({ tour }) {
         >
           {[5, 4, 3, 2, 1].map((n) => (
             <option key={n} value={n}>
-              {n} из 5
+              {t('tourDetails.ratingOption', { value: n })}
             </option>
           ))}
         </select>
@@ -96,13 +100,13 @@ function ReviewForm({ tour }) {
       </div>
 
       <div className="review-field">
-        <label htmlFor="comment">Ваш комментарий</label>
+        <label htmlFor="comment">{t('tourDetails.commentLabel')}</label>
 
         <textarea
           id="comment"
           rows="5"
           required
-          placeholder="Расскажите о своих впечатлениях от путешествия..."
+          placeholder={t('tourDetails.commentPlaceholder')}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
@@ -113,7 +117,7 @@ function ReviewForm({ tour }) {
         className="btn btn-primary review-submit"
         disabled={status === SUBMITTING}
       >
-        {status === SUBMITTING ? 'Отправка…' : 'Опубликовать отзыв'}
+        {status === SUBMITTING ? t('common.sending') : t('tourDetails.submitReview')}
 
         {status !== SUBMITTING && <ArrowForwardRoundedIcon />}
       </button>
@@ -124,6 +128,7 @@ function ReviewForm({ tour }) {
 }
 
 function TourGallery({ tour }) {
+  const { t } = useTranslation();
   const images = tour.images ?? [];
   const [activeIndex, setActiveIndex] = useState(0);
   const [brokenImages, setBrokenImages] = useState({});
@@ -154,7 +159,7 @@ function TourGallery({ tour }) {
       <div className="tour-details-image">
         <div className="tour-gallery-empty">
           <FlightTakeoffRoundedIcon />
-          <span>Изображение тура отсутствует</span>
+          <span>{t('tourDetails.imageMissing')}</span>
         </div>
 
         {tour.destination && (
@@ -191,7 +196,7 @@ function TourGallery({ tour }) {
           ) : (
             <div className="tour-gallery-broken">
               <FlightTakeoffRoundedIcon />
-              <span>Не удалось загрузить изображение</span>
+              <span>{t('tourDetails.imageLoadFailed')}</span>
             </div>
           )}
         </div>
@@ -220,7 +225,7 @@ function TourGallery({ tour }) {
               type="button"
               className="tour-gallery-arrow tour-gallery-arrow-left"
               onClick={handlePrevious}
-              aria-label="Предыдущее изображение"
+              aria-label={t('tourDetails.prevImage')}
             >
               <ArrowBackIosNewRoundedIcon />
             </button>
@@ -229,7 +234,7 @@ function TourGallery({ tour }) {
               type="button"
               className="tour-gallery-arrow tour-gallery-arrow-right"
               onClick={handleNext}
-              aria-label="Следующее изображение"
+              aria-label={t('tourDetails.nextImage')}
             >
               <ArrowForwardIosRoundedIcon />
             </button>
@@ -251,7 +256,7 @@ function TourGallery({ tour }) {
                 activeIndex === index ? 'active' : ''
               }`}
               onClick={() => setActiveIndex(index)}
-              aria-label={`Открыть изображение ${index + 1}`}
+              aria-label={t('tourDetails.openImage', { number: index + 1 })}
             >
               {!brokenImages[index] ? (
                 <img
@@ -265,7 +270,7 @@ function TourGallery({ tour }) {
 
               {index === 0 && (
                 <span className="tour-gallery-thumbnail-badge">
-                  Главное
+                  {t('tourDetails.mainBadge')}
                 </span>
               )}
             </button>
@@ -277,6 +282,7 @@ function TourGallery({ tour }) {
 }
 
 export default function TourDetails() {
+  const { t } = useTranslation();
   const { id } = useParams();
 
   const {
@@ -292,7 +298,7 @@ export default function TourDetails() {
         <div className="tour-details-top">
           <Link to="/tours" className="back-link">
             <ArrowBackRoundedIcon />
-            Все туры
+            {t('common.allTours')}
           </Link>
         </div>
 
@@ -300,9 +306,9 @@ export default function TourDetails() {
           isLoading={isLoading}
           isError={isError}
           isEmpty={status === 'success' && tour === null}
-          loadingLabel="Загружаем тур…"
-          errorLabel="Не удалось загрузить тур. Попробуйте обновить страницу."
-          emptyLabel="Такой тур не найден."
+          loadingLabel={t('tour.loading')}
+          errorLabel={t('tour.loadError')}
+          emptyLabel={t('tour.notFound')}
         />
 
         {status === 'success' && tour && (
@@ -340,7 +346,7 @@ export default function TourDetails() {
                     </span>
 
                     <div>
-                      <span>Направление</span>
+                      <span>{t('common.destination')}</span>
                       <strong>{tour.location}</strong>
                     </div>
                   </div>
@@ -358,7 +364,7 @@ export default function TourDetails() {
                     </span>
 
                     <div>
-                      <span>Продолжительность</span>
+                      <span>{t('common.duration')}</span>
                       <strong>{tour.duration}</strong>
                     </div>
                   </div>
@@ -366,12 +372,12 @@ export default function TourDetails() {
 
                 <div className="tour-price-card">
                   <div>
-                    <span>Стоимость тура</span>
+                    <span>{t('tourDetails.price')}</span>
                     <strong>${tour.price}</strong>
                   </div>
 
                   <span className="tour-price-note">
-                    за одного путешественника
+                    {t('tourDetails.perTraveler')}
                   </span>
                 </div>
 
@@ -380,7 +386,7 @@ export default function TourDetails() {
                     to={`/booking?tour=${encodeURIComponent(tour.id)}`}
                     className="btn btn-primary tour-main-btn"
                   >
-                    Забронировать тур
+                    {t('common.bookTour')}
                     <ArrowForwardRoundedIcon />
                   </Link>
 
@@ -388,7 +394,7 @@ export default function TourDetails() {
                     to="/tours"
                     className="btn btn-outline tour-secondary-btn"
                   >
-                    Вернуться к турам
+                    {t('tourDetails.backToTours')}
                   </Link>
                 </div>
               </div>
@@ -397,13 +403,12 @@ export default function TourDetails() {
             <section className="tour-review-section">
               <div className="review-heading">
                 <div>
-                  <p className="eyebrow">Ваше мнение</p>
+                  <p className="eyebrow">{t('tourDetails.reviewEyebrow')}</p>
 
-                  <h2>Поделитесь впечатлениями</h2>
+                  <h2>{t('tourDetails.reviewTitle')}</h2>
 
                   <p>
-                    Ваш отзыв поможет другим путешественникам выбрать
-                    подходящий тур.
+                    {t('tourDetails.reviewText')}
                   </p>
                 </div>
 
@@ -413,7 +418,7 @@ export default function TourDetails() {
               </div>
 
               <div className="review-card">
-                <RequireAuth prompt="Войдите в аккаунт, чтобы оставить отзыв об этом туре.">
+                <RequireAuth prompt={t('tourDetails.reviewSignIn')}>
                   <ReviewForm tour={tour} />
                 </RequireAuth>
               </div>

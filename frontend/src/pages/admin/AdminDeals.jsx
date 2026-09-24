@@ -16,6 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import LocalOfferRoundedIcon from '@mui/icons-material/LocalOfferRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -26,6 +27,8 @@ import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumbe
 import { adminApi } from '../../services/adminService';
 import { useAdminList } from '../../hooks/useAdminList';
 import { useAsyncData } from '../../hooks/useAsyncData';
+import { getDateLocale } from '../../i18n';
+import { getApiErrorMessage } from '../../utils/getApiErrorMessage';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminLoading from '../../components/admin/AdminLoading';
 import AdminError from '../../components/admin/AdminError';
@@ -55,6 +58,7 @@ function toDatetimeLocal(iso) {
 }
 
 function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState(() =>
     deal
       ? {
@@ -108,7 +112,7 @@ function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
       onSaved();
     } catch (err) {
       setStatus('idle');
-      setError(err.message || 'Не удалось сохранить предложение.');
+      setError(getApiErrorMessage(err, t, 'admin.deals.saveError'));
       return;
     }
 
@@ -139,11 +143,11 @@ function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
 
             <div>
               <div className="admin-dialog-title">
-                {deal ? 'Редактировать предложение' : 'Новое предложение'}
+                {deal ? t('admin.deals.dialogEdit') : t('admin.deals.dialogNew')}
               </div>
 
               <div className="admin-dialog-subtitle">
-                Управление специальным предложением FaroSayr
+                {t('admin.deals.dialogSubtitle')}
               </div>
             </div>
           </div>
@@ -157,10 +161,10 @@ function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
               </Alert>
             )}
 
-            <TextField label="Название" name="title" value={form.title} onChange={handleChange} required fullWidth />
+            <TextField label={t('admin.common.title')} name="title" value={form.title} onChange={handleChange} required fullWidth />
 
             <TextField
-              label="Описание"
+              label={t('common.description')}
               name="description"
               value={form.description}
               onChange={handleChange}
@@ -170,22 +174,22 @@ function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
               rows={3}
             />
 
-            <TextField label="URL изображения" name="image" value={form.image} onChange={handleChange} required fullWidth />
+            <TextField label={t('admin.common.imageUrl')} name="image" value={form.image} onChange={handleChange} required fullWidth />
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-              <TextField label="Старая цена" name="oldPrice" type="number" value={form.oldPrice} onChange={handleChange} required fullWidth />
-              <TextField label="Новая цена" name="price" type="number" value={form.price} onChange={handleChange} required fullWidth />
-              <TextField label="Скидка %" name="discount" type="number" value={form.discount} onChange={handleChange} required fullWidth />
+              <TextField label={t('admin.deals.oldPrice')} name="oldPrice" type="number" value={form.oldPrice} onChange={handleChange} required fullWidth />
+              <TextField label={t('admin.deals.newPrice')} name="price" type="number" value={form.price} onChange={handleChange} required fullWidth />
+              <TextField label={t('admin.deals.discountPercent')} name="discount" type="number" value={form.discount} onChange={handleChange} required fullWidth />
             </Stack>
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-              <TextField label="Начало" name="startsAt" type="datetime-local" value={form.startsAt} onChange={handleChange} required fullWidth slotProps={{ inputLabel: { shrink: true } }} />
+              <TextField label={t('admin.deals.startsAt')} name="startsAt" type="datetime-local" value={form.startsAt} onChange={handleChange} required fullWidth slotProps={{ inputLabel: { shrink: true } }} />
 
-              <TextField label="Окончание" name="endsAt" type="datetime-local" value={form.endsAt} onChange={handleChange} required fullWidth slotProps={{ inputLabel: { shrink: true } }} />
+              <TextField label={t('admin.deals.endsAt')} name="endsAt" type="datetime-local" value={form.endsAt} onChange={handleChange} required fullWidth slotProps={{ inputLabel: { shrink: true } }} />
             </Stack>
 
-            <TextField select label="Связанный тур" name="tourId" value={form.tourId} onChange={handleChange} fullWidth>
-              <MenuItem value="">Без привязки к туру</MenuItem>
+            <TextField select label={t('admin.deals.linkedTour')} name="tourId" value={form.tourId} onChange={handleChange} fullWidth>
+              <MenuItem value="">{t('admin.deals.noLinkedTour')}</MenuItem>
 
               {tours.map((t) => (
                 <MenuItem key={t.id} value={t.id}>
@@ -220,7 +224,7 @@ function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
                 }
                 label={
                   <Typography fontSize={14} fontWeight={600}>
-                    Предложение активно
+                    {t('admin.deals.isActive')}
                   </Typography>
                 }
               />
@@ -230,7 +234,7 @@ function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
 
         <DialogActions className="admin-dialog-actions">
           <Button onClick={onClose} disabled={status === 'submitting'} sx={{ color: '#607482' }}>
-            Отмена
+            {t('common.cancel')}
           </Button>
 
           <Button
@@ -249,7 +253,7 @@ function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
               },
             }}
           >
-            {status === 'submitting' ? 'Сохранение…' : 'Сохранить'}
+            {status === 'submitting' ? t('common.saving') : t('common.save')}
           </Button>
         </DialogActions>
       </form>
@@ -258,6 +262,7 @@ function DealFormDialog({ open, onClose, onSaved, deal, tours }) {
 }
 
 export default function AdminDeals() {
+  const { t, i18n } = useTranslation();
   const {
     status,
     rows,
@@ -291,7 +296,7 @@ export default function AdminDeals() {
       setDeleteTarget(null);
       reload();
     } catch (err) {
-      setDeleteError(err.message || 'Не удалось удалить предложение.');
+      setDeleteError(getApiErrorMessage(err, t, 'admin.deals.deleteError'));
     } finally {
       setDeleting(false);
     }
@@ -299,7 +304,7 @@ export default function AdminDeals() {
 
   return (
     <div className="admin-page">
-      <AdminPageHeader title="Горящие предложения" />
+      <AdminPageHeader title={t('navigation.deals')} />
 
       <section className="admin-page-hero">
         <div className="admin-page-hero-content">
@@ -314,12 +319,11 @@ export default function AdminDeals() {
               </span>
 
               <h2 className="admin-page-hero-title">
-                Горящие предложения
+                {t('navigation.deals')}
               </h2>
 
               <p className="admin-page-hero-description">
-                Управляйте акциями, скидками и специальными предложениями
-                для клиентов туристического агентства.
+                {t('admin.deals.heroText')}
               </p>
             </div>
           </div>
@@ -343,7 +347,7 @@ export default function AdminDeals() {
                 },
               }}
             >
-              Добавить предложение
+              {t('admin.deals.add')}
             </Button>
           </div>
         </div>
@@ -355,14 +359,14 @@ export default function AdminDeals() {
 
       {isError && <AdminError />}
 
-      {isEmpty && <AdminEmptyState message="Предложений пока нет." />}
+      {isEmpty && <AdminEmptyState message={t('admin.deals.empty')} />}
 
       {status === 'success' && rows.length > 0 && (
         <>
           <section className="admin-page-summary">
             <div className="admin-summary-card">
               <div className="admin-summary-top">
-                <span className="admin-summary-label">Всего предложений</span>
+                <span className="admin-summary-label">{t('admin.deals.total')}</span>
 
                 <div className="admin-summary-icon">
                   <ConfirmationNumberRoundedIcon fontSize="small" />
@@ -376,7 +380,7 @@ export default function AdminDeals() {
 
             <div className="admin-summary-card">
               <div className="admin-summary-top">
-                <span className="admin-summary-label">Активные предложения</span>
+                <span className="admin-summary-label">{t('admin.deals.activeCount')}</span>
 
                 <div className="admin-summary-icon">
                   <LocalOfferRoundedIcon fontSize="small" />
@@ -390,7 +394,7 @@ export default function AdminDeals() {
 
             <div className="admin-summary-card">
               <div className="admin-summary-top">
-                <span className="admin-summary-label">Средняя скидка</span>
+                <span className="admin-summary-label">{t('admin.deals.avgDiscount')}</span>
 
                 <div className="admin-summary-icon">
                   <PercentRoundedIcon fontSize="small" />
@@ -417,17 +421,17 @@ export default function AdminDeals() {
 
                 <div>
                   <div className="admin-table-title-text">
-                    Список предложений
+                    {t('admin.deals.tableTitle')}
                   </div>
 
                   <div className="admin-table-title-subtitle">
-                    Все специальные предложения FaroSayr
+                    {t('admin.deals.tableSubtitle')}
                   </div>
                 </div>
               </div>
 
               <Typography variant="caption" color="text.secondary">
-                {rows.length} записей
+                {t('admin.common.records', { count: rows.length })}
               </Typography>
             </div>
 
@@ -435,7 +439,7 @@ export default function AdminDeals() {
               columns={[
                 {
                   key: 'title',
-                  label: 'Предложение',
+                  label: t('admin.deals.deal'),
                   render: (r) => (
                     <div className="admin-deal-name">
                       <div className="admin-deal-image">
@@ -456,7 +460,7 @@ export default function AdminDeals() {
                 },
                 {
                   key: 'price',
-                  label: 'Цена',
+                  label: t('common.price'),
                   render: (r) => (
                     <div className="admin-price">
                       <span className="admin-price-current">
@@ -471,7 +475,7 @@ export default function AdminDeals() {
                 },
                 {
                   key: 'discount',
-                  label: 'Скидка',
+                  label: t('admin.deals.discount'),
                   render: (r) => (
                     <span className="admin-discount">
                       -{r.discount}%
@@ -480,20 +484,20 @@ export default function AdminDeals() {
                 },
                 {
                   key: 'endsAt',
-                  label: 'Окончание',
+                  label: t('admin.deals.endsAt'),
                   render: (r) => (
                     <Stack direction="row" spacing={0.7} alignItems="center">
                       <AccessTimeRoundedIcon sx={{ fontSize: 15, color: '#8a9aa5' }} />
 
                       <Typography variant="body2" color="#607482">
-                        {new Date(r.endsAt).toLocaleString('ru-RU')}
+                        {new Date(r.endsAt).toLocaleString(getDateLocale(i18n.language))}
                       </Typography>
                     </Stack>
                   ),
                 },
                 {
                   key: 'isActive',
-                  label: 'Статус',
+                  label: t('common.status'),
                   render: (r) => (
                     <span
                       className={`admin-status ${
@@ -502,7 +506,7 @@ export default function AdminDeals() {
                           : 'admin-status-inactive'
                       }`}
                     >
-                      {r.isActive ? 'Активно' : 'Неактивно'}
+                      {r.isActive ? t('admin.deals.active') : t('admin.deals.inactive')}
                     </span>
                   ),
                 },
@@ -518,6 +522,8 @@ export default function AdminDeals() {
                     size="small"
                     className="admin-action-btn admin-action-edit"
                     onClick={() => setDialogItem(r)}
+                    title={t('common.edit')}
+                    aria-label={t('common.edit')}
                   >
                     <EditRoundedIcon fontSize="small" />
                   </IconButton>
@@ -526,6 +532,8 @@ export default function AdminDeals() {
                     size="small"
                     className="admin-action-btn admin-action-delete"
                     onClick={() => setDeleteTarget(r)}
+                    title={t('common.delete')}
+                    aria-label={t('common.delete')}
                   >
                     <DeleteRoundedIcon fontSize="small" />
                   </IconButton>
@@ -551,7 +559,7 @@ export default function AdminDeals() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Удалить предложение"
+        title={t('admin.deals.deleteTitle')}
         resourceName={deleteTarget?.title}
         onConfirm={handleDelete}
         onCancel={() => {

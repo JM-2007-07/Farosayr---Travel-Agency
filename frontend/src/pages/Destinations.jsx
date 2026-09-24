@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { Trans, useTranslation } from 'react-i18next';
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import LuggageOutlinedIcon from '@mui/icons-material/LuggageOutlined';
@@ -10,6 +11,7 @@ import AsyncState from '../components/common/AsyncState';
 import './Destinations.css';
 
 function DestinationCard({ destination }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
 
@@ -33,7 +35,7 @@ function DestinationCard({ destination }) {
         <div className="destination-card-top">
           <span >
             <ExploreOutlinedIcon />
-            Направление
+            {t('common.destination')}
           </span>
 
           <span className="destination-card-arrow">
@@ -42,7 +44,7 @@ function DestinationCard({ destination }) {
         </div>
 
         <div className="destination-card-title">
-          <span>Исследовать</span>
+          <span>{t('common.explore')}</span>
           <h2>{destination.title}</h2>
         </div>
       </Link>
@@ -53,14 +55,14 @@ function DestinationCard({ destination }) {
         <div className="destination-card-footer">
           <span className="destination-card-tours">
             <LuggageOutlinedIcon />
-            Авторские туры
+            {t('common.signatureTours')}
           </span>
 
           <Link
             to={`/destinations/${destination.id}`}
             className="destination-card-link"
           >
-            Подробнее
+            {t('common.learnMore')}
             <ArrowForwardIcon />
           </Link>
         </div>
@@ -70,6 +72,7 @@ function DestinationCard({ destination }) {
 }
 
 export default function Destinations() {
+  const { t } = useTranslation();
   const [heroRef, heroInView] = useReveal();
   const [gridRef, gridInView] = useReveal();
 
@@ -92,22 +95,20 @@ export default function Destinations() {
           >
             <span className="destinations-hero-eyebrow">
               <ExploreOutlinedIcon />
-              Мир начинается с выбора
+              {t('destinationsPage.heroEyebrow')}
             </span>
 
             <h1 style={{color:'white'}}>
-              Направления,
-              <span> которые вдохновляют</span>
+              <Trans i18nKey="destinationsPage.heroTitle" components={{ accent: <span /> }} />
             </h1>
 
             <p>
-              Откройте места, куда хочется возвращаться. Мы собрали
-              направления для путешествий, отдыха и новых впечатлений.
+              {t('destinationsPage.heroText')}
             </p>
 
             <div className="destinations-hero-meta">
               <strong>{items.length || '—'}</strong>
-              <span>направлений доступно</span>
+              <span>{t('destinationsPage.available', { count: items.length })}</span>
             </div>
           </div>
         </div>
@@ -120,13 +121,12 @@ export default function Destinations() {
             className={`destinations-section-head reveal ${gridInView ? 'in-view' : ''}`}
           >
             <div>
-              <p className="eyebrow">Выберите своё направление</p>
-              <h2>От первого взгляда до настоящего путешествия</h2>
+              <p className="eyebrow">{t('destinationsPage.sectionEyebrow')}</p>
+              <h2>{t('destinationsPage.sectionTitle')}</h2>
             </div>
 
             <p>
-              Исследуйте наши направления и откройте туры, которые подходят
-              именно вашему формату отдыха.
+              {t('destinationsPage.sectionText')}
             </p>
           </div>
 
@@ -134,9 +134,9 @@ export default function Destinations() {
             isLoading={isLoading}
             isError={isError}
             isEmpty={status === 'success' && items.length === 0}
-            loadingLabel="Загружаем направления…"
-            errorLabel="Не удалось загрузить направления. Попробуйте обновить страницу."
-            emptyLabel="Направления пока недоступны."
+            loadingLabel={t('destinationsPage.loading')}
+            errorLabel={t('destinationsPage.loadError')}
+            emptyLabel={t('destinationsPage.empty')}
           />
 
           {status === 'success' && items.length > 0 && (
@@ -156,21 +156,19 @@ export default function Destinations() {
         <div className="container">
           <div className="destinations-cta-inner">
             <div>
-              <p className="eyebrow">Не знаете, что выбрать?</p>
+              <p className="eyebrow">{t('destinationsPage.ctaEyebrow')}</p>
 
               <h2>
-                Давайте найдём
-                <span> ваш маршрут.</span>
+                <Trans i18nKey="destinationsPage.ctaTitle" components={{ accent: <span /> }} />
               </h2>
 
               <p>
-                Расскажите нам о своих планах, а мы поможем подобрать
-                направление и подходящий тур.
+                {t('destinationsPage.ctaText')}
               </p>
             </div>
 
             <Link to="/contact" className="btn btn-primary">
-              Связаться с нами
+              {t('common.contactUs')}
               <ArrowForwardIcon />
             </Link>
           </div>

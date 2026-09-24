@@ -334,6 +334,13 @@
   max-width: 650px;
 }
 
+/* Keep the CTA label on one line in every language instead of letting the
+   flex row squeeze it. */
+.destinations-cta-inner > .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .destinations-cta h2 {
   margin: 8px 0 15px;
   color: var(--white);

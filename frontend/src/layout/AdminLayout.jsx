@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   AppBar,
@@ -28,21 +29,23 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { useAuth } from '../context/AuthContext';
+import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 const DRAWER_WIDTH = 270;
 
 const NAV_ITEMS = [
-  { to: '/admin', label: 'Дашборд', end: true, icon: DashboardRoundedIcon },
-  { to: '/admin/tours', label: 'Туры', icon: FlightTakeoffRoundedIcon },
-  { to: '/admin/destinations', label: 'Направления', icon: PublicRoundedIcon },
-  { to: '/admin/deals', label: 'Предложения', icon: LocalOfferRoundedIcon },
-  { to: '/admin/bookings', label: 'Бронирования', icon: LuggageRoundedIcon },
-  { to: '/admin/users', label: 'Пользователи', icon: PeopleAltRoundedIcon },
-  { to: '/admin/reviews', label: 'Отзывы', icon: RateReviewRoundedIcon },
-  { to: '/admin/messages', label: 'Сообщения', icon: MailRoundedIcon },
+  { to: '/admin', labelKey: 'admin.nav.dashboard', end: true, icon: DashboardRoundedIcon },
+  { to: '/admin/tours', labelKey: 'admin.nav.tours', icon: FlightTakeoffRoundedIcon },
+  { to: '/admin/destinations', labelKey: 'admin.nav.destinations', icon: PublicRoundedIcon },
+  { to: '/admin/deals', labelKey: 'admin.nav.deals', icon: LocalOfferRoundedIcon },
+  { to: '/admin/bookings', labelKey: 'admin.nav.bookings', icon: LuggageRoundedIcon },
+  { to: '/admin/users', labelKey: 'admin.nav.users', icon: PeopleAltRoundedIcon },
+  { to: '/admin/reviews', labelKey: 'admin.nav.reviews', icon: RateReviewRoundedIcon },
+  { to: '/admin/messages', labelKey: 'admin.nav.messages', icon: MailRoundedIcon },
 ];
 
 function NavList({ onNavigate }) {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
 
   return (
@@ -104,7 +107,7 @@ function NavList({ onNavigate }) {
             </ListItemIcon>
 
             <ListItemText
-              primary={item.label}
+              primary={t(item.labelKey)}
               primaryTypographyProps={{
                 fontSize: 14,
                 fontWeight: active ? 800 : 600,
@@ -127,6 +130,8 @@ function NavList({ onNavigate }) {
 }
 
 function AdminBrand() {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ px: 2.5, py: 2.5 }}>
       <Box
@@ -175,7 +180,7 @@ function AdminBrand() {
               color: 'rgba(255,255,255,.42)',
             }}
           >
-            Administration
+            {t('admin.layout.subtitle')}
           </Typography>
         </Box>
       </Box>
@@ -184,6 +189,7 @@ function AdminBrand() {
 }
 
 export default function AdminLayout() {
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
@@ -217,13 +223,17 @@ export default function AdminLayout() {
             color: 'rgba(255,255,255,.32)',
           }}
         >
-          Управление
+          {t('admin.layout.management')}
         </Typography>
       </Box>
 
       <NavList onNavigate={() => setMobileOpen(false)} />
 
       <Box sx={{ mt: 'auto', p: 1.5 }}>
+        <Box sx={{ mb: 1.5 }}>
+          <LanguageSwitcher variant="segmented" />
+        </Box>
+
         <Box
           sx={{
             p: 1.5,
@@ -265,7 +275,7 @@ export default function AdminLayout() {
                   whiteSpace: 'nowrap',
                 }}
               >
-                {user?.name || 'Администратор'}
+                {user?.name || t('admin.layout.administrator')}
               </Typography>
 
               <Typography
@@ -275,7 +285,7 @@ export default function AdminLayout() {
                   color: 'rgba(255,255,255,.42)',
                 }}
               >
-                Администратор
+                {t('admin.layout.administrator')}
               </Typography>
             </Box>
           </Box>
@@ -302,7 +312,7 @@ export default function AdminLayout() {
             },
           }}
         >
-          На сайт
+          {t('admin.layout.toSite')}
         </Button>
 
         <Button
@@ -324,7 +334,7 @@ export default function AdminLayout() {
             },
           }}
         >
-          Выйти
+          {t('account.logout')}
         </Button>
       </Box>
     </Box>
@@ -361,6 +371,7 @@ export default function AdminLayout() {
         <Toolbar sx={{ minHeight: 68 }}>
           <IconButton
             edge="start"
+            aria-label={t('header.openMenu')}
             onClick={() => setMobileOpen(true)}
             sx={{
               width: 42,
@@ -399,7 +410,7 @@ export default function AdminLayout() {
                 color: 'rgba(255,255,255,.42)',
               }}
             >
-              Administration
+              {t('admin.layout.subtitle')}
             </Typography>
           </Box>
         </Toolbar>

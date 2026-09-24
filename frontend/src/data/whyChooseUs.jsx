@@ -1,11 +1,12 @@
 // Extracted verbatim from the original #why markup (6 cards). Icons are
 // inline SVG paths in the original too, so they're kept as JSX here rather
 // than split into a separate icon-component system that doesn't exist yet.
+// Card copy lives in the i18n translation files (home.why.items.*).
 export const WHY_CHOOSE_US = [
   {
     id: 'best-prices',
-    title: 'Лучшие цены',
-    text: 'Прямые контракты с отелями и авиакомпаниями — без переплат посредникам.',
+    titleKey: 'home.why.items.bestPrices.title',
+    textKey: 'home.why.items.bestPrices.text',
     icon: (
       <svg viewBox="0 0 48 48" fill="none">
         <path
@@ -19,8 +20,8 @@ export const WHY_CHOOSE_US = [
   },
   {
     id: 'verified-hotels',
-    title: 'Проверенные отели',
-    text: 'Каждый объект в нашей базе лично проверен или подтверждён партнёрами.',
+    titleKey: 'home.why.items.verifiedHotels.title',
+    textKey: 'home.why.items.verifiedHotels.text',
     icon: (
       <svg viewBox="0 0 48 48" fill="none">
         <path
@@ -41,8 +42,8 @@ export const WHY_CHOOSE_US = [
   },
   {
     id: 'support-24-7',
-    title: 'Поддержка 24/7',
-    text: 'Мы на связи в любой точке маршрута — днём и ночью, в любом часовом поясе.',
+    titleKey: 'home.why.items.support.title',
+    textKey: 'home.why.items.support.text',
     icon: (
       <svg viewBox="0 0 48 48" fill="none">
         <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="2.5" />
@@ -52,8 +53,8 @@ export const WHY_CHOOSE_US = [
   },
   {
     id: 'personal-manager',
-    title: 'Персональный менеджер',
-    text: 'Один эксперт ведёт вас от первого звонка до возвращения домой.',
+    titleKey: 'home.why.items.personalManager.title',
+    textKey: 'home.why.items.personalManager.text',
     icon: (
       <svg viewBox="0 0 48 48" fill="none">
         <circle cx="17" cy="16" r="6" stroke="currentColor" strokeWidth="2.5" />
@@ -74,8 +75,8 @@ export const WHY_CHOOSE_US = [
   },
   {
     id: 'easy-booking',
-    title: 'Простое бронирование',
-    text: 'Оформление тура онлайн занимает меньше пяти минут — без бумажной волокиты.',
+    titleKey: 'home.why.items.easyBooking.title',
+    textKey: 'home.why.items.easyBooking.text',
     icon: (
       <svg viewBox="0 0 48 48" fill="none">
         <rect x="8" y="14" width="32" height="24" rx="4" stroke="currentColor" strokeWidth="2.5" />
@@ -85,8 +86,8 @@ export const WHY_CHOOSE_US = [
   },
   {
     id: 'secure-payment',
-    title: 'Безопасная оплата',
-    text: 'Все платежи защищены современным шифрованием и подтверждаются мгновенно.',
+    titleKey: 'home.why.items.securePayment.title',
+    textKey: 'home.why.items.securePayment.text',
     icon: (
       <svg viewBox="0 0 48 48" fill="none">
         <rect x="10" y="16" width="28" height="20" rx="3" stroke="currentColor" strokeWidth="2.5" />

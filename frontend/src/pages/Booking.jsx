@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
+import { Trans, useTranslation } from 'react-i18next';
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded';
@@ -9,7 +10,7 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { getTourById } from '../services/toursService';
 import { createBooking } from '../services/bookingsService';
 import { useAsyncData } from '../hooks/useAsyncData';
-import { ApiError } from '../services/api/client';
+import { getApiErrorMessage } from '../utils/getApiErrorMessage';
 import { useReveal } from '../hooks/useReveal';
 import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
@@ -20,6 +21,7 @@ const SUBMITTING = 'submitting';
 const SUBMITTED = 'submitted';
 
 function BookingForm({ tour }) {
+  const { t } = useTranslation();
   const [quantity, setQuantity] = useState(1);
   const [status, setStatus] = useState(IDLE);
   const [error, setError] = useState('');
@@ -40,11 +42,7 @@ function BookingForm({ tour }) {
       setStatus(SUBMITTED);
     } catch (err) {
       setStatus(IDLE);
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : 'Не удалось создать бронирование. Попробуйте ещё раз.'
-      );
+      setError(getApiErrorMessage(err, t, 'booking.error'));
     }
   }
 
@@ -55,34 +53,37 @@ function BookingForm({ tour }) {
           <CheckCircleRoundedIcon />
         </div>
 
-        <p className="booking-success-label">Бронирование создано</p>
+        <p className="booking-success-label">{t('booking.successLabel')}</p>
 
-        <h2>Ваш тур забронирован</h2>
+        <h2>{t('booking.successTitle')}</h2>
 
         <p className="booking-success-text">
-          Номер бронирования:
-          <strong> № {booking.id}</strong>
+          <Trans
+            i18nKey="booking.successNumber"
+            values={{ id: booking.id }}
+            components={{ strong: <strong /> }}
+          />
         </p>
 
         <div className="booking-result">
           <div>
-            <span>Статус</span>
-            <strong>{booking.status}</strong>
+            <span>{t('common.status')}</span>
+            <strong>{t(`bookingStatus.${booking.status}`, { defaultValue: booking.status })}</strong>
           </div>
 
           <div>
-            <span>Оплата</span>
-            <strong>{booking.paymentStatus}</strong>
+            <span>{t('common.payment')}</span>
+            <strong>{t(`paymentStatus.${booking.paymentStatus}`, { defaultValue: booking.paymentStatus })}</strong>
           </div>
 
           <div>
-            <span>Сумма</span>
+            <span>{t('common.amount')}</span>
             <strong>${booking.totalAmount}</strong>
           </div>
         </div>
 
         <Link to="/bookings" className="booking-submit">
-          Мои бронирования
+          {t('account.bookings')}
           <ArrowForwardRoundedIcon />
         </Link>
       </div>
@@ -99,20 +100,20 @@ function BookingForm({ tour }) {
         </span>
 
         <div>
-          <h2>Количество путешественников</h2>
-          <p>Укажите количество человек для бронирования</p>
+          <h2>{t('booking.formTitle')}</h2>
+          <p>{t('booking.formText')}</p>
         </div>
       </div>
 
       <div className="booking-field">
-        <label htmlFor="quantity">Количество человек</label>
+        <label htmlFor="quantity">{t('booking.quantityLabel')}</label>
 
         <div className="quantity-control">
           <button
             type="button"
             onClick={() => setQuantity((value) => Math.max(1, Number(value) - 1))}
             disabled={Number(quantity) <= 1}
-            aria-label="Уменьшить количество"
+            aria-label={t('booking.decrease')}
           >
             −
           </button>
@@ -131,7 +132,7 @@ function BookingForm({ tour }) {
             type="button"
             onClick={() => setQuantity((value) => Math.min(20, Number(value) + 1))}
             disabled={Number(quantity) >= 20}
-            aria-label="Увеличить количество"
+            aria-label={t('booking.increase')}
           >
             +
           </button>
@@ -140,12 +141,12 @@ function BookingForm({ tour }) {
 
       <div className="booking-total">
         <div>
-          <span>Стоимость за человека</span>
+          <span>{t('booking.pricePerPerson')}</span>
           <strong>${tour.price}</strong>
         </div>
 
         <div className="booking-total-main">
-          <span>Итого</span>
+          <span>{t('common.total')}</span>
           <strong>${total}</strong>
         </div>
       </div>
@@ -162,24 +163,24 @@ function BookingForm({ tour }) {
         disabled={status === SUBMITTING}
       >
         {status === SUBMITTING ? (
-          'Создание бронирования…'
+          t('booking.submitting')
         ) : (
           <>
-            Подтвердить бронирование
+            {t('booking.submit')}
             <ArrowForwardRoundedIcon />
           </>
         )}
       </button>
 
       <p className="booking-note">
-        Бронирование создаётся со статусом «в ожидании».
-        Оплата обрабатывается отдельно и пока не подключена.
+        {t('booking.note')}
       </p>
     </form>
   );
 }
 
 export default function Booking() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const tourId = searchParams.get('tour');
 
@@ -209,13 +210,12 @@ export default function Booking() {
               <ConfirmationNumberRoundedIcon />
             </div>
 
-            <p className="eyebrow">FaroSayr · Бронирование</p>
+            <p className="eyebrow">{t('booking.heroEyebrow')}</p>
 
-            <h1 style={{color: 'white'}}>Забронировать тур</h1>
+            <h1 style={{color: 'white'}}>{t('booking.title')}</h1>
 
             <p>
-              Выберите количество путешественников и подтвердите
-              бронирование выбранного путешествия.
+              {t('booking.heroText')}
             </p>
           </div>
         </div>
@@ -229,16 +229,15 @@ export default function Booking() {
                 <ConfirmationNumberRoundedIcon />
               </div>
 
-              <h2>Сначала выберите тур</h2>
+              <h2>{t('booking.emptyTitle')}</h2>
 
               <p>
-                Перейдите в каталог и выберите путешествие,
-                которое хотите забронировать.
+                {t('booking.emptyText')}
               </p>
 
               <Link to="/tours" className="booking-back-button">
                 <ArrowBackRoundedIcon />
-                Смотреть туры
+                {t('common.viewTours')}
               </Link>
             </div>
           )}
@@ -249,9 +248,9 @@ export default function Booking() {
                 isLoading={isLoading}
                 isError={isError}
                 isEmpty={status === 'success' && tour === null}
-                loadingLabel="Загружаем тур…"
-                errorLabel="Не удалось загрузить тур. Попробуйте обновить страницу."
-                emptyLabel="Такой тур не найден."
+                loadingLabel={t('tour.loading')}
+                errorLabel={t('tour.loadError')}
+                emptyLabel={t('tour.notFound')}
               />
 
               {status === 'success' && tour && (
@@ -266,13 +265,13 @@ export default function Booking() {
 
                     <div className="booking-tour-content">
                       <p className="booking-tour-label">
-                        Выбранное путешествие
+                        {t('booking.selectedTrip')}
                       </p>
 
                       <h2>{tour.title}</h2>
 
                       <div className="booking-tour-price">
-                        <span>от</span>
+                        <span>{t('common.from')}</span>
                         <strong>${tour.price}</strong>
                       </div>
 
@@ -280,13 +279,13 @@ export default function Booking() {
                         to={`/tours/${tour.id}`}
                         className="booking-tour-link"
                       >
-                        Посмотреть тур
+                        {t('booking.viewTour')}
                         <ArrowForwardRoundedIcon />
                       </Link>
                     </div>
                   </div>
 
-                  <RequireAuth prompt="Войдите в аккаунт, чтобы забронировать тур.">
+                  <RequireAuth prompt={t('booking.signInPrompt')}>
                     <BookingForm tour={tour} />
                   </RequireAuth>
                 </div>

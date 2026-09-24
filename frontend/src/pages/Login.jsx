@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { Trans, useTranslation } from 'react-i18next';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
@@ -8,13 +9,14 @@ import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import { useAuth } from '../context/AuthContext';
-import { ApiError } from '../services/api/client';
+import { getApiErrorMessage } from '../utils/getApiErrorMessage';
 import './Login.css';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
 
 export default function Login() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
@@ -39,9 +41,9 @@ export default function Login() {
     } catch (err) {
       setStatus(IDLE);
       setError(
-        err instanceof ApiError
-          ? err.message
-          : 'Не удалось войти. Попробуйте ещё раз.'
+        getApiErrorMessage(err, t, 'auth.login.error', {
+          401: 'auth.errors.invalidCredentials',
+        })
       );
     }
   }
@@ -70,30 +72,31 @@ export default function Login() {
               </span>
 
               <h2>
-                <span>Мир ждёт</span>
-                <span> именно вас.</span>
+                <Trans
+                  i18nKey="auth.login.visualTitle"
+                  components={{ line1: <span />, line2: <span /> }}
+                />
               </h2>
 
               <p>
-                Войдите в аккаунт, чтобы управлять своими бронированиями,
-                избранными турами и путешествиями.
+                {t('auth.login.visualText')}
               </p>
             </div>
 
             <div className="auth-benefits">
               <div className="auth-benefit">
                 <CheckCircleOutlineRoundedIcon />
-                <span>Ваши бронирования всегда под рукой</span>
+                <span>{t('auth.login.benefitBookings')}</span>
               </div>
 
               <div className="auth-benefit">
                 <CheckCircleOutlineRoundedIcon />
-                <span>Сохраняйте понравившиеся туры</span>
+                <span>{t('auth.login.benefitSaveTours')}</span>
               </div>
 
               <div className="auth-benefit">
                 <CheckCircleOutlineRoundedIcon />
-                <span>Получайте лучшие предложения</span>
+                <span>{t('auth.benefits.bestDeals')}</span>
               </div>
             </div>
           </div>
@@ -104,12 +107,12 @@ export default function Login() {
                 <FlightTakeoffRoundedIcon />
               </div>
 
-              <p className="eyebrow">Добро пожаловать</p>
+              <p className="eyebrow">{t('auth.login.eyebrow')}</p>
 
-              <h1>С возвращением</h1>
+              <h1>{t('auth.login.title')}</h1>
 
               <p className="auth-description">
-                Войдите в свой аккаунт FaroSayr
+                {t('auth.login.description')}
               </p>
             </div>
 
@@ -121,7 +124,7 @@ export default function Login() {
               )}
 
               <div className="auth-field">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{t('common.email')}</label>
 
                 <div className="auth-input-wrap">
                   <EmailOutlinedIcon />
@@ -140,7 +143,7 @@ export default function Login() {
               </div>
 
               <div className="auth-field">
-                <label htmlFor="password">Пароль</label>
+                <label htmlFor="password">{t('auth.password')}</label>
 
                 <div className="auth-input-wrap">
                   <LockOutlinedIcon />
@@ -149,7 +152,7 @@ export default function Login() {
                     type={showPassword ? 'text' : 'password'}
                     id="password"
                     name="password"
-                    placeholder="Введите пароль"
+                    placeholder={t('auth.login.passwordPlaceholder')}
                     value={form.password}
                     onChange={handleChange}
                     required
@@ -162,8 +165,8 @@ export default function Login() {
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={
                       showPassword
-                        ? 'Скрыть пароль'
-                        : 'Показать пароль'
+                        ? t('auth.login.hidePassword')
+                        : t('auth.login.showPassword')
                     }
                   >
                     {showPassword ? (
@@ -181,7 +184,7 @@ export default function Login() {
                 disabled={status === SUBMITTING}
               >
                 <span>
-                  {status === SUBMITTING ? 'Входим…' : 'Войти в аккаунт'}
+                  {status === SUBMITTING ? t('auth.login.submitting') : t('auth.login.submit')}
                 </span>
 
                 {status !== SUBMITTING && (
@@ -191,14 +194,14 @@ export default function Login() {
             </form>
 
             <div className="auth-divider">
-              <span>или</span>
+              <span>{t('common.or')}</span>
             </div>
 
             <div className="auth-register">
-              <span>Ещё нет аккаунта?</span>
+              <span>{t('auth.login.noAccount')}</span>
 
               <Link to="/register">
-                Создать аккаунт
+                {t('account.register')}
                 <ArrowForwardRoundedIcon />
               </Link>
             </div>

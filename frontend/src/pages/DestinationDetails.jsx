@@ -1,5 +1,6 @@
 
 import { Link, useParams } from 'react-router';
+import { Trans, useTranslation } from 'react-i18next';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
@@ -11,6 +12,7 @@ import AsyncState from '../components/common/AsyncState';
 import './DestinationDetails.css';
 
 function RelatedTourCard({ tour }) {
+  const { t } = useTranslation();
   const [broken, onError] = useImgFallback();
 
   return (
@@ -32,7 +34,7 @@ function RelatedTourCard({ tour }) {
       <div className="destination-tour-content">
         <div className="destination-tour-location">
           <LocationOnIcon />
-          <span>{tour.location || 'Путешествие'}</span>
+          <span>{tour.location || t('destinationDetails.tripFallback')}</span>
         </div>
 
         <Link to={`/tours/${tour.id}`} className="destination-tour-title">
@@ -47,14 +49,14 @@ function RelatedTourCard({ tour }) {
 
         <div className="destination-tour-footer">
           <div>
-            <span className="destination-tour-price-label">от</span>
+            <span className="destination-tour-price-label">{t('common.from')}</span>
             <strong>${tour.price}</strong>
           </div>
 
           <Link
             to={`/tours/${tour.id}`}
             className="destination-tour-link"
-            aria-label={`Подробнее о туре ${tour.title}`}
+            aria-label={t('destinationDetails.tourLink', { title: tour.title })}
           >
             <ArrowForwardIcon />
           </Link>
@@ -65,6 +67,7 @@ function RelatedTourCard({ tour }) {
 }
 
 export default function DestinationDetails() {
+  const { t } = useTranslation();
   const { id } = useParams();
 
   const {
@@ -86,9 +89,9 @@ export default function DestinationDetails() {
           isLoading={isLoading}
           isError={isError}
           isEmpty={status === 'success' && destination === null}
-          loadingLabel="Загружаем направление…"
-          errorLabel="Не удалось загрузить направление. Попробуйте обновить страницу."
-          emptyLabel="Такое направление не найдено."
+          loadingLabel={t('destinationDetails.loading')}
+          errorLabel={t('destinationDetails.loadError')}
+          emptyLabel={t('destinationDetails.notFound')}
         />
 
         {status === 'success' && destination && (
@@ -108,21 +111,20 @@ export default function DestinationDetails() {
 
               <div className="destination-hero-content">
                 <div className="destination-breadcrumb">
-                  <Link to="/destinations">Направления</Link>
+                  <Link to="/destinations">{t('navigation.destinations')}</Link>
                   <span>/</span>
                   <span>{destination.title}</span>
                 </div>
 
                 <div className="destination-hero-label">
                   <ExploreOutlinedIcon />
-                  <span>Откройте новое направление</span>
+                  <span>{t('destinationDetails.heroLabel')}</span>
                 </div>
 
                 <h1>{destination.title}</h1>
 
                 <p>
-                  Путешествия, которые хочется запомнить.
-                  Откройте для себя это направление вместе с Farosayr.
+                  {t('destinationDetails.heroText')}
                 </p>
               </div>
 
@@ -134,10 +136,9 @@ export default function DestinationDetails() {
 
             <section className="destination-intro">
               <div className="destination-intro-heading">
-                <p className="eyebrow">Направление</p>
+                <p className="eyebrow">{t('common.destination')}</p>
                 <h2>
-                  Ваше следующее
-                  <span> путешествие</span>
+                  <Trans i18nKey="destinationDetails.introTitle" components={{ accent: <span /> }} />
                 </h2>
               </div>
 
@@ -148,7 +149,7 @@ export default function DestinationDetails() {
                   to="/booking"
                   className="btn btn-primary destination-booking-btn"
                 >
-                  Забронировать путешествие
+                  {t('common.bookTrip')}
                   <ArrowForwardIcon />
                 </Link>
               </div>
@@ -160,7 +161,7 @@ export default function DestinationDetails() {
                   <LocationOnIcon />
                 </div>
                 <div>
-                  <span>Направление</span>
+                  <span>{t('common.destination')}</span>
                   <strong>{destination.title}</strong>
                 </div>
               </div>
@@ -170,8 +171,8 @@ export default function DestinationDetails() {
                   <FlightTakeoffOutlinedIcon />
                 </div>
                 <div>
-                  <span>Формат</span>
-                  <strong>Авторские путешествия</strong>
+                  <span>{t('destinationDetails.formatLabel')}</span>
+                  <strong>{t('destinationDetails.formatValue')}</strong>
                 </div>
               </div>
 
@@ -180,8 +181,8 @@ export default function DestinationDetails() {
                   <ExploreOutlinedIcon />
                 </div>
                 <div>
-                  <span>Туры</span>
-                  <strong>{destination.tours?.length || 0} предложений</strong>
+                  <span>{t('common.tours')}</span>
+                  <strong>{t('common.offersCount', { count: destination.tours?.length || 0 })}</strong>
                 </div>
               </div>
             </section>
@@ -190,15 +191,15 @@ export default function DestinationDetails() {
               <section className="destination-tours-section">
                 <div className="destination-section-heading">
                   <div>
-                    <p className="eyebrow">Выберите свой маршрут</p>
-                    <h2>Туры в это направление</h2>
+                    <p className="eyebrow">{t('destinationDetails.toursEyebrow')}</p>
+                    <h2>{t('destinationDetails.toursTitle')}</h2>
                   </div>
 
                   <Link
                     to="/tours"
                     className="destination-all-tours"
                   >
-                    Все туры
+                    {t('common.allTours')}
                     <ArrowForwardIcon />
                   </Link>
                 </div>
@@ -219,15 +220,12 @@ export default function DestinationDetails() {
               <div className="destination-cta-decoration destination-cta-decoration-two" />
 
               <div className="destination-cta-content">
-                <p className="eyebrow">Готовы к путешествию?</p>
+                <p className="eyebrow">{t('destinationDetails.ctaEyebrow')}</p>
                 <h2>
-                  Следующее большое
-                  <span> приключение</span>
-                  начинается здесь.
+                  <Trans i18nKey="destinationDetails.ctaTitle" components={{ accent: <span /> }} />
                 </h2>
                 <p>
-                  Выберите подходящий тур или свяжитесь с нами,
-                  и мы поможем подобрать путешествие именно для вас.
+                  {t('destinationDetails.ctaText')}
                 </p>
 
                 <div className="destination-cta-actions">
@@ -235,7 +233,7 @@ export default function DestinationDetails() {
                     to="/booking"
                     className="btn btn-primary"
                   >
-                    Забронировать тур
+                    {t('common.bookTour')}
                     <ArrowForwardIcon />
                   </Link>
 
@@ -243,7 +241,7 @@ export default function DestinationDetails() {
                     to="/contact"
                     className="destination-cta-contact"
                   >
-                    Связаться с нами
+                    {t('common.contactUs')}
                   </Link>
                 </div>
               </div>

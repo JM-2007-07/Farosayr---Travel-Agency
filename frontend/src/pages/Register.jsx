@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { Trans, useTranslation } from 'react-i18next';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
@@ -7,13 +8,14 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { useAuth } from '../context/AuthContext';
-import { ApiError } from '../services/api/client';
+import { getApiErrorMessage } from '../utils/getApiErrorMessage';
 import './Register.css';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
 
 export default function Register() {
+  const { t } = useTranslation();
   const { register } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -43,9 +45,9 @@ export default function Register() {
     } catch (err) {
       setStatus(IDLE);
       setError(
-        err instanceof ApiError
-          ? err.message
-          : 'Не удалось зарегистрироваться. Попробуйте ещё раз.'
+        getApiErrorMessage(err, t, 'auth.register.error', {
+          409: 'auth.errors.emailTaken',
+        })
       );
     }
   }
@@ -59,17 +61,14 @@ export default function Register() {
               <PersonAddRoundedIcon />
             </div>
 
-            <p className="eyebrow">Регистрация</p>
+            <p className="eyebrow">{t('auth.register.eyebrow')}</p>
 
             <h1>
-              Начните своё
-              <span> путешествие</span>
+              <Trans i18nKey="auth.register.title" components={{ accent: <span /> }} />
             </h1>
 
             <p className="register-intro-description">
-              Создайте аккаунт Farosayr, чтобы сохранять понравившиеся
-              туры, бронировать путешествия и оставаться в курсе лучших
-              предложений.
+              {t('auth.register.text')}
             </p>
 
             <div className="register-route">
@@ -86,25 +85,25 @@ export default function Register() {
               </div>
 
               <div className="register-route-copy">
-                <span>Ваш путь</span>
-                <strong>начинается здесь</strong>
+                <span>{t('common.yourJourney')}</span>
+                <strong>{t('common.startsHere')}</strong>
               </div>
             </div>
 
             <div className="register-benefits">
               <div>
                 <span className="register-benefit-number">01</span>
-                <p>Сохраняйте любимые туры</p>
+                <p>{t('auth.register.benefitFavorites')}</p>
               </div>
 
               <div>
                 <span className="register-benefit-number">02</span>
-                <p>Бронируйте путешествия онлайн</p>
+                <p>{t('auth.register.benefitBookOnline')}</p>
               </div>
 
               <div>
                 <span className="register-benefit-number">03</span>
-                <p>Получайте лучшие предложения</p>
+                <p>{t('auth.benefits.bestDeals')}</p>
               </div>
             </div>
           </section>
@@ -117,9 +116,9 @@ export default function Register() {
 
               <div>
                 <span>FAROSAYR · ACCOUNT</span>
-                <h2>Создать аккаунт</h2>
+                <h2>{t('account.register')}</h2>
                 <p>
-                  Заполните данные, чтобы начать путешествовать.
+                  {t('auth.register.cardText')}
                 </p>
               </div>
             </div>
@@ -132,7 +131,7 @@ export default function Register() {
               )}
 
               <div className="register-field">
-                <label htmlFor="name">Имя</label>
+                <label htmlFor="name">{t('common.name')}</label>
 
                 <div className="register-input-wrap">
                   <PersonAddRoundedIcon />
@@ -141,7 +140,7 @@ export default function Register() {
                     type="text"
                     id="name"
                     name="name"
-                    placeholder="Ваше имя"
+                    placeholder={t('common.yourName')}
                     value={form.name}
                     onChange={handleChange}
                     required
@@ -151,7 +150,7 @@ export default function Register() {
               </div>
 
               <div className="register-field">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{t('common.email')}</label>
 
                 <div className="register-input-wrap">
                   <EmailRoundedIcon />
@@ -170,7 +169,7 @@ export default function Register() {
               </div>
 
               <div className="register-field">
-                <label htmlFor="password">Пароль</label>
+                <label htmlFor="password">{t('auth.password')}</label>
 
                 <div className="register-input-wrap">
                   <LockRoundedIcon />
@@ -179,7 +178,7 @@ export default function Register() {
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="Минимум 8 символов"
+                    placeholder={t('auth.register.passwordPlaceholder')}
                     minLength={8}
                     value={form.password}
                     onChange={handleChange}
@@ -189,7 +188,7 @@ export default function Register() {
                 </div>
 
                 <span className="register-field-hint">
-                  Пароль должен содержать минимум 8 символов.
+                  {t('auth.register.passwordHint')}
                 </span>
               </div>
 
@@ -200,8 +199,8 @@ export default function Register() {
               >
                 <span>
                   {status === SUBMITTING
-                    ? 'Создание аккаунта…'
-                    : 'Создать аккаунт'}
+                    ? t('auth.register.submitting')
+                    : t('account.register')}
                 </span>
 
                 {status !== SUBMITTING && <ArrowForwardRoundedIcon />}
@@ -210,21 +209,21 @@ export default function Register() {
 
             <div className="register-divider">
               <span />
-              <span>или</span>
+              <span>{t('common.or')}</span>
               <span />
             </div>
 
             <p className="register-login">
-              Уже есть аккаунт?
+              {t('auth.register.hasAccount')}
               <Link to="/login">
-                Войти
+                {t('account.login')}
                 <ArrowForwardRoundedIcon />
               </Link>
             </p>
 
             <Link to="/" className="register-back">
               <ArrowBackRoundedIcon />
-              Вернуться на главную
+              {t('common.returnHome')}
             </Link>
           </section>
         </div>

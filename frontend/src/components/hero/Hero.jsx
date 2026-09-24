@@ -1,5 +1,6 @@
 
 import { useEffect, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useReveal } from '../../hooks/useReveal';
 import { useImgFallback } from '../../hooks/useImgFallback';
 import { scrollToId } from '../../utils/scrollToId';
@@ -13,6 +14,7 @@ const HERO_VIDEO =
 
 
 export default function Hero() {
+  const { t } = useTranslation();
   const imgRef = useRef(null);
   const [broken, onError] = useImgFallback();
   const [videoError, setVideoError] = useState(false);
@@ -161,17 +163,15 @@ export default function Hero() {
       </svg>
       <div className="container hero-content" ref={contentRef}>
         <p className={`hero-eyebrow reveal ${isInView ? 'in-view' : ''}`}>
-          Ваш маяк в мире путешествий
+          {t('home.hero.eyebrow')}
         </p>
 
         <h1 className={`hero-title reveal ${isInView ? 'in-view' : ''}`}>
-          ИССЛЕДУЙТЕ МИР <span>ВМЕСТЕ С FAROSAYR</span>
+          <Trans i18nKey="home.hero.title" components={{ accent: <span /> }} />
         </h1>
 
         <p className={`hero-subtitle reveal ${isInView ? 'in-view' : ''}`}>
-          Мы прокладываем маршрут к самым ярким уголкам планеты — от бирюзовых
-          берегов Мальдив до огней Дубая. Премиальный сервис, честные цены и
-          забота на каждом шагу вашего путешествия.
+          {t('home.hero.subtitle')}
         </p>
 
         <div className={`hero-buttons reveal ${isInView ? 'in-view' : ''}`}>
@@ -180,7 +180,7 @@ export default function Hero() {
             className="btn btn-primary"
             onClick={(e) => handleCta(e, 'tours')}
           >
-            Смотреть туры
+            {t('common.viewTours')}
           </a>
 
           <a
@@ -188,13 +188,13 @@ export default function Hero() {
             className="btn btn-outline"
             onClick={(e) => handleCta(e, 'contact')}
           >
-            Связаться с нами
+            {t('common.contactUs')}
           </a>
         </div>
 
         <div className="hero-scroll" aria-hidden="true">
           <span className="hero-scroll-line" />
-          <span className="hero-scroll-text">Листайте вниз</span>
+          <span className="hero-scroll-text">{t('home.hero.scrollDown')}</span>
         </div>
       </div>
     </section>

@@ -1,9 +1,12 @@
 import { Alert } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-export default function AdminError({ message = 'Не удалось загрузить данные. Попробуйте обновить страницу.' }) {
+export default function AdminError({ message }) {
+  const { t } = useTranslation();
+
   return (
     <Alert severity="error" sx={{ my: 2 }}>
-      {message}
+      {message ?? t('state.error')}
     </Alert>
   );
 }

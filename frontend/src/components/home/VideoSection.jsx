@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useReveal } from '../../hooks/useReveal';
 import { useImgFallback } from '../../hooks/useImgFallback';
 import './VideoSection.css';
@@ -10,6 +11,7 @@ const VIDEO_IMG =
 // button just does a small press animation on click. Kept that way per
 // Phase 2 scope.
 export default function VideoSection() {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
   const [pressed, setPressed] = useState(false);
@@ -26,11 +28,11 @@ export default function VideoSection() {
           className={`video-card reveal img-wrap ${isInView ? 'in-view' : ''} ${broken ? 'img-fallback' : ''}`}
           ref={ref}
         >
-          <img src={VIDEO_IMG} alt="Видео о путешествиях FaroSair" onError={onError} />
+          <img src={VIDEO_IMG} alt={t('home.video.imageAlt')} onError={onError} />
           <div className="video-overlay" />
           <button
             className="play-btn"
-            aria-label="Воспроизвести видео"
+            aria-label={t('home.video.play')}
             onClick={handlePlayClick}
             style={pressed ? { transform: 'translate(-50%,-50%) scale(0.85)' } : undefined}
           >
@@ -39,8 +41,8 @@ export default function VideoSection() {
             </svg>
           </button>
           <div className="video-caption">
-            <h3>Посмотрите, как мы путешествуем</h3>
-            <p>Короткий фильм о клиентах FaroSair и местах, которые они открыли для себя</p>
+            <h3>{t('home.video.title')}</h3>
+            <p>{t('home.video.text')}</p>
           </div>
         </div>
       </div>

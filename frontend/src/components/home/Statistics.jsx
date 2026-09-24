@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { getStats } from '../../services/statsService';
 import { useReveal } from '../../hooks/useReveal';
 import { useAnimatedCounter } from '../../hooks/useAnimatedCounter';
@@ -6,6 +7,7 @@ import AsyncState from '../common/AsyncState';
 import './Statistics.css';
 
 function StatItem({ stat, start }) {
+  const { t } = useTranslation();
   // threshold 0.6 matches the original counterObserver's IntersectionObserver
   // options exactly (reveal's own default is 0.15, tuned for section entry).
   const [ref, isInView] = useReveal({ threshold: 0.6, rootMargin: '0px' });
@@ -17,7 +19,9 @@ function StatItem({ stat, start }) {
         {value}
         {stat.suffix}
       </span>
-      <span className="stat-label">{stat.label}</span>
+      {/* Stats are static config served by the backend with stable ids;
+          labels are translated by id, falling back to the API value. */}
+      <span className="stat-label">{t(`home.stats.${stat.id}`, { defaultValue: stat.label })}</span>
     </div>
   );
 }
