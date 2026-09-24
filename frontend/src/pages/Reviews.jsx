@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, ArrowRight, FormatQuote, Star } from '@mui/icons-material';
 import { getReviews } from '../services/reviewsService';
 import { useAsyncData } from '../hooks/useAsyncData';
@@ -8,6 +9,7 @@ import './Reviews.css';
 const AUTO_SLIDE_MS = 6000;
 
 export default function Reviews() {
+  const { t } = useTranslation();
   const { status, data: reviews, isLoading, isError } = useAsyncData(getReviews, []);
   const [current, setCurrent] = useState(0);
   const intervalRef = useRef(null);
@@ -55,11 +57,10 @@ export default function Reviews() {
       <section className="reviews-hero" style={{paddingTop: '50px'}}>
         <div className="reviews-container">
           <div className="reviews-hero-content">
-            <span className="reviews-eyebrow">Отзывы путешественников</span>
-            <h1 style={{color:'white'}}>Ваши впечатления — наша главная история</h1>
+            <span className="reviews-eyebrow">{t('reviewsPage.eyebrow')}</span>
+            <h1 style={{color:'white'}}>{t('reviewsPage.title')}</h1>
             <p>
-              Мы ценим каждое путешествие и каждую историю, которой наши клиенты
-              делятся после возвращения домой.
+              {t('reviewsPage.text')}
             </p>
           </div>
 
@@ -74,7 +75,7 @@ export default function Reviews() {
           <div className="reviews-intro">
             <div>
               <span className="reviews-section-label">FaroSayr</span>
-              <h2>Что говорят наши клиенты</h2>
+              <h2>{t('reviewsPage.sectionTitle')}</h2>
             </div>
 
             {status === 'success' && count > 0 && (
@@ -87,7 +88,7 @@ export default function Reviews() {
                         <Star key={star} />
                       ))}
                     </div>
-                    <span>{count} отзывов</span>
+                    <span>{t('reviewsPage.count', { count })}</span>
                   </div>
                 </div>
               </div>
@@ -117,7 +118,7 @@ export default function Reviews() {
                   ))}
                 </div>
 
-                <blockquote>«{activeReview.text}»</blockquote>
+                <blockquote>{t('common.quoted', { text: activeReview.text })}</blockquote>
 
                 <div className="reviews-author">
                   <div className="reviews-avatar">{activeReview.initials}</div>
@@ -136,7 +137,7 @@ export default function Reviews() {
                   <button
                     type="button"
                     onClick={previousReview}
-                    aria-label="Предыдущий отзыв"
+                    aria-label={t('reviewsPage.prev')}
                   >
                     <ArrowLeft />
                   </button>
@@ -149,7 +150,7 @@ export default function Reviews() {
                   <button
                     type="button"
                     onClick={nextReview}
-                    aria-label="Следующий отзыв"
+                    aria-label={t('reviewsPage.next')}
                   >
                     <ArrowRight />
                   </button>
@@ -163,7 +164,7 @@ export default function Reviews() {
                       type="button"
                       key={review.id}
                       className={index === current ? 'active' : ''}
-                      aria-label={`Открыть отзыв ${index + 1}`}
+                      aria-label={t('reviewsPage.open', { number: index + 1 })}
                       onClick={() => goTo(index)}
                     />
                   ))}
@@ -178,16 +179,15 @@ export default function Reviews() {
         <div className="reviews-container">
           <div className="reviews-bottom-card">
             <div>
-              <span className="reviews-section-label">Ваше путешествие</span>
-              <h2>Следующая история может быть вашей</h2>
+              <span className="reviews-section-label">{t('contactPage.floatingJourney')}</span>
+              <h2>{t('reviewsPage.bottomTitle')}</h2>
               <p>
-                Выберите направление, а мы позаботимся о том, чтобы путешествие
-                осталось только приятным воспоминанием.
+                {t('reviewsPage.bottomText')}
               </p>
             </div>
 
             <a href="/tours" className="reviews-cta">
-              Смотреть туры
+              {t('common.viewTours')}
               <ArrowRight />
             </a>
           </div>

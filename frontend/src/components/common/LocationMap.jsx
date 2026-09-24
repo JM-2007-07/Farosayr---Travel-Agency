@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import i18n from '../../i18n';
 import './LocationMap.css';
 
 const API_KEY = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
@@ -32,7 +34,9 @@ function loadYandexMaps() {
 
     const script = document.createElement('script');
 
-    script.src = `https://api-maps.yandex.ru/v3/?apikey=${API_KEY}&lang=ru_RU`;
+    // Yandex Maps has no Tajik locale, so tj uses the Russian map labels.
+    const mapLang = i18n.language === 'en' ? 'en_US' : 'ru_RU';
+    script.src = `https://api-maps.yandex.ru/v3/?apikey=${API_KEY}&lang=${mapLang}`;
     script.async = true;
     script.dataset.yandexMaps = 'true';
 
@@ -55,15 +59,13 @@ function loadYandexMaps() {
   return yandexMapsPromise;
 }
 
-export default function LocationMap({
-  lat,
-  lng,
-  popupText = 'Farosayr — офис',
-}) {
+export default function LocationMap({ lat, lng, popupText }) {
+  const { t } = useTranslation();
+  const markerText = popupText ?? t('map.officePopup');
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -137,7 +139,7 @@ export default function LocationMap({
           </div>
           <div class="yandex-marker-label">
             <strong>Farosayr</strong>
-            <span>${popupText}</span>
+            <span>${markerText}</span>
           </div>
         `;
 
@@ -156,12 +158,10 @@ export default function LocationMap({
       } catch (err) {
         console.error(err);
 
+        // Technical details stay in the console above; users get a
+        // translated message.
         if (!cancelled) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : 'Не удалось загрузить карту.',
-          );
+          setError(true);
         }
       }
     }
@@ -178,13 +178,13 @@ export default function LocationMap({
 
       markerRef.current = null;
     };
-  }, [lat, lng, popupText]);
+  }, [lat, lng, markerText]);
 
   if (error) {
     return (
       <div className="location-map-error">
         <LocationOnIcon />
-        <span>{error}</span>
+        <span>{t('map.loadError')}</span>
       </div>
     );
   }
@@ -193,7 +193,7 @@ export default function LocationMap({
     <div
       ref={mapRef}
       className="location-map"
-      aria-label="Карта офиса Farosayr"
+      aria-label={t('map.ariaLabel')}
     />
   );
 }

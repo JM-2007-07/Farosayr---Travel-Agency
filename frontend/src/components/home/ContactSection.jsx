@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -7,36 +8,39 @@ import NavigationRoundedIcon from '@mui/icons-material/NavigationRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { useReveal } from '../../hooks/useReveal';
 import { submitContactMessage } from '../../services/contactService';
-import { ApiError } from '../../services/api/client';
+import { getApiErrorMessage } from '../../utils/getApiErrorMessage';
 import LocationMap from '../common/LocationMap';
 import './ContactSection.css';
-
-const OFFICE_ADDRESS_RU =
-  'Республика Таджикистан, город Душанбе, проспект Саади Шерози, 16';
 
 const OFFICE_LAT = 38.5594;
 const OFFICE_LNG = 68.7651;
 
+// labelKey/valueKey are i18n keys; `value` is used as-is (not translatable).
 const CONTACT_INFO = [
   {
+    id: 'address',
     icon: LocationOnIcon,
-    label: 'Адрес',
-    value: OFFICE_ADDRESS_RU,
+    labelKey: 'common.address',
+    valueKey: 'home.contact.address',
   },
   {
+    id: 'phone',
     icon: PhoneIcon,
-    label: 'Телефон',
+    labelKey: 'common.phone',
     value: '+992 11 211 33 77',
   },
   {
+    id: 'email',
     icon: EmailIcon,
-    label: 'Email',
+    labelKey: 'common.email',
     value: 'farosayrtour@mail.ru',
   },
   {
+    id: 'hours',
     icon: AccessTimeIcon,
-    label: 'Часы работы',
-    value: 'Пн–Сб: 9:00–19:00',
+    labelKey: 'common.workingHours',
+    valueKey: 'contact.workingHoursValue',
+    valueParams: { from: 9, to: 19 },
   },
 ];
 
@@ -52,6 +56,7 @@ const EMPTY_FORM = {
 };
 
 export default function ContactSection() {
+  const { t } = useTranslation();
   const [infoRef, infoInView] = useReveal();
   const [formRef, formInView] = useReveal();
   const [form, setForm] = useState(EMPTY_FORM);
@@ -93,11 +98,7 @@ export default function ContactSection() {
       }, 5000);
     } catch (err) {
       setStatus(IDLE);
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : 'Не удалось отправить заявку. Попробуйте ещё раз.',
-      );
+      setError(getApiErrorMessage(err, t, 'contact.submitError'));
     }
   }
 
@@ -110,29 +111,28 @@ export default function ContactSection() {
           className={`contact-info reveal ${infoInView ? 'in-view' : ''}`}
           ref={infoRef}
         >
-          <p className="eyebrow">Контакты</p>
+          <p className="eyebrow">{t('navigation.contact')}</p>
 
-          <h2>Начнём планировать ваше путешествие</h2>
+          <h2>{t('home.contact.title')}</h2>
 
           <p className="section-desc">
-            Оставьте заявку, и наш менеджер свяжется с вами в течение 30 минут
-            в рабочее время.
+            {t('home.contact.text')}
           </p>
 
           <ul className="contact-list">
             {CONTACT_INFO.map((item) => (
-              <li key={item.label}>
+              <li key={item.id}>
                 <span className="contact-icon">
                   <item.icon
                     sx={{
-                      fontSize: item.label === 'Адрес' ? 22 : 20,
+                      fontSize: item.id === 'address' ? 22 : 20,
                     }}
                   />
                 </span>
 
                 <div>
-                  <strong>{item.label}</strong>
-                  <span>{item.value}</span>
+                  <strong>{t(item.labelKey)}</strong>
+                  <span>{item.valueKey ? t(item.valueKey, item.valueParams) : item.value}</span>
                 </div>
               </li>
             ))}
@@ -141,13 +141,13 @@ export default function ContactSection() {
           <div className="contact-map-card">
             <div className="contact-map-head">
               <div>
-                <span className="contact-map-label">Мы здесь</span>
-                <strong>Наш офис в Душанбе</strong>
+                <span className="contact-map-label">{t('common.weAreHere')}</span>
+                <strong>{t('common.officeInDushanbe')}</strong>
               </div>
 
               <span className="contact-map-status">
                 <span />
-                Открыты
+                {t('common.open')}
               </span>
             </div>
 
@@ -155,7 +155,6 @@ export default function ContactSection() {
               <LocationMap
                 lat={OFFICE_LAT}
                 lng={OFFICE_LNG}
-                popupText="FaroSayr — офис"
               />
 
               <div className="map-marker">
@@ -168,7 +167,7 @@ export default function ContactSection() {
 
               <div className="map-address">
                 <LocationOnIcon />
-                <span>Душанбе, проспект Саади Шерози, 16</span>
+                <span>{t('home.contact.mapAddress')}</span>
               </div>
 
               <a
@@ -178,7 +177,7 @@ export default function ContactSection() {
                 rel="noreferrer"
               >
                 <NavigationRoundedIcon />
-                <span>Построить маршрут</span>
+                <span>{t('common.getDirections')}</span>
                 <OpenInNewRoundedIcon />
               </a>
             </div>
@@ -191,24 +190,24 @@ export default function ContactSection() {
           onSubmit={handleSubmit}
         >
           <div className="contact-form-head">
-            <span className="form-kicker">Свяжитесь с нами</span>
+            <span className="form-kicker">{t('contact.getInTouch')}</span>
 
-            <h3>Расскажите о вашей поездке</h3>
+            <h3>{t('contact.formTitle')}</h3>
 
             <p>
-              Мы подберём маршрут, который подойдёт именно вам.
+              {t('home.contact.formText')}
             </p>
           </div>
 
           <div className="form-row">
             <div className="form-field">
-              <label htmlFor="name">Имя</label>
+              <label htmlFor="name">{t('common.name')}</label>
 
               <input
                 type="text"
                 id="name"
                 name="name"
-                placeholder="Ваше имя"
+                placeholder={t('common.yourName')}
                 value={form.name}
                 onChange={handleChange}
                 required
@@ -216,7 +215,7 @@ export default function ContactSection() {
             </div>
 
             <div className="form-field">
-              <label htmlFor="phone">Телефон</label>
+              <label htmlFor="phone">{t('common.phone')}</label>
 
               <input
                 type="tel"
@@ -231,7 +230,7 @@ export default function ContactSection() {
           </div>
 
           <div className="form-field">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('common.email')}</label>
 
             <input
               type="email"
@@ -245,13 +244,13 @@ export default function ContactSection() {
           </div>
 
           <div className="form-field">
-            <label htmlFor="message">Сообщение</label>
+            <label htmlFor="message">{t('common.message')}</label>
 
             <textarea
               id="message"
               name="message"
               rows="5"
-              placeholder="Расскажите о вашем идеальном путешествии..."
+              placeholder={t('home.contact.messagePlaceholder')}
               value={form.message}
               onChange={handleChange}
             />
@@ -263,8 +262,8 @@ export default function ContactSection() {
             disabled={status === SUBMITTING}
           >
             {status === SUBMITTING
-              ? 'Отправка…'
-              : 'Отправить заявку'}
+              ? t('common.sending')
+              : t('common.submitRequest')}
           </button>
 
           <p
@@ -273,7 +272,7 @@ export default function ContactSection() {
             }`}
           >
             {status === SUBMITTED &&
-              'Спасибо! Ваша заявка отправлена — мы свяжемся с вами в ближайшее время.'}
+              t('home.contact.success')}
 
             {error}
           </p>

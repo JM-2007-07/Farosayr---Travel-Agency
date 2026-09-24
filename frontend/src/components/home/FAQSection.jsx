@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getFaqItems } from '../../services/faqService';
 import { useReveal } from '../../hooks/useReveal';
 import { useAsyncData } from '../../hooks/useAsyncData';
@@ -31,6 +32,7 @@ function FAQItem({ item, isOpen, onToggle }) {
 
 // Ports the original single-open accordion (opening one closes any other).
 export default function FAQSection() {
+  const { t } = useTranslation();
   const [introRef, introInView] = useReveal();
   const [listRef, listInView] = useReveal();
   const [openId, setOpenId] = useState(null);
@@ -45,13 +47,13 @@ export default function FAQSection() {
     <section className="section faq" id="faq">
       <div className="container faq-grid">
         <div className={`faq-intro reveal ${introInView ? 'in-view' : ''}`} ref={introRef}>
-          <p className="eyebrow">Вопросы и ответы</p>
-          <h2>Часто задаваемые вопросы</h2>
+          <p className="eyebrow">{t('home.faq.eyebrow')}</p>
+          <h2>{t('home.faq.title')}</h2>
           <p className="section-desc">
-            Не нашли ответ на свой вопрос? Свяжитесь с нами — ответим в течение часа.
+            {t('home.faq.text')}
           </p>
           <a href="#contact" className="btn btn-outline" onClick={handleContactClick}>
-            Задать вопрос
+            {t('home.faq.ask')}
           </a>
         </div>
         <div className={`faq-list reveal ${listInView ? 'in-view' : ''}`} ref={listRef}>

@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
@@ -17,6 +18,7 @@ export default function TourCard({
   onToggleFavorite,
   bookHref = '#contact',
 }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
   const navigate = useNavigate();
@@ -65,7 +67,7 @@ export default function TourCard({
           ) : (
             <div className="tour-image-placeholder">
               <FlightTakeoffRoundedIcon />
-              <span>Изображение отсутствует</span>
+              <span>{t('common.imageUnavailable')}</span>
             </div>
           )}
 
@@ -77,8 +79,8 @@ export default function TourCard({
           className={`wishlist-btn ${isFavorited ? 'active' : ''}`}
           aria-label={
             isFavorited
-              ? 'Убрать из избранного'
-              : 'В избранное'
+              ? t('tourCard.removeFromFavorites')
+              : t('tourCard.addToFavorites')
           }
           aria-pressed={isFavorited}
           onClick={handleWishlistClick}
@@ -126,7 +128,7 @@ export default function TourCard({
 
         <div className="tour-bottom">
           <div className="tour-price-wrap">
-            <span className="tour-price-label">от</span>
+            <span className="tour-price-label">{t('common.from')}</span>
             <span className="tour-price">
               ${tour.price}
             </span>
@@ -136,7 +138,7 @@ export default function TourCard({
             to={`/tours/${tour.id}`}
             className="tour-details-link"
           >
-            Подробнее
+            {t('common.learnMore')}
             <ArrowForwardRoundedIcon />
           </Link>
         </div>
@@ -147,7 +149,7 @@ export default function TourCard({
             className="btn btn-block tour-book-btn"
             onClick={handleBookClick}
           >
-            Забронировать тур
+            {t('common.bookTour')}
             <ArrowForwardRoundedIcon />
           </a>
         ) : (
@@ -155,7 +157,7 @@ export default function TourCard({
             to={bookHref}
             className="btn btn-block tour-book-btn"
           >
-            Забронировать тур
+            {t('common.bookTour')}
             <ArrowForwardRoundedIcon />
           </Link>
         )}

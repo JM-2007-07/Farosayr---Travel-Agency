@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { getDealById } from '../services/dealsService';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { useImgFallback } from '../hooks/useImgFallback';
@@ -6,29 +7,31 @@ import { useCountdown } from '../hooks/useCountdown';
 import AsyncState from '../components/common/AsyncState';
 
 function DealCountdown({ hours }) {
+  const { t } = useTranslation();
   const countdown = useCountdown(hours);
   if (countdown.expired) {
-    return <p style={{ color: 'var(--text-mid)', marginBottom: 24 }}>Срок предложения истёк.</p>;
+    return <p style={{ color: 'var(--text-mid)', marginBottom: 24 }}>{t('countdown.expired')}</p>;
   }
   return (
     <div className="deal-countdown" style={{ maxWidth: 260, marginBottom: 28 }}>
       <div className="unit">
         <strong>{countdown.hours}</strong>
-        <span>Часы</span>
+        <span>{t('countdown.hours')}</span>
       </div>
       <div className="unit">
         <strong>{countdown.minutes}</strong>
-        <span>Мин</span>
+        <span>{t('countdown.minutes')}</span>
       </div>
       <div className="unit">
         <strong>{countdown.seconds}</strong>
-        <span>Сек</span>
+        <span>{t('countdown.seconds')}</span>
       </div>
     </div>
   );
 }
 
 export default function DealDetails() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const { status, data: deal, isLoading, isError } = useAsyncData(() => getDealById(id), [id]);
   const [broken, onError] = useImgFallback();
@@ -39,9 +42,9 @@ export default function DealDetails() {
         isLoading={isLoading}
         isError={isError}
         isEmpty={status === 'success' && deal === null}
-        loadingLabel="Загружаем предложение…"
-        errorLabel="Не удалось загрузить предложение. Попробуйте обновить страницу."
-        emptyLabel="Такое предложение не найдено."
+        loadingLabel={t('dealDetails.loading')}
+        errorLabel={t('dealDetails.loadError')}
+        emptyLabel={t('dealDetails.notFound')}
       />
 
       {status === 'success' && deal && (
@@ -57,7 +60,7 @@ export default function DealDetails() {
           </div>
 
           <div>
-            <p className="eyebrow">Горящее предложение</p>
+            <p className="eyebrow">{t('dealDetails.eyebrow')}</p>
             <h1 style={{ margin: '14px 0 16px' }}>{deal.title}</h1>
             <p className="section-desc" style={{ marginBottom: 24 }}>{deal.description}</p>
 
@@ -70,11 +73,11 @@ export default function DealDetails() {
 
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <Link to={deal.tour ? `/booking?tour=${encodeURIComponent(deal.tour.slug)}` : '/booking'} className="btn btn-primary">
-                Забронировать
+                {t('common.bookNow')}
               </Link>
               {deal.tour && (
                 <Link to={`/tours/${deal.tour.slug}`} className="btn btn-outline" style={{ color: 'var(--dark-blue)', borderColor: '#E3E9F0' }}>
-                  Подробнее о туре
+                  {t('dealDetails.aboutTour')}
                 </Link>
               )}
             </div>

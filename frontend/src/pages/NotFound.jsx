@@ -1,9 +1,12 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 
 export default function NotFound() {
+  const { t } = useTranslation();
+
   return (
     <main
       style={{
@@ -106,7 +109,7 @@ export default function NotFound() {
               zIndex: 1,
             }}
           >
-            Кажется, мы сбились с маршрута
+            {t('notFound.title')}
           </h1>
 
           <p
@@ -118,8 +121,7 @@ export default function NotFound() {
               zIndex: 1,
             }}
           >
-            Такой страницы не существует или она была перемещена.
-            Но не переживайте — ваше путешествие ещё можно продолжить.
+            {t('notFound.text')}
           </p>
 
           <div
@@ -134,11 +136,11 @@ export default function NotFound() {
           >
             <Link to="/" className="btn btn-primary">
               <ArrowBackRoundedIcon />
-              На главную
+              {t('common.backToHome')}
             </Link>
 
             <Link to="/tours" className="btn btn-outline">
-              Найти тур
+              {t('common.findTour')}
               <ArrowForwardRoundedIcon />
             </Link>
           </div>
@@ -154,7 +156,7 @@ export default function NotFound() {
               zIndex: 1,
             }}
           >
-            Ваш следующий маршрут может начаться прямо здесь.
+            {t('notFound.footer')}
           </div>
         </section>
       </div>

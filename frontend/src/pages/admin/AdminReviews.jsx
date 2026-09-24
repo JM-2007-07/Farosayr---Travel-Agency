@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Alert, Chip, IconButton } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import RateReviewRoundedIcon from '@mui/icons-material/RateReviewRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
@@ -7,6 +8,7 @@ import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { adminApi } from '../../services/adminService';
 import { useAdminList } from '../../hooks/useAdminList';
+import { getApiErrorMessage } from '../../utils/getApiErrorMessage';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminLoading from '../../components/admin/AdminLoading';
 import AdminError from '../../components/admin/AdminError';
@@ -16,6 +18,7 @@ import ConfirmDialog from '../../components/admin/ConfirmDialog';
 import './Admin.css';
 
 export default function AdminReviews() {
+  const { t } = useTranslation();
   const { status, rows, meta, page, setPage, isLoading, isError, isEmpty, reload } = useAdminList(adminApi.reviews);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
@@ -29,7 +32,7 @@ export default function AdminReviews() {
       setDeleteTarget(null);
       reload();
     } catch (err) {
-      setDeleteError(err.message || 'Не удалось удалить отзыв.');
+      setDeleteError(getApiErrorMessage(err, t, 'admin.reviews.deleteError'));
     } finally {
       setDeleting(false);
     }
@@ -37,7 +40,7 @@ export default function AdminReviews() {
 
   return (
     <div className="admin-page">
-      <AdminPageHeader title="Отзывы" />
+      <AdminPageHeader title={t('admin.nav.reviews')} />
 
       <section className="admin-page-hero">
         <div className="admin-page-hero-content">
@@ -45,8 +48,8 @@ export default function AdminReviews() {
             <div className="admin-page-hero-icon"><RateReviewRoundedIcon /></div>
             <div>
               <div className="admin-page-eyebrow">FAROSAYR · REVIEWS</div>
-              <h1 className="admin-page-hero-title">Отзывы путешественников</h1>
-              <p className="admin-page-hero-description">Отзывы клиентов о турах FaroSayr и их впечатления от путешествий.</p>
+              <h1 className="admin-page-hero-title">{t('reviewsPage.eyebrow')}</h1>
+              <p className="admin-page-hero-description">{t('admin.reviews.heroText')}</p>
             </div>
           </div>
           <div className="admin-page-decoration"><StarRoundedIcon /></div>
@@ -55,7 +58,7 @@ export default function AdminReviews() {
 
       {isLoading && <AdminLoading />}
       {isError && <AdminError />}
-      {isEmpty && <AdminEmptyState message="Отзывов пока нет." />}
+      {isEmpty && <AdminEmptyState message={t('admin.reviews.empty')} />}
 
       {status === 'success' && rows.length > 0 && (
         <div className="admin-table-shell">
@@ -63,8 +66,8 @@ export default function AdminReviews() {
             <div className="admin-table-title">
               <span className="admin-table-title-icon"><RateReviewRoundedIcon /></span>
               <div>
-                <div className="admin-table-title-text">Отзывы клиентов</div>
-                <div className="admin-table-title-subtitle">Оценки и комментарии путешественников</div>
+                <div className="admin-table-title-text">{t('home.reviews.eyebrow')}</div>
+                <div className="admin-table-title-subtitle">{t('admin.reviews.tableSubtitle')}</div>
               </div>
             </div>
           </div>
@@ -73,30 +76,30 @@ export default function AdminReviews() {
             columns={[
               {
                 key: 'user',
-                label: 'Автор',
+                label: t('admin.reviews.author'),
                 render: (r) => (
                   <div className="admin-deal-name">
                     <div className="admin-deal-image admin-review-avatar"><PersonRoundedIcon /></div>
                     <div>
-                      <div className="admin-deal-name-title">{r.user?.name ?? 'Неизвестный пользователь'}</div>
-                      <div className="admin-deal-name-subtitle">Клиент FaroSayr</div>
+                      <div className="admin-deal-name-title">{r.user?.name ?? t('admin.reviews.unknownUser')}</div>
+                      <div className="admin-deal-name-subtitle">{t('admin.common.client')}</div>
                     </div>
                   </div>
                 ),
               },
               {
                 key: 'tour',
-                label: 'Тур',
+                label: t('common.tour'),
                 render: (r) => (
                   <div className="admin-deal-name">
                     <div className="admin-deal-image admin-review-tour-icon"><FlightTakeoffRoundedIcon /></div>
-                    <div className="admin-deal-name-title">{r.tour?.title ?? 'Тур не указан'}</div>
+                    <div className="admin-deal-name-title">{r.tour?.title ?? t('admin.common.noTour')}</div>
                   </div>
                 ),
               },
               {
                 key: 'rating',
-                label: 'Оценка',
+                label: t('admin.reviews.rating'),
                 render: (r) => (
                   <Chip
                     icon={<StarRoundedIcon />}
@@ -114,10 +117,10 @@ export default function AdminReviews() {
               },
               {
                 key: 'comment',
-                label: 'Комментарий',
+                label: t('admin.reviews.comment'),
                 render: (r) => (
                   <div className="admin-review-comment">
-                    {r.comment || 'Комментарий отсутствует'}
+                    {r.comment || t('admin.reviews.noComment')}
                   </div>
                 ),
               },
@@ -133,7 +136,8 @@ export default function AdminReviews() {
                   className="admin-action-btn admin-action-delete"
                   size="small"
                   onClick={() => setDeleteTarget(r)}
-                  title="Удалить отзыв"
+                  title={t('admin.reviews.deleteTitle')}
+                  aria-label={t('admin.reviews.deleteTitle')}
                 >
                   <DeleteRoundedIcon fontSize="small" />
                 </IconButton>
@@ -145,7 +149,7 @@ export default function AdminReviews() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Удалить отзыв"
+        title={t('admin.reviews.deleteTitle')}
         resourceName={deleteTarget ? `${deleteTarget.user?.name} — ${deleteTarget.tour?.title}` : ''}
         onConfirm={handleDelete}
         onCancel={() => {

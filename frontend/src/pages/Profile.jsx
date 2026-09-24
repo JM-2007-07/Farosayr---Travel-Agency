@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import { Trans, useTranslation } from 'react-i18next';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
@@ -11,6 +12,7 @@ import RequireAuth from '../components/common/RequireAuth';
 import './Profile.css';
 
 function ProfileCard() {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -28,7 +30,7 @@ function ProfileCard() {
         .toUpperCase()
     : '?';
 
-  const roleLabel = user?.role === 'ADMIN' ? 'Администратор' : 'Путешественник';
+  const roleLabel = user?.role === 'ADMIN' ? t('profile.roleAdmin') : t('profile.roleTraveler');
 
   return (
     <section className="profile-card">
@@ -63,8 +65,8 @@ function ProfileCard() {
         </div>
 
         <div className="profile-route-text">
-          <span>Ваш путь</span>
-          <strong>начинается здесь</strong>
+          <span>{t('common.yourJourney')}</span>
+          <strong>{t('common.startsHere')}</strong>
         </div>
       </div>
 
@@ -75,7 +77,7 @@ function ProfileCard() {
           </div>
 
           <div>
-            <span>Имя</span>
+            <span>{t('common.name')}</span>
             <strong>{user.name}</strong>
           </div>
         </div>
@@ -86,7 +88,7 @@ function ProfileCard() {
           </div>
 
           <div>
-            <span>Email</span>
+            <span>{t('common.email')}</span>
             <strong>{user.email}</strong>
           </div>
         </div>
@@ -97,7 +99,7 @@ function ProfileCard() {
           </div>
 
           <div>
-            <span>Статус аккаунта</span>
+            <span>{t('profile.accountStatus')}</span>
             <strong>{roleLabel}</strong>
           </div>
         </div>
@@ -106,7 +108,7 @@ function ProfileCard() {
       <div className="profile-card-footer">
         <Link to="/" className="profile-back-link">
           <ArrowBackRoundedIcon />
-          На главную
+          {t('common.backToHome')}
         </Link>
 
         <button
@@ -115,7 +117,7 @@ function ProfileCard() {
           onClick={handleLogout}
         >
           <LogoutRoundedIcon />
-          Выйти из аккаунта
+          {t('profile.logout')}
         </button>
       </div>
     </section>
@@ -123,21 +125,21 @@ function ProfileCard() {
 }
 
 export default function Profile() {
+  const { t } = useTranslation();
+
   return (
     <main className="profile-page">
       <div className="container">
         <div className="profile-page-header">
           <div>
-            <p className="eyebrow">Личный кабинет</p>
+            <p className="eyebrow">{t('account.personalArea')}</p>
 
             <h1>
-              Ваш профиль
-              <span> Farosayr</span>
+              <Trans i18nKey="profile.title" components={{ accent: <span /> }} />
             </h1>
 
             <p className="profile-page-description">
-              Управляйте своим аккаунтом и следите за своими
-              путешествиями в одном месте.
+              {t('profile.text')}
             </p>
           </div>
 
@@ -146,7 +148,7 @@ export default function Profile() {
           </div>
         </div>
 
-        <RequireAuth prompt="Войдите в аккаунт, чтобы увидеть свой профиль.">
+        <RequireAuth prompt={t('profile.signInPrompt')}>
           <ProfileCard />
         </RequireAuth>
       </div>

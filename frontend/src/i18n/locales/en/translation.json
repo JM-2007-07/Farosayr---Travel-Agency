@@ -1,0 +1,808 @@
+{
+  "common": {
+    "bookNow": "Book now",
+    "bookTour": "Book this tour",
+    "bookTrip": "Book a trip",
+    "learnMore": "Learn more",
+    "contactUs": "Contact us",
+    "viewTours": "Browse tours",
+    "findTour": "Find a tour",
+    "allTours": "All tours",
+    "popularTours": "Popular tours",
+    "backToHome": "Back to home",
+    "returnHome": "Return to homepage",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "saving": "Saving…",
+    "add": "Add",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "edit": "Edit",
+    "view": "View",
+    "previous": "Previous",
+    "next": "Next",
+    "from": "from",
+    "or": "or",
+    "sending": "Sending…",
+    "submitRequest": "Send request",
+    "user": "User",
+    "destination": "Destination",
+    "explore": "Explore",
+    "signatureTours": "Signature tours",
+    "popularDestination": "Popular destination",
+    "yourJourney": "Your journey",
+    "startsHere": "starts here",
+    "name": "Name",
+    "yourName": "Your name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "address": "Address",
+    "workingHours": "Opening hours",
+    "total": "Total",
+    "status": "Status",
+    "payment": "Payment",
+    "amount": "Amount",
+    "price": "Price",
+    "duration": "Duration",
+    "description": "Description",
+    "tour": "Tour",
+    "tours": "Tours",
+    "offersCount_one": "{{count}} offer",
+    "offersCount_other": "{{count}} offers",
+    "imageUnavailable": "No image available",
+    "dushanbeTajikistan": "Dushanbe, Tajikistan",
+    "weAreHere": "Find us",
+    "officeInDushanbe": "Our office in Dushanbe",
+    "open": "Open",
+    "closed": "Closed",
+    "getDirections": "Get directions",
+    "backToTop": "Back to top",
+    "quoted": "“{{text}}”",
+    "limitedOffer": "Limited-time offer"
+  },
+  "state": {
+    "loading": "Loading…",
+    "error": "We couldn't load this content. Please refresh the page.",
+    "empty": "Nothing here yet.",
+    "checkingSession": "Checking your session…",
+    "signInPrompt": "Please sign in to continue."
+  },
+  "errors": {
+    "network": "We couldn't reach the server. Please check your internet connection.",
+    "tooManyRequests": "Too many attempts. Please try again later."
+  },
+  "language": {
+    "label": "Language",
+    "choose": "Choose language",
+    "current": "Language: {{language}}"
+  },
+  "navigation": {
+    "home": "Home",
+    "tours": "Tours",
+    "deals": "Hot Deals",
+    "destinations": "Destinations",
+    "about": "About us",
+    "reviews": "Reviews",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "faq": "FAQ"
+  },
+  "header": {
+    "openAccountMenu": "Open account menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "navigationTitle": "Navigation",
+    "accountTitle": "Account"
+  },
+  "account": {
+    "profile": "Profile",
+    "bookings": "My bookings",
+    "favorites": "Favorites",
+    "admin": "Admin panel",
+    "logout": "Log out",
+    "login": "Sign in",
+    "register": "Create account",
+    "personalArea": "My account"
+  },
+  "footer": {
+    "description": "A Dushanbe-based travel agency that turns travel dreams into real journeys.",
+    "sections": "Explore",
+    "company": "Company",
+    "stayInformed": "Stay in the loop",
+    "newsletterText": "Get the best deals, new routes and exclusive prices straight to your inbox.",
+    "emailPlaceholder": "Your email",
+    "subscribed": "Thanks for subscribing!",
+    "subscribe": "Subscribe",
+    "newsletterNote": "No spam — just travel inspiration and great deals.",
+    "rights": "© 2026 FaroSayr. All rights reserved."
+  },
+  "map": {
+    "officePopup": "FaroSayr office",
+    "ariaLabel": "Map of the FaroSayr office",
+    "loadError": "The map couldn't be loaded."
+  },
+  "pagePending": {
+    "message": "{{title}} — this page is coming soon"
+  },
+  "notFound": {
+    "title": "Looks like we've gone off route",
+    "text": "This page doesn't exist or has been moved. Don't worry — your journey can still continue.",
+    "footer": "Your next adventure could start right here."
+  },
+  "countdown": {
+    "hours": "Hours",
+    "minutes": "Min",
+    "seconds": "Sec",
+    "ended": "Ended",
+    "expired": "This offer has expired."
+  },
+  "contact": {
+    "officeAddress": "Sharqi Ozod Building, Dushanbe, Republic of Tajikistan",
+    "workingHoursValue": "Mon–Sat: {{from}}:00–{{to}}:00",
+    "getInTouch": "Get in touch",
+    "formTitle": "Tell us about your trip",
+    "submitError": "We couldn't send your request. Please try again."
+  },
+  "tourCard": {
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites"
+  },
+  "galleryItems": {
+    "dubai-night": "Dubai by night",
+    "maldives-aerial": "The Maldives from above",
+    "istanbul-mosque": "A mosque in Istanbul",
+    "egypt-pyramids": "The pyramids of Egypt",
+    "thailand-beach": "A beach in Thailand",
+    "samarkand": "Samarkand",
+    "moscow": "Moscow"
+  },
+  "bookingStatus": {
+    "PENDING": "Awaiting confirmation",
+    "CONFIRMED": "Confirmed",
+    "CANCELLED": "Cancelled",
+    "COMPLETED": "Completed"
+  },
+  "paymentStatus": {
+    "PENDING": "Awaiting payment",
+    "PAID": "Paid",
+    "FAILED": "Payment failed",
+    "REFUNDED": "Refunded"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Your guiding light in the world of travel",
+      "title": "EXPLORE THE WORLD <accent>WITH FAROSAYR</accent>",
+      "subtitle": "We chart the course to the planet's most vibrant corners — from the turquoise shores of the Maldives to the glittering lights of Dubai. Premium service, honest prices and care at every step of your journey.",
+      "scrollDown": "Scroll down"
+    },
+    "search": {
+      "kicker": "Your journey starts here",
+      "title": "Find your perfect tour",
+      "text": "Tell us about your trip and we'll find the best options.",
+      "destinationPlaceholder": "Where to?",
+      "departDate": "Departure date",
+      "returnDate": "Return date",
+      "travelers": "Travelers",
+      "budget": "Budget",
+      "searching": "Searching…",
+      "done": "Done! We'll be in touch",
+      "destinationOptions": {
+        "dubai": "Dubai, UAE",
+        "istanbul": "Istanbul, Turkey",
+        "maldives": "Maldives",
+        "hurghada": "Hurghada, Egypt",
+        "phuket": "Phuket, Thailand",
+        "jeddah": "Jeddah, Saudi Arabia",
+        "moscow": "Moscow, Russia",
+        "samarkand": "Samarkand, Uzbekistan"
+      },
+      "travelerOptions": {
+        "oneAdult": "1 adult",
+        "twoAdults": "2 adults",
+        "twoAdultsOneChild": "2 adults, 1 child",
+        "threeToFive": "3–5 people",
+        "groupSixPlus": "Group of 6+"
+      },
+      "budgetOptions": {
+        "upTo500": "Up to $500",
+        "from500To1000": "$500 – $1,000",
+        "from1000To2000": "$1,000 – $2,000",
+        "over2000": "$2,000+"
+      }
+    },
+    "destinations": {
+      "eyebrow": "Popular destinations",
+      "title": "Where to next?",
+      "text": "Eight destinations our travelers choose most — from exotic islands to ancient cities."
+    },
+    "why": {
+      "eyebrow": "Why choose us",
+      "title": "Every detail of your trip, taken care of",
+      "text": "Behind FaroSayr is a team that takes your holiday as seriously as you do.",
+      "items": {
+        "bestPrices": {
+          "title": "Best prices",
+          "text": "Direct contracts with hotels and airlines — no middleman markups."
+        },
+        "verifiedHotels": {
+          "title": "Trusted hotels",
+          "text": "Every property we offer is personally vetted or verified by our partners."
+        },
+        "support": {
+          "title": "24/7 support",
+          "text": "We're with you at every point of your route — day or night, in any time zone."
+        },
+        "personalManager": {
+          "title": "Personal travel manager",
+          "text": "One dedicated expert guides you from the first call until you're back home."
+        },
+        "easyBooking": {
+          "title": "Easy booking",
+          "text": "Booking a tour online takes less than five minutes — no paperwork."
+        },
+        "securePayment": {
+          "title": "Secure payments",
+          "text": "All payments are protected by modern encryption and confirmed instantly."
+        }
+      }
+    },
+    "deals": {
+      "title": "This week's hot deals",
+      "text": "Book at a special price while you can — places are limited."
+    },
+    "tours": {
+      "eyebrow": "Our picks",
+      "text": "Ready-made itineraries trusted by hundreds of happy travelers."
+    },
+    "stats": {
+      "travelers": "Travelers",
+      "destinations": "Destinations",
+      "positive-reviews": "Positive reviews",
+      "support": "Customer support"
+    },
+    "about": {
+      "imageAlt": "The FaroSayr team",
+      "badge": "year of crafting dream journeys",
+      "eyebrow": "About us",
+      "title": "Your guiding light to the perfect holiday",
+      "text": "FaroSayr was founded in Dushanbe by a team passionate about travel. Our name comes from \"pharos\" — the lighthouse that guides sailors on their way. We do the same for our clients, lighting the path to safe, vibrant and unforgettable journeys.",
+      "points": {
+        "personal": "A personal approach for every traveler",
+        "direct": "Direct contracts with hotels and airlines",
+        "fullSupport": "Full support — from visa to transfer",
+        "transparent": "Transparent pricing with no hidden fees"
+      }
+    },
+    "gallery": {
+      "eyebrow": "Travel moments",
+      "title": "FAROSAYR Gallery",
+      "text": "Snapshots sent in by our travelers from around the world."
+    },
+    "video": {
+      "imageAlt": "FaroSayr travel video",
+      "play": "Play video",
+      "title": "See how we travel",
+      "text": "A short film about FaroSayr travelers and the places they discovered"
+    },
+    "reviews": {
+      "eyebrow": "Client reviews",
+      "title": "Trusted by travelers around the world",
+      "slide": "Review {{number}}"
+    },
+    "faq": {
+      "eyebrow": "Questions & answers",
+      "title": "Frequently asked questions",
+      "text": "Can't find your answer? Get in touch — we'll reply within an hour.",
+      "ask": "Ask a question"
+    },
+    "contact": {
+      "title": "Let's start planning your trip",
+      "text": "Leave a request and our manager will get back to you within 30 minutes during business hours.",
+      "address": "16 Saadi Sherozi Avenue, Dushanbe, Republic of Tajikistan",
+      "mapAddress": "16 Saadi Sherozi Ave, Dushanbe",
+      "formText": "We'll put together a route that's just right for you.",
+      "messagePlaceholder": "Describe your ideal trip...",
+      "success": "Thank you! Your request has been sent — we'll be in touch shortly."
+    }
+  },
+  "tours": {
+    "eyebrow": "Travel catalog",
+    "title": "Find a journey<accent> you'll never forget</accent>",
+    "text": "Choose the perfect tour by destination, budget and travel style. We'll take care of the rest.",
+    "filterTitle": "Search trips",
+    "filterText": "Adjust the filters to find the right tour",
+    "reset": "Reset",
+    "anyDestination": "Any destination",
+    "priceFrom": "Min price",
+    "priceTo": "Max price",
+    "noLimit": "No limit",
+    "search": "Search",
+    "searchPlaceholder": "Tour name...",
+    "sort": "Sort by",
+    "sortOptions": {
+      "default": "Default",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "newest": "Newest first"
+    },
+    "filterHint": "Filters apply when you press \"Find a tour\"",
+    "resultsCount_one": "<strong>{{count}}</strong> tour found",
+    "resultsCount_other": "<strong>{{count}}</strong> tours found",
+    "listKicker": "Our offers",
+    "empty": "No tours match your search."
+  },
+  "tour": {
+    "loading": "Loading tour…",
+    "loadError": "We couldn't load this tour. Please refresh the page.",
+    "notFound": "Tour not found."
+  },
+  "tourDetails": {
+    "imageMissing": "No tour image available",
+    "imageLoadFailed": "The image couldn't be loaded",
+    "prevImage": "Previous image",
+    "nextImage": "Next image",
+    "openImage": "Show image {{number}}",
+    "mainBadge": "Cover",
+    "price": "Tour price",
+    "perTraveler": "per traveler",
+    "backToTours": "Back to tours",
+    "reviewEyebrow": "Your opinion",
+    "reviewTitle": "Share your experience",
+    "reviewText": "Your review helps other travelers choose the right tour.",
+    "reviewSignIn": "Sign in to leave a review of this tour.",
+    "ratingLabel": "Your rating",
+    "ratingOption": "{{value}} out of 5",
+    "commentLabel": "Your review",
+    "commentPlaceholder": "Tell us about your trip...",
+    "submitReview": "Post review",
+    "alreadyReviewed": "You've already reviewed this tour.",
+    "reviewError": "We couldn't post your review. Please try again.",
+    "reviewSuccessTitle": "Thank you for your review!",
+    "reviewSuccessText": "Your review has been published."
+  },
+  "destinationsPage": {
+    "heroEyebrow": "The world begins with a choice",
+    "heroTitle": "Destinations<accent> that inspire</accent>",
+    "heroText": "Discover places you'll want to return to. We've gathered destinations for travel, relaxation and new experiences.",
+    "available_one": "destination available",
+    "available_other": "destinations available",
+    "sectionEyebrow": "Choose your destination",
+    "sectionTitle": "From first glance to the real journey",
+    "sectionText": "Explore our destinations and find tours that match your travel style.",
+    "loading": "Loading destinations…",
+    "loadError": "We couldn't load destinations. Please refresh the page.",
+    "empty": "No destinations available yet.",
+    "ctaEyebrow": "Not sure where to go?",
+    "ctaTitle": "Let's find<accent> your route.</accent>",
+    "ctaText": "Tell us about your plans and we'll help you pick a destination and the right tour."
+  },
+  "destinationDetails": {
+    "loading": "Loading destination…",
+    "loadError": "We couldn't load this destination. Please refresh the page.",
+    "notFound": "Destination not found.",
+    "tripFallback": "Trip",
+    "tourLink": "More about {{title}}",
+    "heroLabel": "Discover a new destination",
+    "heroText": "Journeys worth remembering. Discover this destination with FaroSayr.",
+    "introTitle": "Your next<accent> journey</accent>",
+    "formatLabel": "Travel style",
+    "formatValue": "Signature journeys",
+    "toursEyebrow": "Choose your route",
+    "toursTitle": "Tours to this destination",
+    "ctaEyebrow": "Ready to travel?",
+    "ctaTitle": "Your next big<accent> adventure</accent> starts here.",
+    "ctaText": "Pick a tour or get in touch, and we'll help you find the perfect trip."
+  },
+  "dealsPage": {
+    "specialOffer": "Special offer",
+    "heroEyebrow": "FaroSayr · Special prices",
+    "heroTitle": "Hot<accent> deals</accent>",
+    "heroText": "Limited-time special prices on travel. Choose an offer to see all the details.",
+    "title": "Travel for less",
+    "text": "FaroSayr's latest offers at special prices.",
+    "ctaTitle": "Didn't find the right offer?",
+    "ctaText": "Contact FaroSayr and we'll help you find a trip that suits you."
+  },
+  "dealDetails": {
+    "loading": "Loading offer…",
+    "loadError": "We couldn't load this offer. Please refresh the page.",
+    "notFound": "Offer not found.",
+    "eyebrow": "Hot deal",
+    "aboutTour": "Tour details"
+  },
+  "reviewsPage": {
+    "eyebrow": "Traveler reviews",
+    "title": "Your experiences are our greatest story",
+    "text": "We value every journey and every story our clients share when they return home.",
+    "sectionTitle": "What our clients say",
+    "count_one": "{{count}} review",
+    "count_other": "{{count}} reviews",
+    "prev": "Previous review",
+    "next": "Next review",
+    "open": "Show review {{number}}",
+    "bottomTitle": "The next story could be yours",
+    "bottomText": "Choose a destination and we'll make sure your trip leaves only happy memories."
+  },
+  "galleryPage": {
+    "eyebrow": "Travel through the lens",
+    "title": "The world we've<accent> seen together</accent>",
+    "text": "Inspiring moments from our travelers — from sunny beaches to ancient cities and unforgettable adventures.",
+    "photos_one": "photo",
+    "photos_other": "photos",
+    "tagline": "your journey starts here",
+    "sectionEyebrow": "Travel stories",
+    "sectionTitle": "Inspiration for your next route",
+    "sectionText": "Every photo is a memory worth keeping.",
+    "openPhoto": "Open photo: {{title}}"
+  },
+  "contactPage": {
+    "openNow": "Open now",
+    "closedNow": "Closed now",
+    "eyebrow": "FaroSayr · Contact",
+    "title": "Let's<accent> plan </accent>your trip",
+    "text": "Have a trip in mind, or not sure where to go yet? Get in touch — tell us your plans and we'll work out the rest together.",
+    "call": "Call us",
+    "leaveRequest": "Send a request",
+    "city": "Dushanbe",
+    "landmarkName": "Sharqi Ozod",
+    "floatingJourney": "Your journey",
+    "quickEyebrow": "Quick contact",
+    "quickTitle": "Choose how to reach us",
+    "whatsappDescription": "Message a manager",
+    "telegramDescription": "Message us on Telegram",
+    "telegramSoon": "Link coming soon",
+    "detailsEyebrow": "Our contacts",
+    "detailsTitle": "We're here whenever you need to plan a trip",
+    "detailsText": "Reach FaroSayr however suits you best, or visit our office in Dushanbe.",
+    "socials": "Follow us",
+    "landmark": "Landmark: Sharqi Ozod",
+    "route": "Directions",
+    "formSideEyebrow": "A personal approach",
+    "formSideTitle": "Not sure<accent> where to start?</accent>",
+    "formSideText": "Just tell us your idea. You don't need to know the country, hotel or exact dates yet.",
+    "points": {
+      "chooseDestination": "We'll help you choose a destination",
+      "discussFormat": "We'll talk through the right kind of trip",
+      "answerQuestions": "We'll answer your questions before you book"
+    },
+    "formText": "Tell us where you'd like to go and we'll help find the right option.",
+    "namePlaceholder": "e.g. Manishvar",
+    "messagePlaceholder": "Where would you like to go, when, and how many travelers?",
+    "note": "By pressing the button, you send your request to the FaroSayr travel agency. No registration required.",
+    "successEyebrow": "Request sent",
+    "successTitle": "Thank you for reaching out!",
+    "successText": "We've received your details. A FaroSayr manager will contact you to go over your trip.",
+    "callUs": "Call us",
+    "newRequest": "New request",
+    "faqTitle": "Common questions",
+    "faqText": "Answers to a few questions you may have before getting in touch.",
+    "faq": {
+      "custom": {
+        "question": "Can you tailor a tour just for me?",
+        "answer": "Yes. Tell our manager where you'd like to go, your dates and the kind of holiday you enjoy, and we'll find the right option."
+      },
+      "account": {
+        "question": "Do I need an account to contact the agency?",
+        "answer": "No. You can send a request through the form without signing up. You'll only need an account to book through your personal dashboard."
+      },
+      "consultation": {
+        "question": "Can I get in touch just for advice?",
+        "answer": "Of course. Message us even if you haven't picked a destination yet — our manager will help you choose and answer your questions."
+      },
+      "fastest": {
+        "question": "What's the fastest way to reach FaroSayr?",
+        "answer": "For a quick reply, call us or message us on one of our messengers. You can also send a request using the form on this page."
+      }
+    },
+    "finalTitle": "Your next trip could start today",
+    "finalText": "Browse our destinations or contact a manager for a tailor-made trip.",
+    "finalContact": "Get in touch"
+  },
+  "booking": {
+    "heroEyebrow": "FaroSayr · Booking",
+    "title": "Book a tour",
+    "heroText": "Choose the number of travelers and confirm your booking.",
+    "emptyTitle": "Choose a tour first",
+    "emptyText": "Head to the catalog and pick the trip you'd like to book.",
+    "selectedTrip": "Your selected trip",
+    "viewTour": "View tour",
+    "signInPrompt": "Sign in to book this tour.",
+    "formTitle": "Number of travelers",
+    "formText": "How many people are traveling?",
+    "quantityLabel": "Number of people",
+    "decrease": "Decrease",
+    "increase": "Increase",
+    "pricePerPerson": "Price per person",
+    "submitting": "Creating your booking…",
+    "submit": "Confirm booking",
+    "note": "Your booking is created with a \"pending\" status. Payment is handled separately and isn't available online yet.",
+    "error": "We couldn't create your booking. Please try again.",
+    "successLabel": "Booking created",
+    "successTitle": "Your tour is booked",
+    "successNumber": "Booking number:<strong> #{{id}}</strong>"
+  },
+  "bookings": {
+    "text": "View your trips, booking statuses and payment details here.",
+    "signInPrompt": "Sign in to see your bookings.",
+    "empty": "You don't have any bookings yet.",
+    "booking": "Booking",
+    "number": "#{{id}}",
+    "quantityLine": "Quantity: {{quantity}} · ${{price}}",
+    "openTour": "Open {{title}}"
+  },
+  "favorites": {
+    "signInPrompt": "Sign in to see your saved tours.",
+    "empty": "You haven't saved any tours yet."
+  },
+  "profile": {
+    "roleAdmin": "Administrator",
+    "roleTraveler": "Traveler",
+    "accountStatus": "Account type",
+    "logout": "Sign out",
+    "title": "Your<accent> FaroSayr</accent> profile",
+    "text": "Manage your account and keep track of your trips in one place.",
+    "signInPrompt": "Sign in to view your profile."
+  },
+  "auth": {
+    "benefits": {
+      "bestDeals": "Get the best deals"
+    },
+    "password": "Password",
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "emailTaken": "An account with this email already exists."
+    },
+    "login": {
+      "visualTitle": "<line1>The world</line1><line2> is waiting for you.</line2>",
+      "visualText": "Sign in to manage your bookings, saved tours and trips.",
+      "benefitBookings": "Your bookings, always at hand",
+      "benefitSaveTours": "Save the tours you love",
+      "eyebrow": "Welcome",
+      "title": "Welcome back",
+      "description": "Sign in to your FaroSayr account",
+      "passwordPlaceholder": "Enter your password",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password",
+      "submitting": "Signing in…",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "error": "We couldn't sign you in. Please try again."
+    },
+    "register": {
+      "eyebrow": "Sign up",
+      "title": "Start your<accent> journey</accent>",
+      "text": "Create a FaroSayr account to save tours you love, book trips and stay up to date with the best deals.",
+      "benefitFavorites": "Save your favorite tours",
+      "benefitBookOnline": "Book trips online",
+      "cardText": "Fill in your details to start traveling.",
+      "passwordPlaceholder": "At least 8 characters",
+      "passwordHint": "Your password must be at least 8 characters long.",
+      "submitting": "Creating your account…",
+      "hasAccount": "Already have an account?",
+      "error": "We couldn't create your account. Please try again."
+    }
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "tours": "Tours",
+      "destinations": "Destinations",
+      "deals": "Deals",
+      "bookings": "Bookings",
+      "users": "Users",
+      "reviews": "Reviews",
+      "messages": "Messages"
+    },
+    "layout": {
+      "subtitle": "Administration",
+      "management": "Management",
+      "administrator": "Administrator",
+      "toSite": "View site"
+    },
+    "common": {
+      "actions": "Actions",
+      "pageOf": "Page {{page}} of {{total}}",
+      "empty": "No records yet.",
+      "records_one": "{{count}} record",
+      "records_other": "{{count}} records",
+      "onCurrentPage": "On this page",
+      "catalogPage": "Catalog page",
+      "title": "Title",
+      "imageUrl": "Image URL",
+      "preview": "Preview",
+      "imagePreview": "Image preview",
+      "noDescription": "No description",
+      "noTour": "No tour specified",
+      "client": "FaroSayr client",
+      "noAccessTitle": "Access denied",
+      "noAccessText": "This section is only available to administrators.",
+      "confirmDeleteNamed": "Delete <strong>“{{name}}”</strong>? This action can't be undone.",
+      "confirmDeleteGeneric": "Delete this item? This action can't be undone.",
+      "slugHelperTour": "Used in the tour page URL",
+      "slugHelperDestination": "Used in the destination page URL"
+    },
+    "dashboard": {
+      "welcomeTitle": "Control panel",
+      "welcomeText": "Monitor key metrics and manage FaroSayr content from one place.",
+      "overview": "System overview",
+      "live": "Data is up to date",
+      "metrics": {
+        "users": {
+          "label": "Users",
+          "description": "Registered in total"
+        },
+        "tours": {
+          "label": "Tours",
+          "description": "Live on the site"
+        },
+        "destinations": {
+          "label": "Destinations",
+          "description": "Active destinations"
+        },
+        "bookings": {
+          "label": "Bookings",
+          "description": "Total requests"
+        },
+        "pendingBookings": {
+          "label": "Pending",
+          "description": "Need attention"
+        },
+        "reviews": {
+          "label": "Reviews",
+          "description": "Client reviews"
+        },
+        "messages": {
+          "label": "Messages",
+          "description": "Incoming messages"
+        },
+        "newsletterSubscribers": {
+          "label": "Subscribers",
+          "description": "Newsletter sign-ups"
+        }
+      }
+    },
+    "bookings": {
+      "heroTitle": "Client bookings",
+      "heroText": "Track tour requests, booking statuses and payments in one place.",
+      "empty": "No bookings yet.",
+      "tableTitle": "All bookings",
+      "tableSubtitle": "Client requests and payment status",
+      "client": "Client",
+      "noEmail": "No email provided",
+      "updateError": "Couldn't update the booking.",
+      "status": {
+        "PENDING": "Pending",
+        "CONFIRMED": "Confirmed",
+        "CANCELLED": "Cancelled",
+        "COMPLETED": "Completed"
+      },
+      "payment": {
+        "PENDING": "Awaiting",
+        "PAID": "Paid",
+        "FAILED": "Failed",
+        "REFUNDED": "Refunded"
+      }
+    },
+    "users": {
+      "heroTitle": "System users",
+      "heroText": "Manage client accounts and admin panel roles.",
+      "empty": "No users yet.",
+      "tableTitle": "User list",
+      "tableSubtitle": "Accounts and admin panel access",
+      "registered": "Registered",
+      "role": "Role",
+      "yourAccount": "Your account",
+      "roleError": "Couldn't change the role."
+    },
+    "reviews": {
+      "heroText": "Client reviews of FaroSayr tours and their travel experiences.",
+      "empty": "No reviews yet.",
+      "tableSubtitle": "Traveler ratings and comments",
+      "author": "Author",
+      "unknownUser": "Unknown user",
+      "rating": "Rating",
+      "comment": "Comment",
+      "noComment": "No comment",
+      "deleteTitle": "Delete review",
+      "deleteError": "Couldn't delete the review."
+    },
+    "messages": {
+      "heroTitle": "Client messages",
+      "heroText": "Enquiries and questions sent through the contact form.",
+      "empty": "No messages yet.",
+      "tableSubtitle": "View and manage client enquiries",
+      "subject": "Subject",
+      "noSubject": "No subject",
+      "date": "Date",
+      "dialogTitle": "Client message",
+      "sender": "From",
+      "deleteTitle": "Delete message",
+      "deleteError": "Couldn't delete the message."
+    },
+    "destinations": {
+      "heroTitle": "Travel destinations",
+      "heroText": "Manage the countries, cities and destinations featured in the FaroSayr catalog.",
+      "add": "Add destination",
+      "empty": "No destinations yet.",
+      "total": "Total destinations",
+      "tableTitle": "Destination list",
+      "tableSubtitle": "All destinations in the FaroSayr catalog",
+      "dialogEdit": "Edit destination",
+      "dialogNew": "New destination",
+      "dialogSubtitle": "Add a FaroSayr travel destination",
+      "namePlaceholder": "e.g. Dubai",
+      "descriptionPlaceholder": "A short description of the destination...",
+      "saveError": "Couldn't save the destination.",
+      "deleteTitle": "Delete destination",
+      "deleteError": "Couldn't delete the destination."
+    },
+    "deals": {
+      "heroText": "Manage promotions, discounts and special offers for agency clients.",
+      "add": "Add deal",
+      "empty": "No deals yet.",
+      "total": "Total deals",
+      "activeCount": "Active deals",
+      "avgDiscount": "Average discount",
+      "tableTitle": "Deal list",
+      "tableSubtitle": "All FaroSayr special offers",
+      "deal": "Deal",
+      "discount": "Discount",
+      "endsAt": "Ends",
+      "active": "Active",
+      "inactive": "Inactive",
+      "dialogEdit": "Edit deal",
+      "dialogNew": "New deal",
+      "dialogSubtitle": "Manage a FaroSayr special offer",
+      "oldPrice": "Original price",
+      "newPrice": "Sale price",
+      "discountPercent": "Discount %",
+      "startsAt": "Starts",
+      "linkedTour": "Linked tour",
+      "noLinkedTour": "Not linked to a tour",
+      "isActive": "Deal is active",
+      "saveError": "Couldn't save the deal.",
+      "deleteTitle": "Delete deal",
+      "deleteError": "Couldn't delete the deal."
+    },
+    "tours": {
+      "heroTitle": "Tours & trips",
+      "heroText": "Manage FaroSayr tour offers, destinations, prices, images and featured tours.",
+      "add": "Add tour",
+      "empty": "No tours yet.",
+      "featured": "Featured",
+      "tableTitle": "Tour catalog",
+      "tableSubtitle": "All FaroSayr tour offers",
+      "featuredBadge": "Featured",
+      "regular": "Standard",
+      "dialogEdit": "Edit tour",
+      "dialogNew": "New tour",
+      "dialogSubtitleEdit": "Update the details of this tour offer",
+      "dialogSubtitleNew": "Create a new FaroSayr tour offer",
+      "tourTitle": "Tour title",
+      "tourTitlePlaceholder": "e.g. Trip to Dubai",
+      "descriptionPlaceholder": "A short description of the tour...",
+      "durationPlaceholder": "7 days / 6 nights",
+      "location": "Location",
+      "locationPlaceholder": "Dubai, UAE",
+      "featuredTour": "Featured tour",
+      "saveError": "Couldn't save the tour.",
+      "deleteTitle": "Delete tour",
+      "deleteError": "Couldn't delete the tour.",
+      "images": {
+        "title": "Tour images",
+        "subtitle": "Add photos for the tour gallery",
+        "urlRequired": "Enter an image URL.",
+        "duplicate": "This image has already been added.",
+        "emptyTitle": "No images added yet",
+        "emptyText": "Add at least one image so the tour card looks its best",
+        "alt": "Tour image {{number}}",
+        "mainBadge": "★ COVER",
+        "photoBadge": "PHOTO {{number}}",
+        "altPlaceholder": "Image alt text",
+        "remove": "Remove image"
+      }
+    }
+  }
+}

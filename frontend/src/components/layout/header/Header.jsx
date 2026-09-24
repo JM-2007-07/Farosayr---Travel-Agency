@@ -1,10 +1,12 @@
 
 import { useEffect, useState } from 'react';
 import { NavLink, Link, useLocation } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { NAV_ITEMS } from '../../../constants/navigation';
 import { useScrollState } from '../../../hooks/useScrollState';
 import { useAuth } from '../../../context/AuthContext';
 import MobileMenu from './MobileMenu';
+import LanguageSwitcher from '../../common/LanguageSwitcher';
 import './Header.css';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -14,6 +16,7 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 export default function Header() {
+  const { t } = useTranslation();
   const { isScrolled } = useScrollState();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const location = useLocation();
@@ -93,7 +96,7 @@ export default function Header() {
                       `nav-link ${isActive ? 'active' : ''}`
                     }
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </NavLink>
                 </li>
               ))}
@@ -101,8 +104,10 @@ export default function Header() {
           </nav>
 
           <div className="header-actions">
+            <LanguageSwitcher />
+
             <Link to="/booking" className="btn btn-cta">
-              <span>Забронировать</span>
+              <span>{t('common.bookNow')}</span>
             </Link>
 
             {!isLoading && (
@@ -110,7 +115,7 @@ export default function Header() {
                 <button
                   type="button"
                   className={`account-button ${isAccountOpen ? 'open' : ''}`}
-                  aria-label="Открыть меню аккаунта"
+                  aria-label={t('header.openAccountMenu')}
                   aria-expanded={isAccountOpen}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -130,7 +135,7 @@ export default function Header() {
 
                           <div>
                             <strong>
-                              {user?.name || 'Пользователь'}
+                              {user?.name || t('common.user')}
                             </strong>
 
                             <span>{user?.email}</span>
@@ -145,7 +150,7 @@ export default function Header() {
                           onClick={() => setIsAccountOpen(false)}
                         >
                           <AccountCircleOutlinedIcon />
-                          <span>Профиль</span>
+                          <span>{t('account.profile')}</span>
                         </Link>
 
                         <Link
@@ -154,7 +159,7 @@ export default function Header() {
                           onClick={() => setIsAccountOpen(false)}
                         >
                           <BookOnlineOutlinedIcon />
-                          <span>Мои бронирования</span>
+                          <span>{t('account.bookings')}</span>
                         </Link>
 
                         <Link
@@ -163,7 +168,7 @@ export default function Header() {
                           onClick={() => setIsAccountOpen(false)}
                         >
                           <FavoriteBorderIcon />
-                          <span>Избранное</span>
+                          <span>{t('account.favorites')}</span>
                         </Link>
 
                         {user?.role === 'ADMIN' && (
@@ -173,7 +178,7 @@ export default function Header() {
                             onClick={() => setIsAccountOpen(false)}
                           >
                             <AdminPanelSettingsOutlinedIcon />
-                            <span>Админ-панель</span>
+                            <span>{t('account.admin')}</span>
                           </Link>
                         )}
 
@@ -185,7 +190,7 @@ export default function Header() {
                           onClick={handleLogout}
                         >
                           <LogoutOutlinedIcon />
-                          <span>Выйти</span>
+                          <span>{t('account.logout')}</span>
                         </button>
                       </>
                     ) : (
@@ -196,7 +201,7 @@ export default function Header() {
                           onClick={() => setIsAccountOpen(false)}
                         >
                           <AccountCircleOutlinedIcon />
-                          <span>Войти</span>
+                          <span>{t('account.login')}</span>
                         </Link>
 
                         <Link
@@ -204,7 +209,7 @@ export default function Header() {
                           className="account-menu-item"
                           onClick={() => setIsAccountOpen(false)}
                         >
-                          <span>Создать аккаунт</span>
+                          <span>{t('account.register')}</span>
                         </Link>
                       </>
                     )}
@@ -217,7 +222,7 @@ export default function Header() {
               type="button"
               className={`burger ${isMenuOpen ? 'open' : ''}`}
               aria-label={
-                isMenuOpen ? 'Закрыть меню' : 'Открыть меню'
+                isMenuOpen ? t('header.closeMenu') : t('header.openMenu')
               }
               aria-expanded={isMenuOpen}
               onClick={() => setIsMenuOpen((open) => !open)}

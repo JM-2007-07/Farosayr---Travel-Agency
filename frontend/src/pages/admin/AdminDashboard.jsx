@@ -4,6 +4,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
@@ -20,66 +21,20 @@ import { adminApi } from '../../services/adminService';
 import { useAsyncData } from '../../hooks/useAsyncData';
 import './AdminDashboard.css';
 
+// Label/description text: admin.dashboard.metrics.<key>.{label,description}
 const METRICS = [
-  {
-    key: 'users',
-    label: 'Пользователи',
-    icon: PeopleAltRoundedIcon,
-    description: 'Всего зарегистрировано',
-    tone: 'blue',
-  },
-  {
-    key: 'tours',
-    label: 'Туры',
-    icon: FlightTakeoffRoundedIcon,
-    description: 'Доступно на сайте',
-    tone: 'turquoise',
-  },
-  {
-    key: 'destinations',
-    label: 'Направления',
-    icon: PublicRoundedIcon,
-    description: 'Активных направлений',
-    tone: 'gold',
-  },
-  {
-    key: 'bookings',
-    label: 'Бронирования',
-    icon: CalendarMonthRoundedIcon,
-    description: 'Всего заявок',
-    tone: 'purple',
-  },
-  {
-    key: 'pendingBookings',
-    label: 'В ожидании',
-    icon: PendingActionsRoundedIcon,
-    description: 'Требуют внимания',
-    tone: 'orange',
-  },
-  {
-    key: 'reviews',
-    label: 'Отзывы',
-    icon: RateReviewRoundedIcon,
-    description: 'Отзывы клиентов',
-    tone: 'pink',
-  },
-  {
-    key: 'messages',
-    label: 'Сообщения',
-    icon: MarkEmailUnreadRoundedIcon,
-    description: 'Входящие сообщения',
-    tone: 'cyan',
-  },
-  {
-    key: 'newsletterSubscribers',
-    label: 'Подписчики',
-    icon: GroupsRoundedIcon,
-    description: 'Подписка на новости',
-    tone: 'green',
-  },
+  { key: 'users', icon: PeopleAltRoundedIcon, tone: 'blue' },
+  { key: 'tours', icon: FlightTakeoffRoundedIcon, tone: 'turquoise' },
+  { key: 'destinations', icon: PublicRoundedIcon, tone: 'gold' },
+  { key: 'bookings', icon: CalendarMonthRoundedIcon, tone: 'purple' },
+  { key: 'pendingBookings', icon: PendingActionsRoundedIcon, tone: 'orange' },
+  { key: 'reviews', icon: RateReviewRoundedIcon, tone: 'pink' },
+  { key: 'messages', icon: MarkEmailUnreadRoundedIcon, tone: 'cyan' },
+  { key: 'newsletterSubscribers', icon: GroupsRoundedIcon, tone: 'green' },
 ];
 
 function MetricCard({ metric, value }) {
+  const { t } = useTranslation();
   const Icon = metric.icon;
 
   return (
@@ -105,11 +60,11 @@ function MetricCard({ metric, value }) {
           </Typography>
 
           <Typography className="admin-metric-label">
-            {metric.label}
+            {t(`admin.dashboard.metrics.${metric.key}.label`)}
           </Typography>
 
           <Typography className="admin-metric-description">
-            {metric.description}
+            {t(`admin.dashboard.metrics.${metric.key}.description`)}
           </Typography>
         </div>
       </Paper>
@@ -118,6 +73,7 @@ function MetricCard({ metric, value }) {
 }
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const { status, data, isLoading, isError } = useAsyncData(
     () => adminApi.dashboard().then((r) => r.data),
     [],
@@ -125,7 +81,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <AdminPageHeader title="Дашборд" />
+      <AdminPageHeader title={t('admin.nav.dashboard')} />
 
       <section className="admin-dashboard-welcome">
         <div className="admin-dashboard-welcome-content">
@@ -138,11 +94,10 @@ export default function AdminDashboard() {
               FAROSAYR ADMINISTRATION
             </span>
 
-            <h2>Панель управления</h2>
+            <h2>{t('admin.dashboard.welcomeTitle')}</h2>
 
             <p>
-              Здесь вы можете контролировать основные показатели
-              туристического сервиса и управлять контентом FaroSayr.
+              {t('admin.dashboard.welcomeText')}
             </p>
           </div>
         </div>
@@ -164,12 +119,12 @@ export default function AdminDashboard() {
           <div className="admin-section-heading">
             <div>
               <span>OVERVIEW</span>
-              <h3>Обзор системы</h3>
+              <h3>{t('admin.dashboard.overview')}</h3>
             </div>
 
             <div className="admin-live-status">
               <span />
-              Данные актуальны
+              {t('admin.dashboard.live')}
             </div>
           </div>
 

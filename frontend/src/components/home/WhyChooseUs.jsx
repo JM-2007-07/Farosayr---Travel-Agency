@@ -1,30 +1,32 @@
+import { useTranslation } from 'react-i18next';
 import { WHY_CHOOSE_US } from '../../data/whyChooseUs';
 import { useReveal } from '../../hooks/useReveal';
 import './WhyChooseUs.css';
 
 function WhyCard({ item }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   return (
     <div className={`why-card reveal ${isInView ? 'in-view' : ''}`} ref={ref}>
       <div className="why-icon">{item.icon}</div>
-      <h3>{item.title}</h3>
-      <p>{item.text}</p>
+      <h3>{t(item.titleKey)}</h3>
+      <p>{t(item.textKey)}</p>
     </div>
   );
 }
 
 export default function WhyChooseUs() {
+  const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
 
   return (
     <section className="section why" id="why">
       <div className="container">
         <div className={`section-head light reveal ${headInView ? 'in-view' : ''}`} ref={headRef}>
-          <p className="eyebrow">Почему выбирают нас</p>
-          <h2>Забота о каждой детали вашего путешествия</h2>
+          <p className="eyebrow">{t('home.why.eyebrow')}</p>
+          <h2>{t('home.why.title')}</h2>
           <p className="section-desc">
-            За FaroSair стоит команда, которая относится к вашему отпуску так же
-            серьёзно, как вы сами.
+            {t('home.why.text')}
           </p>
         </div>
 

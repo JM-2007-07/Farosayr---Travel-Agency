@@ -1,5 +1,6 @@
 import { Navigate, Link } from 'react-router';
 import { Box, Typography, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import AdminLoading from './AdminLoading';
 
@@ -10,6 +11,7 @@ import AdminLoading from './AdminLoading';
  * an authenticated non-admin a flash of admin UI before a request fails.
  */
 export default function AdminGuard({ children }) {
+  const { t } = useTranslation();
   const { isLoading, isAuthenticated, user } = useAuth();
 
   if (isLoading) return <AdminLoading />;
@@ -20,13 +22,13 @@ export default function AdminGuard({ children }) {
     return (
       <Box sx={{ maxWidth: 480, mx: 'auto', textAlign: 'center', py: 10, px: 3 }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Недостаточно прав
+          {t('admin.common.noAccessTitle')}
         </Typography>
         <Typography color="text.secondary" sx={{ mb: 3 }}>
-          Этот раздел доступен только администраторам.
+          {t('admin.common.noAccessText')}
         </Typography>
         <Button component={Link} to="/" variant="contained">
-          На главную
+          {t('common.backToHome')}
         </Button>
       </Box>
     );

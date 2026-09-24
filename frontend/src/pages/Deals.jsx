@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { Trans, useTranslation } from 'react-i18next';
 import LocalOfferRoundedIcon from '@mui/icons-material/LocalOfferRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
@@ -11,6 +12,7 @@ import AsyncState from '../components/common/AsyncState';
 import './Deals.css';
 
 function DealCard({ deal }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
   const countdown = useCountdown(deal.hours);
@@ -34,7 +36,7 @@ function DealCard({ deal }) {
       <div className="deal-body">
         <div className="deal-label">
           <LocalOfferRoundedIcon />
-          Специальное предложение
+          {t('dealsPage.specialOffer')}
         </div>
 
         <h2>{deal.title}</h2>
@@ -45,21 +47,21 @@ function DealCard({ deal }) {
           {countdown.expired ? (
             <div className="unit deal-expired">
               <strong>00</strong>
-              <span>Завершено</span>
+              <span>{t('countdown.ended')}</span>
             </div>
           ) : (
             <>
               <div className="unit">
                 <strong>{countdown.hours}</strong>
-                <span>Часы</span>
+                <span>{t('countdown.hours')}</span>
               </div>
               <div className="unit">
                 <strong>{countdown.minutes}</strong>
-                <span>Мин</span>
+                <span>{t('countdown.minutes')}</span>
               </div>
               <div className="unit">
                 <strong>{countdown.seconds}</strong>
-                <span>Сек</span>
+                <span>{t('countdown.seconds')}</span>
               </div>
             </>
           )}
@@ -72,7 +74,7 @@ function DealCard({ deal }) {
           </div>
 
           <Link to={`/deals/${deal.id}`} className="deal-button">
-            Подробнее
+            {t('common.learnMore')}
             <ArrowForwardRoundedIcon />
           </Link>
         </div>
@@ -82,6 +84,7 @@ function DealCard({ deal }) {
 }
 
 export default function Deals() {
+  const { t } = useTranslation();
   const [heroRef, heroInView] = useReveal();
   const [headRef, headInView] = useReveal();
 
@@ -106,16 +109,14 @@ export default function Deals() {
               <LocalOfferRoundedIcon />
             </span>
 
-            <p className="eyebrow">FaroSayr · Специальные цены</p>
+            <p className="eyebrow">{t('dealsPage.heroEyebrow')}</p>
 
             <h1 style={{color: 'white'}}>
-              Горящие
-              <span> предложения</span>
+              <Trans i18nKey="dealsPage.heroTitle" components={{ accent: <span /> }} />
             </h1>
 
             <p className="deals-hero-description">
-              Специальные цены на путешествия с ограниченным сроком действия.
-              Выберите предложение и узнайте все детали.
+              {t('dealsPage.heroText')}
             </p>
           </div>
         </div>
@@ -129,12 +130,12 @@ export default function Deals() {
             }`}
             ref={headRef}
           >
-            <p className="eyebrow">Ограниченное предложение</p>
+            <p className="eyebrow">{t('common.limitedOffer')}</p>
 
-            <h2>Путешествуйте выгоднее</h2>
+            <h2>{t('dealsPage.title')}</h2>
 
             <p className="section-desc">
-              Актуальные предложения FaroSayr по специальным ценам.
+              {t('dealsPage.text')}
             </p>
           </div>
 
@@ -162,16 +163,15 @@ export default function Deals() {
                 <AccessTimeRoundedIcon />
               </span>
 
-              <h2 style={{color: 'white'}}>Не нашли подходящее предложение?</h2>
+              <h2 style={{color: 'white'}}>{t('dealsPage.ctaTitle')}</h2>
 
               <p>
-                Свяжитесь с FaroSayr — мы поможем подобрать путешествие
-                под ваши пожелания.
+                {t('dealsPage.ctaText')}
               </p>
             </div>
 
             <Link to="/contact" className="deals-cta-button">
-              Связаться с нами
+              {t('common.contactUs')}
               <ArrowForwardRoundedIcon />
             </Link>
           </div>

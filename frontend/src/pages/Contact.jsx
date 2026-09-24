@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   AccessTimeRounded,
   CheckCircleRounded,
@@ -15,12 +16,11 @@ import {
   WhatsApp,
 } from '@mui/icons-material';
 import { submitContactMessage } from '../services/contactService';
-import { ApiError } from '../services/api/client';
+import { getApiErrorMessage } from '../utils/getApiErrorMessage';
 import LocationMap from '../components/common/LocationMap';
 import {
   CONTACT_EMAIL,
   CONTACT_PHONE,
-  OFFICE_ADDRESS,
   OFFICE_LAT,
   OFFICE_LNG,
   SOCIAL_LINKS,
@@ -40,28 +40,8 @@ const EMPTY_FORM = {
   message: '',
 };
 
-const FAQ_ITEMS = [
-  {
-    question: 'Можно ли подобрать тур индивидуально?',
-    answer:
-      'Да. Расскажите менеджеру, куда вы хотите поехать, на какие даты и какой формат отдыха вам подходит. Мы поможем подобрать подходящий вариант.',
-  },
-  {
-    question: 'Нужно ли создавать аккаунт, чтобы связаться с агентством?',
-    answer:
-      'Нет. Вы можете отправить заявку через форму без регистрации. Для бронирований через личный кабинет понадобится аккаунт.',
-  },
-  {
-    question: 'Можно ли обратиться только для консультации?',
-    answer:
-      'Конечно. Вы можете написать нам даже если пока не определились с направлением. Менеджер поможет с выбором и ответит на вопросы.',
-  },
-  {
-    question: 'Как быстрее всего связаться с FaroSayr?',
-    answer:
-      'Для быстрого ответа можно позвонить нам или написать через один из доступных мессенджеров. Также можно оставить заявку через форму на этой странице.',
-  },
-];
+// Question/answer text lives in the i18n files (contactPage.faq.<id>).
+const FAQ_ITEMS = ['custom', 'account', 'consultation', 'fastest'];
 
 function getCurrentWorkingState() {
   const now = new Date();
@@ -127,19 +107,22 @@ function SocialLink({ href, icon: Icon, label }) {
   );
 }
 
-function FAQItem({ item }) {
+function FAQItem({ id }) {
+  const { t } = useTranslation();
+
   return (
     <details className="contact-faq-item">
       <summary>
-        <span>{item.question}</span>
+        <span>{t(`contactPage.faq.${id}.question`)}</span>
         <ExpandMoreRounded />
       </summary>
-      <p>{item.answer}</p>
+      <p>{t(`contactPage.faq.${id}.answer`)}</p>
     </details>
   );
 }
 
 function ContactForm() {
+  const { t } = useTranslation();
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState(IDLE);
   const [error, setError] = useState('');
@@ -175,11 +158,7 @@ function ContactForm() {
       setForm(EMPTY_FORM);
     } catch (err) {
       setStatus(IDLE);
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : 'Не удалось отправить заявку. Попробуйте ещё раз.',
-      );
+      setError(getApiErrorMessage(err, t, 'contact.submitError'));
     }
   }
 
@@ -190,19 +169,18 @@ function ContactForm() {
           <CheckCircleRounded />
         </div>
 
-        <p className="eyebrow">Заявка отправлена</p>
+        <p className="eyebrow">{t('contactPage.successEyebrow')}</p>
 
-        <h3>Спасибо за обращение!</h3>
+        <h3>{t('contactPage.successTitle')}</h3>
 
         <p>
-          Мы получили ваши данные. Менеджер FaroSayr свяжется с вами для
-          уточнения деталей путешествия.
+          {t('contactPage.successText')}
         </p>
 
         <div className="contact-success-actions">
           <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`} className="btn btn-primary">
             <PhoneRounded />
-            Позвонить нам
+            {t('contactPage.callUs')}
           </a>
 
           <button
@@ -210,7 +188,7 @@ function ContactForm() {
             className="btn btn-secondary"
             onClick={() => setStatus(IDLE)}
           >
-            Новая заявка
+            {t('contactPage.newRequest')}
           </button>
         </div>
       </div>
@@ -220,30 +198,29 @@ function ContactForm() {
   return (
     <form className="contact-form-page" onSubmit={handleSubmit}>
       <div className="contact-form-heading">
-        <p className="eyebrow">Свяжитесь с нами</p>
-        <h2>Расскажите о вашей поездке</h2>
+        <p className="eyebrow">{t('contact.getInTouch')}</p>
+        <h2>{t('contact.formTitle')}</h2>
         <p>
-          Напишите, куда хотите отправиться, и мы поможем подобрать подходящий
-          вариант.
+          {t('contactPage.formText')}
         </p>
       </div>
 
       <div className="contact-form-row">
         <div className="form-field">
-          <label htmlFor="contact-name">Ваше имя</label>
+          <label htmlFor="contact-name">{t('common.yourName')}</label>
           <input
             id="contact-name"
             name="name"
             type="text"
             value={form.name}
             onChange={handleChange}
-            placeholder="Например, Манишвар"
+            placeholder={t('contactPage.namePlaceholder')}
             required
           />
         </div>
 
         <div className="form-field">
-          <label htmlFor="contact-phone">Телефон</label>
+          <label htmlFor="contact-phone">{t('common.phone')}</label>
           <input
             id="contact-phone"
             name="phone"
@@ -257,7 +234,7 @@ function ContactForm() {
       </div>
 
       <div className="form-field">
-        <label htmlFor="contact-email">Email</label>
+        <label htmlFor="contact-email">{t('common.email')}</label>
         <input
           id="contact-email"
           name="email"
@@ -270,13 +247,13 @@ function ContactForm() {
       </div>
 
       <div className="form-field">
-        <label htmlFor="contact-message">Сообщение</label>
+        <label htmlFor="contact-message">{t('common.message')}</label>
         <textarea
           id="contact-message"
           name="message"
           value={form.message}
           onChange={handleChange}
-          placeholder="Расскажите, куда хотите поехать, когда и сколько человек..."
+          placeholder={t('contactPage.messagePlaceholder')}
           rows={6}
         />
       </div>
@@ -289,24 +266,24 @@ function ContactForm() {
         disabled={status === SUBMITTING}
       >
         {status === SUBMITTING ? (
-          'Отправляем...'
+          t('common.sending')
         ) : (
           <>
-            Отправить заявку
+            {t('common.submitRequest')}
             <SendRounded />
           </>
         )}
       </button>
 
       <p className="form-note">
-        Нажимая кнопку, вы отправляете заявку в туристическое агентство
-        FaroSayr. Регистрация для отправки формы не требуется.
+        {t('contactPage.note')}
       </p>
     </form>
   );
 }
 
 export default function Contact() {
+  const { t } = useTranslation();
   const isOpen = useMemo(() => getCurrentWorkingState(), []);
 
   const yandexMapsUrl = `https://yandex.ru/maps/?ll=${OFFICE_LNG},${OFFICE_LAT}&z=17&pt=${OFFICE_LNG},${OFFICE_LAT},pm2rdm`;
@@ -325,31 +302,27 @@ export default function Contact() {
           <div className="contact-hero-content">
             <span className="contact-hero-badge">
               <span className={isOpen ? 'status-dot' : 'status-dot closed'} />
-              {isOpen ? 'Сейчас открыты' : 'Сейчас закрыты'}
+              {isOpen ? t('contactPage.openNow') : t('contactPage.closedNow')}
             </span>
 
-            <p className="eyebrow">FaroSayr · Контакты</p>
+            <p className="eyebrow">{t('contactPage.eyebrow')}</p>
 
             <h1>
-              Давайте
-              <span> спланируем </span>
-              ваше путешествие
+              <Trans i18nKey="contactPage.title" components={{ accent: <span /> }} />
             </h1>
 
             <p className="contact-hero-description">
-              Есть идея для поездки или пока не знаете, куда отправиться?
-              Свяжитесь с нами — расскажите о своих планах, а остальное
-              обсудим вместе.
+              {t('contactPage.text')}
             </p>
 
             <div className="contact-hero-actions">
               <a href={phoneHref} className="btn btn-primary">
                 <PhoneRounded />
-                Позвонить
+                {t('contactPage.call')}
               </a>
 
               <a href="#contact-form" className="btn btn-secondary">
-                Оставить заявку
+                {t('contactPage.leaveRequest')}
               </a>
             </div>
           </div>
@@ -364,16 +337,16 @@ export default function Contact() {
             <div className="contact-floating-card contact-floating-card-top">
               <LocationOnRounded />
               <div>
-                <strong>Душанбе</strong>
-                <span>Шарқи Озод</span>
+                <strong>{t('contactPage.city')}</strong>
+                <span>{t('contactPage.landmarkName')}</span>
               </div>
             </div>
 
             <div className="contact-floating-card contact-floating-card-bottom">
               <CheckCircleRounded />
               <div>
-                <strong>Ваше путешествие</strong>
-                <span>начинается здесь</span>
+                <strong>{t('contactPage.floatingJourney')}</strong>
+                <span>{t('common.startsHere')}</span>
               </div>
             </div>
           </div>
@@ -383,15 +356,15 @@ export default function Contact() {
       <section className="contact-actions-section">
         <div className="container">
           <div className="contact-section-heading">
-            <p className="eyebrow">Быстрая связь</p>
-            <h2>Выберите удобный способ</h2>
+            <p className="eyebrow">{t('contactPage.quickEyebrow')}</p>
+            <h2>{t('contactPage.quickTitle')}</h2>
           </div>
 
           <div className="contact-actions-grid">
             <QuickAction
               href={phoneHref}
               icon={PhoneRounded}
-              label="Позвонить"
+              label={t('contactPage.call')}
               description={CONTACT_PHONE}
             />
 
@@ -399,7 +372,7 @@ export default function Contact() {
               href={whatsappHref}
               icon={WhatsApp}
               label="WhatsApp"
-              description="Написать менеджеру"
+              description={t('contactPage.whatsappDescription')}
               external
             />
 
@@ -409,8 +382,8 @@ export default function Contact() {
               label="Telegram"
               description={
                 SOCIAL_LINKS.telegram
-                  ? 'Написать в Telegram'
-                  : 'Скоро добавим ссылку'
+                  ? t('contactPage.telegramDescription')
+                  : t('contactPage.telegramSoon')
               }
               external={Boolean(SOCIAL_LINKS.telegram)}
             />
@@ -421,35 +394,39 @@ export default function Contact() {
       <section className="contact-details-section">
         <div className="container contact-details-grid">
           <div className="contact-details-content">
-            <p className="eyebrow">Наши контакты</p>
+            <p className="eyebrow">{t('contactPage.detailsEyebrow')}</p>
 
-            <h2>Мы рядом, когда нужно спланировать поездку</h2>
+            <h2>{t('contactPage.detailsTitle')}</h2>
 
             <p className="section-desc">
-              Вы можете связаться с FaroSayr любым удобным способом или
-              приехать к нам в офис в Душанбе.
+              {t('contactPage.detailsText')}
             </p>
 
             <div className="contact-info-list">
-              <ContactInfoItem icon={LocationOnRounded} label="Адрес">
-                <span>{OFFICE_ADDRESS}</span>
+              <ContactInfoItem icon={LocationOnRounded} label={t('common.address')}>
+                <span>{t('contact.officeAddress')}</span>
               </ContactInfoItem>
 
-              <ContactInfoItem icon={PhoneRounded} label="Телефон">
+              <ContactInfoItem icon={PhoneRounded} label={t('common.phone')}>
                 <a href={phoneHref}>{CONTACT_PHONE}</a>
               </ContactInfoItem>
 
-              <ContactInfoItem icon={EmailRounded} label="Email">
+              <ContactInfoItem icon={EmailRounded} label={t('common.email')}>
                 <a href={emailHref}>{CONTACT_EMAIL}</a>
               </ContactInfoItem>
 
-              <ContactInfoItem icon={AccessTimeRounded} label="Часы работы">
-                <span>{WORKING_HOURS.label}</span>
+              <ContactInfoItem icon={AccessTimeRounded} label={t('common.workingHours')}>
+                <span>
+                  {t('contact.workingHoursValue', {
+                    from: WORKING_HOURS.from,
+                    to: WORKING_HOURS.to,
+                  })}
+                </span>
               </ContactInfoItem>
             </div>
 
             <div className="contact-socials">
-              <span>Мы в социальных сетях</span>
+              <span>{t('contactPage.socials')}</span>
 
               <div>
                 <SocialLink
@@ -482,13 +459,13 @@ export default function Contact() {
           <div className="contact-map-card">
             <div className="contact-map-header">
               <div>
-                <span>Мы здесь</span>
-                <strong>Наш офис в Душанбе</strong>
+                <span>{t('common.weAreHere')}</span>
+                <strong>{t('common.officeInDushanbe')}</strong>
               </div>
 
               <span className={`contact-open-status ${isOpen ? '' : 'closed'}`}>
                 <span />
-                {isOpen ? 'Открыты' : 'Закрыты'}
+                {isOpen ? t('common.open') : t('common.closed')}
               </span>
             </div>
 
@@ -502,8 +479,8 @@ export default function Contact() {
 
             <div className="contact-map-bottom">
               <div>
-                <strong>Ориентир: Шарқи Озод</strong>
-                <span>{OFFICE_ADDRESS}</span>
+                <strong>{t('contactPage.landmark')}</strong>
+                <span>{t('contact.officeAddress')}</span>
               </div>
 
               <a
@@ -513,7 +490,7 @@ export default function Contact() {
                 className="contact-route-link"
               >
                 <NavigationRounded />
-                Маршрут
+                {t('contactPage.route')}
               </a>
             </div>
           </div>
@@ -523,32 +500,30 @@ export default function Contact() {
       <section className="contact-form-section" id="contact-form">
         <div className="container contact-form-layout">
           <div className="contact-form-side">
-            <p className="eyebrow">Персональный подход</p>
+            <p className="eyebrow">{t('contactPage.formSideEyebrow')}</p>
 
             <h2>
-              Не знаете,
-              <span> с чего начать?</span>
+              <Trans i18nKey="contactPage.formSideTitle" components={{ accent: <span /> }} />
             </h2>
 
             <p>
-              Просто расскажите нам о своей идее. Необязательно сразу знать
-              страну, отель или точные даты.
+              {t('contactPage.formSideText')}
             </p>
 
             <div className="contact-form-points">
               <div>
                 <CheckCircleRounded />
-                <span>Поможем выбрать направление</span>
+                <span>{t('contactPage.points.chooseDestination')}</span>
               </div>
 
               <div>
                 <CheckCircleRounded />
-                <span>Обсудим подходящий формат поездки</span>
+                <span>{t('contactPage.points.discussFormat')}</span>
               </div>
 
               <div>
                 <CheckCircleRounded />
-                <span>Ответим на вопросы перед бронированием</span>
+                <span>{t('contactPage.points.answerQuestions')}</span>
               </div>
             </div>
           </div>
@@ -563,16 +538,15 @@ export default function Contact() {
         <div className="container contact-faq-container">
           <div className="contact-section-heading centered">
             <p className="eyebrow">FAQ</p>
-            <h2>Частые вопросы</h2>
+            <h2>{t('contactPage.faqTitle')}</h2>
             <p>
-              Несколько ответов на вопросы, которые могут возникнуть перед
-              обращением к нам.
+              {t('contactPage.faqText')}
             </p>
           </div>
 
           <div className="contact-faq-list">
-            {FAQ_ITEMS.map((item) => (
-              <FAQItem key={item.question} item={item} />
+            {FAQ_ITEMS.map((id) => (
+              <FAQItem key={id} id={id} />
             ))}
           </div>
         </div>
@@ -583,21 +557,20 @@ export default function Contact() {
           <div className="contact-final-card">
             <div>
               <p className="eyebrow">FaroSayr</p>
-              <h2 style={{color: 'white'}}>Следующее путешествие может начаться сегодня</h2>
+              <h2 style={{color: 'white'}}>{t('contactPage.finalTitle')}</h2>
               <p>
-                Посмотрите наши направления или свяжитесь с менеджером, если
-                хотите подобрать поездку индивидуально.
+                {t('contactPage.finalText')}
               </p>
             </div>
 
             <div className="contact-final-actions">
               <Link to="/destinations" className="btn btn-primary">
-                Направления
+                {t('navigation.destinations')}
               </Link>
 
               <a href={phoneHref} className="btn btn-secondary">
                 <PhoneRounded />
-                Связаться
+                {t('contactPage.finalContact')}
               </a>
             </div>
           </div>

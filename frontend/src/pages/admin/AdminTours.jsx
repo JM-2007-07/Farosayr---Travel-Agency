@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
@@ -30,6 +31,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { adminApi } from '../../services/adminService';
 import { useAdminList } from '../../hooks/useAdminList';
 import { useAsyncData } from '../../hooks/useAsyncData';
+import { getApiErrorMessage } from '../../utils/getApiErrorMessage';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminLoading from '../../components/admin/AdminLoading';
 import AdminError from '../../components/admin/AdminError';
@@ -51,6 +53,7 @@ const EMPTY_FORM = {
 };
 
 function TourImageManager({ images, onChange }) {
+  const { t } = useTranslation();
   const [imageUrl, setImageUrl] = useState('');
   const [imageError, setImageError] = useState('');
 
@@ -58,14 +61,14 @@ function TourImageManager({ images, onChange }) {
     const url = imageUrl.trim();
 
     if (!url) {
-      setImageError('Введите URL изображения.');
+      setImageError(t('admin.tours.images.urlRequired'));
       return;
     }
 
     const alreadyExists = images.some((image) => image.url === url);
 
     if (alreadyExists) {
-      setImageError('Это изображение уже добавлено.');
+      setImageError(t('admin.tours.images.duplicate'));
       return;
     }
 
@@ -141,7 +144,7 @@ function TourImageManager({ images, onChange }) {
               color: '#0B1F3A',
             }}
           >
-            Изображения тура
+            {t('admin.tours.images.title')}
           </Typography>
 
           <Typography
@@ -151,7 +154,7 @@ function TourImageManager({ images, onChange }) {
               color: '#607482',
             }}
           >
-            Добавьте фотографии для галереи тура
+            {t('admin.tours.images.subtitle')}
           </Typography>
         </Box>
       </Box>
@@ -173,7 +176,7 @@ function TourImageManager({ images, onChange }) {
                 handleAddImage();
               }
             }}
-            label="URL изображения"
+            label={t('admin.common.imageUrl')}
             placeholder="https://images.unsplash.com/..."
             fullWidth
             size="small"
@@ -208,7 +211,7 @@ function TourImageManager({ images, onChange }) {
               },
             }}
           >
-            Добавить
+            {t('common.add')}
           </Button>
         </Stack>
 
@@ -252,7 +255,7 @@ function TourImageManager({ images, onChange }) {
                 color: '#607482',
               }}
             >
-              Изображения пока не добавлены
+              {t('admin.tours.images.emptyTitle')}
             </Typography>
 
             <Typography
@@ -262,7 +265,7 @@ function TourImageManager({ images, onChange }) {
                 color: '#91a0a8',
               }}
             >
-              Добавьте хотя бы одно изображение для красивой карточки тура
+              {t('admin.tours.images.emptyText')}
             </Typography>
           </Box>
         ) : (
@@ -297,7 +300,7 @@ function TourImageManager({ images, onChange }) {
                 >
                   <img
                     src={image.url}
-                    alt={image.alt || `Изображение тура ${index + 1}`}
+                    alt={image.alt || t('admin.tours.images.alt', { number: index + 1 })}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -327,12 +330,15 @@ function TourImageManager({ images, onChange }) {
                       backdropFilter: 'blur(8px)',
                     }}
                   >
-                    {index === 0 ? '★ ГЛАВНОЕ' : `ФОТО ${index + 1}`}
+                    {index === 0
+                      ? t('admin.tours.images.mainBadge')
+                      : t('admin.tours.images.photoBadge', { number: index + 1 })}
                   </Box>
 
                   <IconButton
                     type="button"
                     size="small"
+                    aria-label={t('admin.tours.images.remove')}
                     onClick={() => handleRemoveImage(index)}
                     sx={{
                       position: 'absolute',
@@ -358,7 +364,7 @@ function TourImageManager({ images, onChange }) {
                     onChange={(e) =>
                       handleImageChange(index, 'alt', e.target.value)
                     }
-                    placeholder="Alt-текст изображения"
+                    placeholder={t('admin.tours.images.altPlaceholder')}
                     size="small"
                     fullWidth
                   />
@@ -379,6 +385,7 @@ function TourFormDialog({
   tour,
   destinations,
 }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState(() =>
     tour
       ? {
@@ -431,7 +438,7 @@ function TourFormDialog({
       onSaved();
     } catch (err) {
       setStatus('idle');
-      setError(err.message || 'Не удалось сохранить тур.');
+      setError(getApiErrorMessage(err, t, 'admin.tours.saveError'));
       return;
     }
 
@@ -462,13 +469,13 @@ function TourFormDialog({
 
             <div>
               <div className="admin-dialog-title">
-                {tour ? 'Редактировать тур' : 'Новый тур'}
+                {tour ? t('admin.tours.dialogEdit') : t('admin.tours.dialogNew')}
               </div>
 
               <div className="admin-dialog-subtitle">
                 {tour
-                  ? 'Измените данные туристического предложения'
-                  : 'Создайте новое туристическое предложение FaroSayr'}
+                  ? t('admin.tours.dialogSubtitleEdit')
+                  : t('admin.tours.dialogSubtitleNew')}
               </div>
             </div>
           </div>
@@ -483,13 +490,13 @@ function TourFormDialog({
             )}
 
             <TextField
-              label="Название тура"
+              label={t('admin.tours.tourTitle')}
               name="title"
               value={form.title}
               onChange={handleChange}
               required
               fullWidth
-              placeholder="Например: Путешествие в Дубай"
+              placeholder={t('admin.tours.tourTitlePlaceholder')}
             />
 
             <TextField
@@ -500,7 +507,7 @@ function TourFormDialog({
               required
               fullWidth
               placeholder="dubai-tour"
-              helperText="Используется в URL страницы тура"
+              helperText={t('admin.common.slugHelperTour')}
               slotProps={{
                 input: {
                   startAdornment: (
@@ -517,7 +524,7 @@ function TourFormDialog({
             />
 
             <TextField
-              label="Описание"
+              label={t('common.description')}
               name="description"
               value={form.description}
               onChange={handleChange}
@@ -525,7 +532,7 @@ function TourFormDialog({
               fullWidth
               multiline
               rows={4}
-              placeholder="Краткое описание туристического предложения..."
+              placeholder={t('admin.tours.descriptionPlaceholder')}
             />
 
             <Stack
@@ -533,7 +540,7 @@ function TourFormDialog({
               spacing={2}
             >
               <TextField
-                label="Цена"
+                label={t('common.price')}
                 name="price"
                 type="number"
                 value={form.price}
@@ -556,13 +563,13 @@ function TourFormDialog({
               />
 
               <TextField
-                label="Длительность"
+                label={t('common.duration')}
                 name="duration"
                 value={form.duration}
                 onChange={handleChange}
                 required
                 fullWidth
-                placeholder="7 дней / 6 ночей"
+                placeholder={t('admin.tours.durationPlaceholder')}
                 slotProps={{
                   input: {
                     startAdornment: (
@@ -580,13 +587,13 @@ function TourFormDialog({
             </Stack>
 
             <TextField
-              label="Локация"
+              label={t('admin.tours.location')}
               name="location"
               value={form.location}
               onChange={handleChange}
               required
               fullWidth
-              placeholder="Дубай, ОАЭ"
+              placeholder={t('admin.tours.locationPlaceholder')}
               slotProps={{
                 input: {
                   startAdornment: (
@@ -604,7 +611,7 @@ function TourFormDialog({
 
             <TextField
               select
-              label="Направление"
+              label={t('common.destination')}
               name="destinationId"
               value={form.destinationId}
               onChange={handleChange}
@@ -640,7 +647,7 @@ function TourFormDialog({
                     onChange={handleChange}
                   />
                 }
-                label="Рекомендуемый тур"
+                label={t('admin.tours.featuredTour')}
               />
 
               <StarRoundedIcon />
@@ -654,7 +661,7 @@ function TourFormDialog({
             disabled={status === 'submitting'}
             sx={{ color: '#607482' }}
           >
-            Отмена
+            {t('common.cancel')}
           </Button>
 
           <Button
@@ -676,8 +683,8 @@ function TourFormDialog({
             }}
           >
             {status === 'submitting'
-              ? 'Сохранение…'
-              : 'Сохранить'}
+              ? t('common.saving')
+              : t('common.save')}
           </Button>
         </DialogActions>
       </form>
@@ -686,6 +693,7 @@ function TourFormDialog({
 }
 
 export default function AdminTours() {
+  const { t } = useTranslation();
   const {
     status,
     rows,
@@ -720,7 +728,7 @@ export default function AdminTours() {
       setDeleteTarget(null);
       reload();
     } catch (err) {
-      setDeleteError(err.message || 'Не удалось удалить тур.');
+      setDeleteError(getApiErrorMessage(err, t, 'admin.tours.deleteError'));
     } finally {
       setDeleting(false);
     }
@@ -728,7 +736,7 @@ export default function AdminTours() {
 
   return (
     <div className="admin-page">
-      <AdminPageHeader title="Туры" />
+      <AdminPageHeader title={t('admin.nav.tours')} />
 
       <section className="admin-page-hero">
         <div className="admin-page-hero-content">
@@ -743,13 +751,11 @@ export default function AdminTours() {
               </span>
 
               <h2 className="admin-page-hero-title">
-                Туры и путешествия
+                {t('admin.tours.heroTitle')}
               </h2>
 
               <p className="admin-page-hero-description">
-                Управляйте туристическими предложениями,
-                направлениями, ценами, изображениями и
-                рекомендованными турами FaroSayr.
+                {t('admin.tours.heroText')}
               </p>
             </div>
           </div>
@@ -773,7 +779,7 @@ export default function AdminTours() {
                 },
               }}
             >
-              Добавить тур
+              {t('admin.tours.add')}
             </Button>
           </div>
         </div>
@@ -788,7 +794,7 @@ export default function AdminTours() {
       {isError && <AdminError />}
 
       {isEmpty && (
-        <AdminEmptyState message="Туров пока нет." />
+        <AdminEmptyState message={t('admin.tours.empty')} />
       )}
 
       {status === 'success' && rows.length > 0 && (
@@ -797,7 +803,7 @@ export default function AdminTours() {
             <div className="admin-summary-card">
               <div className="admin-summary-top">
                 <span className="admin-summary-label">
-                  На текущей странице
+                  {t('admin.common.onCurrentPage')}
                 </span>
 
                 <div className="admin-summary-icon">
@@ -813,7 +819,7 @@ export default function AdminTours() {
             <div className="admin-summary-card">
               <div className="admin-summary-top">
                 <span className="admin-summary-label">
-                  Рекомендуемые
+                  {t('admin.tours.featured')}
                 </span>
 
                 <div className="admin-summary-icon">
@@ -829,7 +835,7 @@ export default function AdminTours() {
             <div className="admin-summary-card">
               <div className="admin-summary-top">
                 <span className="admin-summary-label">
-                  Страница каталога
+                  {t('admin.common.catalogPage')}
                 </span>
 
                 <div className="admin-summary-icon">
@@ -852,11 +858,11 @@ export default function AdminTours() {
 
                 <div>
                   <div className="admin-table-title-text">
-                    Каталог туров
+                    {t('admin.tours.tableTitle')}
                   </div>
 
                   <div className="admin-table-title-subtitle">
-                    Все туристические предложения FaroSayr
+                    {t('admin.tours.tableSubtitle')}
                   </div>
                 </div>
               </div>
@@ -865,7 +871,7 @@ export default function AdminTours() {
                 variant="caption"
                 color="text.secondary"
               >
-                {rows.length} записей
+                {t('admin.common.records', { count: rows.length })}
               </Typography>
             </div>
 
@@ -873,7 +879,7 @@ export default function AdminTours() {
               columns={[
                 {
                   key: 'title',
-                  label: 'Тур',
+                  label: t('common.tour'),
                   render: (r) => (
                     <div className="admin-deal-name">
                       <div
@@ -913,7 +919,7 @@ export default function AdminTours() {
                 },
                 {
                   key: 'destination',
-                  label: 'Направление',
+                  label: t('common.destination'),
                   render: (r) => (
                     <div className="admin-tour-location">
                       <LocationOnRoundedIcon />
@@ -925,7 +931,7 @@ export default function AdminTours() {
                 },
                 {
                   key: 'price',
-                  label: 'Цена',
+                  label: t('common.price'),
                   render: (r) => (
                     <span className="admin-price-current">
                       ${r.price}
@@ -934,7 +940,7 @@ export default function AdminTours() {
                 },
                 {
                   key: 'duration',
-                  label: 'Длительность',
+                  label: t('common.duration'),
                   render: (r) => (
                     <div className="admin-tour-duration">
                       <AccessTimeRoundedIcon />
@@ -944,16 +950,16 @@ export default function AdminTours() {
                 },
                 {
                   key: 'isFeatured',
-                  label: 'Статус',
+                  label: t('common.status'),
                   render: (r) =>
                     r.isFeatured ? (
                       <span className="admin-status admin-status-active">
                         <StarRoundedIcon />
-                        Рекомендуемый
+                        {t('admin.tours.featuredBadge')}
                       </span>
                     ) : (
                       <span className="admin-status admin-status-inactive">
-                        Обычный
+                        {t('admin.tours.regular')}
                       </span>
                     ),
                 },
@@ -969,7 +975,8 @@ export default function AdminTours() {
                     size="small"
                     className="admin-action-btn admin-action-edit"
                     onClick={() => setDialogTour(r)}
-                    title="Редактировать"
+                    title={t('common.edit')}
+                    aria-label={t('common.edit')}
                   >
                     <EditRoundedIcon fontSize="small" />
                   </IconButton>
@@ -978,7 +985,8 @@ export default function AdminTours() {
                     size="small"
                     className="admin-action-btn admin-action-delete"
                     onClick={() => setDeleteTarget(r)}
-                    title="Удалить"
+                    title={t('common.delete')}
+                    aria-label={t('common.delete')}
                   >
                     <DeleteRoundedIcon fontSize="small" />
                   </IconButton>
@@ -1004,7 +1012,7 @@ export default function AdminTours() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Удалить тур"
+        title={t('admin.tours.deleteTitle')}
         resourceName={deleteTarget?.title}
         onConfirm={handleDelete}
         onCancel={() => {

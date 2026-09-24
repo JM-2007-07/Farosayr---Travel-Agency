@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { getDeals } from '../../services/dealsService';
 import { useReveal } from '../../hooks/useReveal';
 import { useImgFallback } from '../../hooks/useImgFallback';
@@ -9,6 +10,7 @@ import AsyncState from '../common/AsyncState';
 import './HotDeals.css';
 
 function DealCard({ deal }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
   const countdown = useCountdown(deal.hours);
@@ -34,21 +36,21 @@ function DealCard({ deal }) {
           {countdown.expired ? (
             <div className="unit">
               <strong>00</strong>
-              <span>Завершено</span>
+              <span>{t('countdown.ended')}</span>
             </div>
           ) : (
             <>
               <div className="unit">
                 <strong>{countdown.hours}</strong>
-                <span>Часы</span>
+                <span>{t('countdown.hours')}</span>
               </div>
               <div className="unit">
                 <strong>{countdown.minutes}</strong>
-                <span>Мин</span>
+                <span>{t('countdown.minutes')}</span>
               </div>
               <div className="unit">
                 <strong>{countdown.seconds}</strong>
-                <span>Сек</span>
+                <span>{t('countdown.seconds')}</span>
               </div>
             </>
           )}
@@ -59,7 +61,7 @@ function DealCard({ deal }) {
             <span className="new">${deal.newPrice}</span>
           </div>
           <a href="#contact" className="dest-btn" onClick={handleBookClick}>
-            Забронировать
+            {t('common.bookNow')}
           </a>
         </div>
       </div>
@@ -68,6 +70,7 @@ function DealCard({ deal }) {
 }
 
 export default function HotDeals() {
+  const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
   const { status, data: deals, isLoading, isError } = useAsyncData(getDeals, []);
 
@@ -75,10 +78,10 @@ export default function HotDeals() {
     <section className="section deals" id="deals">
       <div className="container">
         <div className={`section-head reveal ${headInView ? 'in-view' : ''}`} ref={headRef}>
-          <p className="eyebrow">Ограниченное предложение</p>
-          <h2>Горящие предложения недели</h2>
+          <p className="eyebrow">{t('common.limitedOffer')}</p>
+          <h2>{t('home.deals.title')}</h2>
           <p className="section-desc">
-            Успейте забронировать по специальной цене — количество мест ограничено.
+            {t('home.deals.text')}
           </p>
         </div>
 

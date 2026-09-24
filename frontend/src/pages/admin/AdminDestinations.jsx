@@ -12,6 +12,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -20,6 +21,7 @@ import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
 import ImageRoundedIcon from '@mui/icons-material/ImageRounded';
 import { adminApi } from '../../services/adminService';
 import { useAdminList } from '../../hooks/useAdminList';
+import { getApiErrorMessage } from '../../utils/getApiErrorMessage';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminLoading from '../../components/admin/AdminLoading';
 import AdminError from '../../components/admin/AdminError';
@@ -36,6 +38,7 @@ const EMPTY_FORM = {
 };
 
 function DestinationFormDialog({ open, onClose, onSaved, destination }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState(() => (destination ? { ...destination } : EMPTY_FORM));
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
@@ -59,7 +62,7 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
       onSaved();
     } catch (err) {
       setStatus('idle');
-      setError(err.message || 'Не удалось сохранить направление.');
+      setError(getApiErrorMessage(err, t, 'admin.destinations.saveError'));
       return;
     }
 
@@ -90,11 +93,11 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
 
             <div>
               <div className="admin-dialog-title">
-                {destination ? 'Редактировать направление' : 'Новое направление'}
+                {destination ? t('admin.destinations.dialogEdit') : t('admin.destinations.dialogNew')}
               </div>
 
               <div className="admin-dialog-subtitle">
-                Добавьте туристическое направление FaroSayr
+                {t('admin.destinations.dialogSubtitle')}
               </div>
             </div>
           </div>
@@ -109,13 +112,13 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
             )}
 
             <TextField
-              label="Название"
+              label={t('admin.common.title')}
               name="name"
               value={form.name}
               onChange={handleChange}
               required
               fullWidth
-              placeholder="Например: Дубай"
+              placeholder={t('admin.destinations.namePlaceholder')}
             />
 
             <TextField
@@ -126,7 +129,7 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
               required
               fullWidth
               placeholder="dubai"
-              helperText="Используется в URL страницы направления"
+              helperText={t('admin.common.slugHelperDestination')}
               slotProps={{
                 input: {
                   startAdornment: <LinkRoundedIcon sx={{ mr: 1, color: '#9aa7b0', fontSize: 19 }} />,
@@ -135,7 +138,7 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
             />
 
             <TextField
-              label="Описание"
+              label={t('common.description')}
               name="description"
               value={form.description}
               onChange={handleChange}
@@ -143,11 +146,11 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
               fullWidth
               multiline
               rows={4}
-              placeholder="Краткое описание направления..."
+              placeholder={t('admin.destinations.descriptionPlaceholder')}
             />
 
             <TextField
-              label="URL изображения"
+              label={t('admin.common.imageUrl')}
               name="image"
               value={form.image}
               onChange={handleChange}
@@ -174,7 +177,7 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
               >
                 <img
                   src={form.image}
-                  alt="Предпросмотр"
+                  alt={t('admin.common.preview')}
                   style={{
                     width: '100%',
                     height: '100%',
@@ -201,7 +204,7 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
                     backdropFilter: 'blur(8px)',
                   }}
                 >
-                  Предпросмотр изображения
+                  {t('admin.common.imagePreview')}
                 </Box>
               </Box>
             )}
@@ -214,7 +217,7 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
             disabled={status === 'submitting'}
             sx={{ color: '#607482' }}
           >
-            Отмена
+            {t('common.cancel')}
           </Button>
 
           <Button
@@ -233,7 +236,7 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
               },
             }}
           >
-            {status === 'submitting' ? 'Сохранение…' : 'Сохранить'}
+            {status === 'submitting' ? t('common.saving') : t('common.save')}
           </Button>
         </DialogActions>
       </form>
@@ -242,6 +245,7 @@ function DestinationFormDialog({ open, onClose, onSaved, destination }) {
 }
 
 export default function AdminDestinations() {
+  const { t } = useTranslation();
   const {
     status,
     rows,
@@ -268,7 +272,7 @@ export default function AdminDestinations() {
       setDeleteTarget(null);
       reload();
     } catch (err) {
-      setDeleteError(err.message || 'Не удалось удалить направление.');
+      setDeleteError(getApiErrorMessage(err, t, 'admin.destinations.deleteError'));
     } finally {
       setDeleting(false);
     }
@@ -276,7 +280,7 @@ export default function AdminDestinations() {
 
   return (
     <div className="admin-page">
-      <AdminPageHeader title="Направления" />
+      <AdminPageHeader title={t('admin.nav.destinations')} />
 
       <section className="admin-page-hero">
         <div className="admin-page-hero-content">
@@ -291,12 +295,11 @@ export default function AdminDestinations() {
               </span>
 
               <h2 className="admin-page-hero-title">
-                Туристические направления
+                {t('admin.destinations.heroTitle')}
               </h2>
 
               <p className="admin-page-hero-description">
-                Управляйте странами, городами и направлениями, которые
-                представлены в туристическом каталоге FaroSayr.
+                {t('admin.destinations.heroText')}
               </p>
             </div>
           </div>
@@ -320,7 +323,7 @@ export default function AdminDestinations() {
                 },
               }}
             >
-              Добавить направление
+              {t('admin.destinations.add')}
             </Button>
           </div>
         </div>
@@ -332,7 +335,7 @@ export default function AdminDestinations() {
 
       {isError && <AdminError />}
 
-      {isEmpty && <AdminEmptyState message="Направлений пока нет." />}
+      {isEmpty && <AdminEmptyState message={t('admin.destinations.empty')} />}
 
       {status === 'success' && rows.length > 0 && (
         <>
@@ -340,7 +343,7 @@ export default function AdminDestinations() {
             <div className="admin-summary-card">
               <div className="admin-summary-top">
                 <span className="admin-summary-label">
-                  Всего направлений
+                  {t('admin.destinations.total')}
                 </span>
 
                 <div className="admin-summary-icon">
@@ -356,7 +359,7 @@ export default function AdminDestinations() {
             <div className="admin-summary-card">
               <div className="admin-summary-top">
                 <span className="admin-summary-label">
-                  На текущей странице
+                  {t('admin.common.onCurrentPage')}
                 </span>
 
                 <div className="admin-summary-icon">
@@ -372,7 +375,7 @@ export default function AdminDestinations() {
             <div className="admin-summary-card">
               <div className="admin-summary-top">
                 <span className="admin-summary-label">
-                  Страница каталога
+                  {t('admin.common.catalogPage')}
                 </span>
 
                 <div className="admin-summary-icon">
@@ -395,17 +398,17 @@ export default function AdminDestinations() {
 
                 <div>
                   <div className="admin-table-title-text">
-                    Список направлений
+                    {t('admin.destinations.tableTitle')}
                   </div>
 
                   <div className="admin-table-title-subtitle">
-                    Все направления туристического каталога FaroSayr
+                    {t('admin.destinations.tableSubtitle')}
                   </div>
                 </div>
               </div>
 
               <Typography variant="caption" color="text.secondary">
-                {rows.length} записей
+                {t('admin.common.records', { count: rows.length })}
               </Typography>
             </div>
 
@@ -413,7 +416,7 @@ export default function AdminDestinations() {
               columns={[
                 {
                   key: 'name',
-                  label: 'Направление',
+                  label: t('common.destination'),
                   render: (r) => (
                     <div className="admin-deal-name">
                       <div className="admin-deal-image">
@@ -432,7 +435,7 @@ export default function AdminDestinations() {
                         </div>
 
                         <div className="admin-deal-name-subtitle">
-                          {r.description || 'Описание отсутствует'}
+                          {r.description || t('admin.common.noDescription')}
                         </div>
                       </div>
                     </div>
@@ -470,6 +473,8 @@ export default function AdminDestinations() {
                     size="small"
                     className="admin-action-btn admin-action-edit"
                     onClick={() => setDialogItem(r)}
+                    title={t('common.edit')}
+                    aria-label={t('common.edit')}
                   >
                     <EditRoundedIcon fontSize="small" />
                   </IconButton>
@@ -478,6 +483,8 @@ export default function AdminDestinations() {
                     size="small"
                     className="admin-action-btn admin-action-delete"
                     onClick={() => setDeleteTarget(r)}
+                    title={t('common.delete')}
+                    aria-label={t('common.delete')}
                   >
                     <DeleteRoundedIcon fontSize="small" />
                   </IconButton>
@@ -502,7 +509,7 @@ export default function AdminDestinations() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Удалить направление"
+        title={t('admin.destinations.deleteTitle')}
         resourceName={deleteTarget?.name}
         onConfirm={handleDelete}
         onCancel={() => {

@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { getDestinations } from '../../services/destinationsService';
 import { useReveal } from '../../hooks/useReveal';
 import { useImgFallback } from '../../hooks/useImgFallback';
@@ -12,6 +13,7 @@ import ArrowOutwardRoundedIcon from '@mui/icons-material/ArrowOutwardRounded';
 import LuggageOutlinedIcon from '@mui/icons-material/LuggageOutlined';
 
 function DestinationCard({ destination }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
 
@@ -28,14 +30,14 @@ function DestinationCard({ destination }) {
         <div className="dest-media-top">
           <span className="dest-location">
             <ExploreOutlinedIcon className="dest-location-icon" />
-            <span>Направление</span>
+            <span>{t('common.destination')}</span>
           </span>
           <span className="dest-arrow">
             <ArrowOutwardRoundedIcon />
           </span>
         </div>
         <div className="dest-media-content">
-          <span className="dest-explore">Исследовать</span>
+          <span className="dest-explore">{t('common.explore')}</span>
           <h3>{destination.title}</h3>
         </div>
       </Link>
@@ -47,22 +49,22 @@ function DestinationCard({ destination }) {
           <div className="dest-details">
             <span className="dest-detail">
               <ExploreOutlinedIcon className="dest-detail-icon" />
-              Авторские туры
+              {t('common.signatureTours')}
             </span>
             <span className="dest-detail">
               <StarRoundedIcon className="dest-detail-icon" />
-              Популярное направление
+              {t('common.popularDestination')}
             </span>
           </div>
           <Link to={`/destinations/${destination.id}`} className="dest-btn">
-            <span>Подробнее</span>
+            <span>{t('common.learnMore')}</span>
             <ArrowOutwardRoundedIcon className="dest-btn-arrow" />
           </Link>
         </div>
         <a href="#contact" className="dest-book" onClick={handleBookClick}>
           <span>
             <LuggageOutlinedIcon className="dest-book-icon" />
-            Забронировать путешествие
+            {t('common.bookTrip')}
           </span>
           <ArrowOutwardRoundedIcon className="dest-book-arrow" />
         </a>
@@ -72,6 +74,7 @@ function DestinationCard({ destination }) {
 }
 
 export default function Destinations() {
+  const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
   const { status, data: destinations, isLoading, isError } = useAsyncData(getDestinations, []);
 
@@ -79,11 +82,10 @@ export default function Destinations() {
     <section className="section destinations" id="destinations">
       <div className="container">
         <div className={`section-head reveal ${headInView ? 'in-view' : ''}`} ref={headRef}>
-          <p className="eyebrow">Популярные направления</p>
-          <h2>Куда отправимся в этот раз?</h2>
+          <p className="eyebrow">{t('home.destinations.eyebrow')}</p>
+          <h2>{t('home.destinations.title')}</h2>
           <p className="section-desc">
-            Восемь направлений, которые чаще всего выбирают наши путешественники — от
-            экзотических островов до древних городов.
+            {t('home.destinations.text')}
           </p>
         </div>
 

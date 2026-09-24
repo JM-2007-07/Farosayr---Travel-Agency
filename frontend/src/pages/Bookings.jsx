@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded';
@@ -12,37 +13,28 @@ import RequireAuth from '../components/common/RequireAuth';
 import './Bookings.css';
 
 function BookingStatus({ status }) {
-  const labels = {
-    PENDING: 'Ожидает подтверждения',
-    CONFIRMED: 'Подтверждено',
-    CANCELLED: 'Отменено',
-    COMPLETED: 'Завершено',
-  };
+  const { t } = useTranslation();
 
   return (
     <span className={`booking-status status-${status?.toLowerCase()}`}>
-      {labels[status] ?? status}
+      {t(`bookingStatus.${status}`, { defaultValue: status })}
     </span>
   );
 }
 
 function PaymentStatus({ status }) {
-  const labels = {
-    PENDING: 'Ожидает оплаты',
-    PAID: 'Оплачено',
-    FAILED: 'Ошибка оплаты',
-    REFUNDED: 'Возвращено',
-  };
+  const { t } = useTranslation();
 
   return (
     <span className={`payment-status payment-${status?.toLowerCase()}`}>
       <PaymentsRoundedIcon />
-      {labels[status] ?? status}
+      {t(`paymentStatus.${status}`, { defaultValue: status })}
     </span>
   );
 }
 
 function BookingCard({ booking }) {
+  const { t } = useTranslation();
   const [ref, isInView] = useReveal();
 
   return (
@@ -57,8 +49,8 @@ function BookingCard({ booking }) {
           </span>
 
           <div>
-            <span>Бронирование</span>
-            <strong>№ {booking.id}</strong>
+            <span>{t('bookings.booking')}</span>
+            <strong>{t('bookings.number', { id: booking.id })}</strong>
           </div>
         </div>
 
@@ -80,11 +72,11 @@ function BookingCard({ booking }) {
                   {item.tour.title}
                 </Link>
               ) : (
-                <strong>Тур</strong>
+                <strong>{t('common.tour')}</strong>
               )}
 
               <span>
-                Количество: {item.quantity} · ${item.totalPrice}
+                {t('bookings.quantityLine', { quantity: item.quantity, price: item.totalPrice })}
               </span>
             </div>
 
@@ -92,7 +84,7 @@ function BookingCard({ booking }) {
               <Link
                 to={`/tours/${item.tour.slug}`}
                 className="booking-tour-link"
-                aria-label={`Открыть ${item.tour.title}`}
+                aria-label={t('bookings.openTour', { title: item.tour.title })}
               >
                 <ArrowForwardRoundedIcon />
               </Link>
@@ -107,7 +99,7 @@ function BookingCard({ booking }) {
         <PaymentStatus status={booking.paymentStatus} />
 
         <div className="booking-total">
-          <span>Итого</span>
+          <span>{t('common.total')}</span>
           <strong>${booking.totalAmount}</strong>
         </div>
       </div>
@@ -116,6 +108,7 @@ function BookingCard({ booking }) {
 }
 
 function BookingsList() {
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
 
   const {
@@ -133,7 +126,7 @@ function BookingsList() {
         isLoading={isLoading}
         isError={isError}
         isEmpty={status === 'success' && items.length === 0}
-        emptyLabel="У вас пока нет бронирований."
+        emptyLabel={t('bookings.empty')}
       />
 
       {status === 'success' && items.length > 0 && (
@@ -148,6 +141,7 @@ function BookingsList() {
 }
 
 export default function Bookings() {
+  const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
 
   return (
@@ -164,13 +158,12 @@ export default function Bookings() {
               <ReceiptLongRoundedIcon />
             </div>
 
-            <p className="eyebrow">Личный кабинет</p>
+            <p className="eyebrow">{t('account.personalArea')}</p>
 
-            <h1 style={{color: 'white'}}>Мои бронирования</h1>
+            <h1 style={{color: 'white'}}>{t('account.bookings')}</h1>
 
             <p>
-              Здесь вы можете посмотреть свои путешествия,
-              статусы бронирований и информацию об оплате.
+              {t('bookings.text')}
             </p>
           </div>
         </div>
@@ -178,7 +171,7 @@ export default function Bookings() {
 
       <section className="section bookings-section">
         <div className="container">
-          <RequireAuth prompt="Войдите в аккаунт, чтобы увидеть свои бронирования.">
+          <RequireAuth prompt={t('bookings.signInPrompt')}>
             <BookingsList />
           </RequireAuth>
         </div>
