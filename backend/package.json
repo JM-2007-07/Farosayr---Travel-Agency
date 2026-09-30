@@ -10,7 +10,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed"
+    "prisma:seed": "prisma db seed",
+    "telegram:webhook": "node scripts/telegram-webhook.js",
+    "telegram:selftest": "node scripts/telegram-selftest.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

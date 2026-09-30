@@ -1,10 +1,9 @@
 import { prisma } from '../config/database.js';
 import { notFoundError } from '../utils/httpErrors.js';
+import { findDestinations } from '../services/destinations.service.js';
 
 export async function listDestinations(req, res) {
-  const destinations = await prisma.destination.findMany({
-    orderBy: [{ name: 'asc' }, { id: 'asc' }], // id tiebreaker for deterministic order
-  });
+  const destinations = await findDestinations();
   res.status(200).json({ success: true, data: destinations });
 }
 

@@ -66,6 +66,10 @@ app.use(
     limit: 300,
     standardHeaders: true,
     legacyHeaders: false,
+    // The Telegram webhook has its own limiter (see
+    // middleware/authRateLimit.js): its traffic all comes from a few
+    // Telegram IPs, so this per-IP limit would throttle the bot itself.
+    skip: (req) => req.path === `${env.apiPrefix}/telegram/webhook`,
   })
 );
 

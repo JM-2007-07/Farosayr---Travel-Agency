@@ -1,6 +1,7 @@
 import { prisma } from '../config/database.js';
 import { createBookingSchema } from '../validation/booking.validation.js';
 import { notFoundError, zodBadRequest } from '../utils/httpErrors.js';
+import { sendNewBookingNotification } from '../services/telegram.service.js';
 
 // Creates a Booking + its one BookingItem together, in a transaction, so a
 // crash between the two writes can't leave an orphaned Booking with no
@@ -47,6 +48,10 @@ export async function createBooking(req, res) {
       include: { items: { include: { tour: { select: { id: true, title: true, slug: true } } } } },
     });
   });
+
+  // Only reached after the transaction committed. Best-effort, never
+  // throws — see the same call in contact.controller.js.
+  await sendNewBookingNotification(booking, req.user);
 
   res.status(201).json({ success: true, data: booking });
 }

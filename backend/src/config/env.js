@@ -35,4 +35,13 @@ export const env = {
   // module that reads it.
   jwtSecret,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  // Telegram is optional, unlike JWT_SECRET: with these unset the bot and
+  // admin notifications are simply disabled — every other API keeps
+  // working. Never log or return any of these values (the token is part of
+  // every Bot API URL; see services/telegram.service.js, the only reader).
+  telegram: {
+    botToken: process.env.TELEGRAM_BOT_TOKEN || null,
+    adminChatId: process.env.TELEGRAM_ADMIN_CHAT_ID || null,
+    webhookSecret: process.env.TELEGRAM_WEBHOOK_SECRET || null,
+  },
 };

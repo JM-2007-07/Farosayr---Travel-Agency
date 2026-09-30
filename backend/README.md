@@ -68,3 +68,9 @@ business CRUD (tours/destinations/bookings/etc.) yet, and no complete
 frontend auth UI — those are later phases. The frontend (`../frontend`)
 does not call this API yet — its services still read from local seed data,
 on purpose.
+
+## Telegram bot
+
+Optional Telegram admin notifications (new contact messages and bookings) and
+a public info bot. Setup, env vars and testing: [../docs/telegram.md](../docs/telegram.md).
+Code-level self-test (mocked Telegram API): `npm run telegram:selftest`.
