@@ -14,6 +14,7 @@ import bookingsRoutes from './bookings.routes.js';
 import contactRoutes from './contact.routes.js';
 import newsletterRoutes from './newsletter.routes.js';
 import adminRoutes from './admin.routes.js';
+import telegramRoutes from './telegram.routes.js';
 
 const router = Router();
 
@@ -43,6 +44,7 @@ router.use('/bookings', bookingsRoutes);
 router.use('/contact', contactRoutes);
 router.use('/newsletter', newsletterRoutes);
 router.use('/admin', adminRoutes);
+router.use('/telegram', telegramRoutes);
 
 // Payments: a later phase, not this one.
 

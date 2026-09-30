@@ -31,3 +31,20 @@ export const publicWriteRateLimit = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests. Please try again later.' },
 });
+
+/**
+ * Telegram webhook limiter. All genuine traffic arrives from a handful of
+ * Telegram server IPs, so a per-IP cap on successful requests would
+ * throttle the bot itself as it gets busier (which is also why app.js
+ * exempts this route from the global limiter). Instead only REJECTED
+ * requests (wrong secret → 401, not configured → 503) are counted, which
+ * bounds secret-guessing without ever limiting Telegram.
+ */
+export const telegramWebhookRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  skipSuccessfulRequests: true,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests. Please try again later.' },
+});
