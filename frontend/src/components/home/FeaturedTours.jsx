@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { getTours } from '../../services/toursService';
 import { useReveal } from '../../hooks/useReveal';
@@ -44,6 +45,12 @@ export default function FeaturedTours() {
             ))}
           </div>
         )}
+
+        <div className="section-more">
+          <Link to="/tours" className="btn btn-outline-dark">
+            {t('home.tours.all')}
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -25,7 +25,7 @@ function DestinationCard({ destination }) {
   return (
     <article className={`dest-card reveal ${isInView ? 'in-view' : ''}`} ref={ref}>
       <Link to={`/destinations/${destination.id}`} className={`dest-media img-wrap ${broken ? 'img-fallback' : ''}`}>
-        <img src={destination.image} alt={destination.title} onError={onError} />
+        <img src={destination.image} alt={destination.title} loading="lazy" decoding="async" onError={onError} />
         <div className="dest-image-overlay" />
         <div className="dest-media-top">
           <span className="dest-location">
@@ -102,6 +102,12 @@ export default function Destinations() {
             ))}
           </div>
         )}
+
+        <div className="section-more">
+          <Link to="/destinations" className="btn btn-outline-dark">
+            {t('home.destinations.all')}
+          </Link>
+        </div>
       </div>
     </section>
   );

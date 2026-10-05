@@ -11,6 +11,7 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 import { useAuth } from '../context/AuthContext';
 import { getApiErrorMessage } from '../utils/getApiErrorMessage';
 import './Login.css';
+import Seo from '../seo/Seo';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
@@ -49,7 +50,8 @@ export default function Login() {
   }
 
   return (
-    <main className="auth-page">
+    <div className="auth-page">
+      <Seo page="login" noindex />
       <div className="auth-container">
         <section className="auth-card">
           <div className="auth-visual">
@@ -208,6 +210,6 @@ export default function Login() {
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

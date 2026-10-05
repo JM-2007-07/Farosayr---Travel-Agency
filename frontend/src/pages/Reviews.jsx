@@ -5,6 +5,7 @@ import { getReviews } from '../services/reviewsService';
 import { useAsyncData } from '../hooks/useAsyncData';
 import AsyncState from '../components/common/AsyncState';
 import './Reviews.css';
+import Seo from '../seo/Seo';
 
 const AUTO_SLIDE_MS = 6000;
 
@@ -53,7 +54,8 @@ export default function Reviews() {
   }, [count]);
 
   return (
-    <main className="reviews-page">
+    <div className="reviews-page">
+      <Seo page="reviews" path="/reviews" />
       <section className="reviews-hero" style={{paddingTop: '50px'}}>
         <div className="reviews-container">
           <div className="reviews-hero-content">
@@ -193,6 +195,6 @@ export default function Reviews() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

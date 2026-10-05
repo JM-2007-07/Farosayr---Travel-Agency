@@ -5,6 +5,7 @@ import AdminLayout from './layout/AdminLayout';
 import AdminGuard from './components/admin/AdminGuard';
 import Loading from './components/Loading';
 import { AuthProvider } from './context/AuthContext';
+import { scrollToId } from './utils/scrollToId';
 
 const Home = lazy(() => import('./pages/Home'));
 const Tours = lazy(() => import('./pages/Tours'));
@@ -44,11 +45,33 @@ function withSuspense(Page) {
 }
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return undefined;
+    }
+    // Links like /#faq: the target section only exists once the lazy page
+    // chunk has rendered, and sections above it grow as their API data
+    // arrives — so wait for it, then re-aim a few times while it settles.
+    const id = decodeURIComponent(hash.slice(1));
+    let attempts = 0;
+    let corrections = 0;
+    let timer;
+    const tryScroll = () => {
+      const target = document.getElementById(id);
+      if (!target) {
+        if (attempts++ < 30) timer = setTimeout(tryScroll, 100);
+        return;
+      }
+      const offBy = Math.abs(target.getBoundingClientRect().top - 78);
+      if (corrections === 0 || offBy > 40) scrollToId(id);
+      if (corrections++ < 3) timer = setTimeout(tryScroll, 700);
+    };
+    tryScroll();
+    return () => clearTimeout(timer);
+  }, [pathname, hash]);
 
   return null;
 }

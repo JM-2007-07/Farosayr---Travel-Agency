@@ -75,8 +75,10 @@ export default function Header() {
             }}
           >
             <img
-              src="/logo.png"
-              alt="FaroSayr"
+              src="/icon-192.png"
+              alt="Farosayr"
+              width="50"
+              height="50"
               className="logo-image"
             />
 

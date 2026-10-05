@@ -10,6 +10,7 @@ import { useAsyncData } from '../hooks/useAsyncData';
 import { useImgFallback } from '../hooks/useImgFallback';
 import AsyncState from '../components/common/AsyncState';
 import './DestinationDetails.css';
+import { DestinationSeo } from '../seo/DetailSeo';
 
 function RelatedTourCard({ tour }) {
   const { t } = useTranslation();
@@ -24,6 +25,8 @@ function RelatedTourCard({ tour }) {
         <img
           src={tour.image}
           alt={tour.title}
+          loading="lazy"
+          decoding="async"
           onError={onError}
         />
         <span className="destination-tour-overlay">
@@ -83,7 +86,8 @@ export default function DestinationDetails() {
   const [broken, onError] = useImgFallback();
 
   return (
-    <main className="destination-details-page">
+    <div className="destination-details-page">
+      <DestinationSeo status={status} destination={destination} slug={id} />
       <div className="container destination-details-container">
         <AsyncState
           isLoading={isLoading}
@@ -249,6 +253,6 @@ export default function DestinationDetails() {
           </>
         )}
       </div>
-    </main>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import TourCard from '../components/common/TourCard';
 import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
+import Seo from '../seo/Seo';
 
 function FavoritesList() {
   const { t } = useTranslation();
@@ -53,6 +54,7 @@ export default function Favorites() {
 
   return (
     <div className="container" style={{ padding: '160px 0 100px' }}>
+      <Seo page="favorites" noindex />
       <p className="eyebrow">{t('account.personalArea')}</p>
       <h1 style={{ marginBottom: 30 }}>{t('account.favorites')}</h1>
       <RequireAuth prompt={t('favorites.signInPrompt')}>

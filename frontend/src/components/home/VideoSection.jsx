@@ -28,7 +28,7 @@ export default function VideoSection() {
           className={`video-card reveal img-wrap ${isInView ? 'in-view' : ''} ${broken ? 'img-fallback' : ''}`}
           ref={ref}
         >
-          <img src={VIDEO_IMG} alt={t('home.video.imageAlt')} onError={onError} />
+          <img src={VIDEO_IMG} alt={t('home.video.imageAlt')} loading="lazy" decoding="async" onError={onError} />
           <div className="video-overlay" />
           <button
             className="play-btn"

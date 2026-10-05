@@ -10,6 +10,7 @@ import { Link } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 import RequireAuth from '../components/common/RequireAuth';
 import './Profile.css';
+import Seo from '../seo/Seo';
 
 function ProfileCard() {
   const { t } = useTranslation();
@@ -128,7 +129,8 @@ export default function Profile() {
   const { t } = useTranslation();
 
   return (
-    <main className="profile-page">
+    <div className="profile-page">
+      <Seo page="profile" noindex />
       <div className="container">
         <div className="profile-page-header">
           <div>
@@ -152,6 +154,6 @@ export default function Profile() {
           <ProfileCard />
         </RequireAuth>
       </div>
-    </main>
+    </div>
   );
 }

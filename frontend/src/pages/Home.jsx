@@ -11,12 +11,14 @@ import VideoSection from '../components/home/VideoSection';
 import ReviewsSection from '../components/home/ReviewsSection';
 import FAQSection from '../components/home/FAQSection';
 import ContactSection from '../components/home/ContactSection';
+import Seo from '../seo/Seo';
 
 // Composes the homepage from real sections, in the original section order.
 // Phase 1's <SectionPending> placeholders are fully replaced now.
 export default function Home() {
   return (
     <>
+      <Seo page="home" path="/" />
       <Hero />
       <BookingSearch />
       <Destinations />

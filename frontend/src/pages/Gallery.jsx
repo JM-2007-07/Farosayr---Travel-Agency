@@ -8,6 +8,7 @@ import './Gallery.css';
 import { getGalleryItems } from '../services/galleryService';
 import Lightbox from '../components/common/Lightbox';
 import AsyncState from '../components/common/AsyncState';
+import Seo from '../seo/Seo';
 
 function GalleryTile({ item, onOpen }) {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ function GalleryTile({ item, onOpen }) {
       onClick={() => onOpen(item)}
       aria-label={t('galleryPage.openPhoto', { title: alt })}
     >
-      <img src={item.thumb} alt={alt} onError={onError} />
+      <img src={item.thumb} alt={alt} loading="lazy" decoding="async" onError={onError} />
       <span className="gallery-item-overlay" aria-hidden="true">
         <span className="gallery-item-expand">
           <OpenInFullIcon sx={{ fontSize: 21 }} />
@@ -52,7 +53,8 @@ export default function Gallery() {
   const items = galleryItems ?? [];
 
   return (
-    <main className="gallery-page">
+    <div className="gallery-page">
+      <Seo page="gallery" path="/gallery" />
       <section className="gallery-hero">
         <div className="container">
           <div
@@ -125,6 +127,6 @@ export default function Gallery() {
       </section>
 
       <Lightbox item={activeItem} onClose={close} />
-    </main>
+    </div>
   );
 }

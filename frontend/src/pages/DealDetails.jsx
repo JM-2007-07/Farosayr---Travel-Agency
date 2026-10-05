@@ -5,6 +5,7 @@ import { useAsyncData } from '../hooks/useAsyncData';
 import { useImgFallback } from '../hooks/useImgFallback';
 import { useCountdown } from '../hooks/useCountdown';
 import AsyncState from '../components/common/AsyncState';
+import { DealSeo } from '../seo/DetailSeo';
 
 function DealCountdown({ hours }) {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ export default function DealDetails() {
 
   return (
     <div className="container" style={{ padding: '160px 0 100px' }}>
+      <DealSeo status={status} deal={deal} id={id} />
       <AsyncState
         isLoading={isLoading}
         isError={isError}

@@ -9,6 +9,7 @@ import { useImgFallback } from '../hooks/useImgFallback';
 import { useAsyncData } from '../hooks/useAsyncData';
 import AsyncState from '../components/common/AsyncState';
 import './Destinations.css';
+import Seo from '../seo/Seo';
 
 function DestinationCard({ destination }) {
   const { t } = useTranslation();
@@ -27,6 +28,8 @@ function DestinationCard({ destination }) {
         <img
           src={destination.image}
           alt={destination.title}
+          loading="lazy"
+          decoding="async"
           onError={onError}
         />
 
@@ -86,7 +89,8 @@ export default function Destinations() {
   const items = destinations ?? [];
 
   return (
-    <main className="destinations-page">
+    <div className="destinations-page">
+      <Seo page="destinations" path="/destinations" />
       <section className="destinations-hero">
         <div className="container">
           <div
@@ -174,6 +178,6 @@ export default function Destinations() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

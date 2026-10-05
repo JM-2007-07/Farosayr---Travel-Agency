@@ -10,6 +10,7 @@ import { useCountdown } from '../hooks/useCountdown';
 import { useAsyncData } from '../hooks/useAsyncData';
 import AsyncState from '../components/common/AsyncState';
 import './Deals.css';
+import Seo from '../seo/Seo';
 
 function DealCard({ deal }) {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ function DealCard({ deal }) {
         to={`/deals/${deal.id}`}
         className={`deal-media img-wrap ${broken ? 'img-fallback' : ''}`}
       >
-        <img src={deal.image} alt={deal.title} onError={onError} />
+        <img src={deal.image} alt={deal.title} loading="lazy" decoding="async" onError={onError} />
         <span className="deal-tag">{deal.discountLabel}</span>
         <span className="deal-open">
           <ArrowForwardRoundedIcon />
@@ -98,7 +99,8 @@ export default function Deals() {
   const items = deals ?? [];
 
   return (
-    <main className="deals-page">
+    <div className="deals-page">
+      <Seo page="deals" path="/deals" />
       <section className="deals-hero">
         <div className="container">
           <div
@@ -177,6 +179,6 @@ export default function Deals() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

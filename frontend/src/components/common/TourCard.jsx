@@ -62,6 +62,8 @@ export default function TourCard({
             <img
               src={imageUrl}
               alt={imageAlt}
+              loading="lazy"
+              decoding="async"
               onError={onError}
             />
           ) : (

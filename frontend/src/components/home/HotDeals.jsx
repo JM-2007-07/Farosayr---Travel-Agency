@@ -26,7 +26,7 @@ function DealCard({ deal }) {
   return (
     <article className={`deal-card reveal ${isInView ? 'in-view' : ''}`} ref={ref}>
       <Link to={`/deals/${deal.id}`} className={`deal-media img-wrap ${broken ? 'img-fallback' : ''}`}>
-        <img src={deal.image} alt={deal.title} onError={onError} />
+        <img src={deal.image} alt={deal.title} loading="lazy" decoding="async" onError={onError} />
         <span className="deal-tag">{deal.discountLabel}</span>
       </Link>
       <div className="deal-body">
@@ -98,6 +98,12 @@ export default function HotDeals() {
             ))}
           </div>
         )}
+
+        <div className="section-more">
+          <Link to="/deals" className="btn btn-outline-dark">
+            {t('home.deals.all')}
+          </Link>
+        </div>
       </div>
     </section>
   );
