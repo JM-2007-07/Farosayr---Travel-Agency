@@ -107,7 +107,7 @@
     "personalArea": "My account"
   },
   "footer": {
-    "description": "A Dushanbe-based travel agency that turns travel dreams into real journeys.",
+    "description": "Farosayr is a travel agency in Dushanbe, Tajikistan, turning travel dreams into real journeys.",
     "sections": "Explore",
     "company": "Company",
     "stayInformed": "Stay in the loop",
@@ -172,7 +172,7 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "Your guiding light in the world of travel",
+      "eyebrow": "Travel agency in Dushanbe",
       "title": "EXPLORE THE WORLD <accent>WITH FAROSAYR</accent>",
       "subtitle": "We chart the course to the planet's most vibrant corners — from the turquoise shores of the Maldives to the glittering lights of Dubai. Premium service, honest prices and care at every step of your journey.",
       "scrollDown": "Scroll down"
@@ -215,7 +215,8 @@
     "destinations": {
       "eyebrow": "Popular destinations",
       "title": "Where to next?",
-      "text": "Eight destinations our travelers choose most — from exotic islands to ancient cities."
+      "text": "Eight destinations our travelers choose most — from exotic islands to ancient cities.",
+      "all": "All destinations"
     },
     "why": {
       "eyebrow": "Why choose us",
@@ -250,11 +251,13 @@
     },
     "deals": {
       "title": "This week's hot deals",
-      "text": "Book at a special price while you can — places are limited."
+      "text": "Book at a special price while you can — places are limited.",
+      "all": "All hot deals"
     },
     "tours": {
       "eyebrow": "Our picks",
-      "text": "Ready-made itineraries trusted by hundreds of happy travelers."
+      "text": "Ready-made itineraries trusted by hundreds of happy travelers.",
+      "all": "View all tours"
     },
     "stats": {
       "travelers": "Travelers",
@@ -263,17 +266,18 @@
       "support": "Customer support"
     },
     "about": {
-      "imageAlt": "The FaroSayr team",
+      "imageAlt": "Planning a trip with Farosayr",
       "badge": "year of crafting dream journeys",
       "eyebrow": "About us",
       "title": "Your guiding light to the perfect holiday",
-      "text": "FaroSayr was founded in Dushanbe by a team passionate about travel. Our name comes from \"pharos\" — the lighthouse that guides sailors on their way. We do the same for our clients, lighting the path to safe, vibrant and unforgettable journeys.",
+      "text": "Farosayr is a travel agency in Dushanbe, founded by a team passionate about travel. Our name comes from \"pharos\" — the lighthouse that guides sailors on their way. We do the same for our clients, lighting the path to safe, vibrant and unforgettable journeys.",
       "points": {
         "personal": "A personal approach for every traveler",
         "direct": "Direct contracts with hotels and airlines",
         "fullSupport": "Full support — from visa to transfer",
         "transparent": "Transparent pricing with no hidden fees"
-      }
+      },
+      "more": "More about the company"
     },
     "gallery": {
       "eyebrow": "Travel moments",
@@ -804,5 +808,90 @@
         "remove": "Remove image"
       }
     }
+  },
+  "aboutPage": {
+    "eyebrow": "About us",
+    "title": "Farosayr — travel agency in Dushanbe",
+    "text": "Farosayr helps travellers from Tajikistan see the world: we plan tours from Dushanbe to Turkey, Dubai, Egypt, Thailand, the Maldives and beyond, and help with visas, flights, hotels and transfers. Visit our office or send a request — we will put together a trip that fits your budget and dates.",
+    "linksTitle": "Where to start",
+    "toursLink": "Tours from Dushanbe",
+    "destinationsLink": "Holiday destinations",
+    "dealsLink": "Hot deals",
+    "contactLink": "Contacts and office address"
+  },
+  "seo": {
+    "pages": {
+      "home": {
+        "title": "Farosayr — Travel Agency in Dushanbe, Tajikistan",
+        "description": "Farosayr is a travel agency in Dushanbe. Tours from Tajikistan to Turkey, Dubai, Egypt, Thailand and the Maldives: tour selection, visas and transfers."
+      },
+      "tours": {
+        "title": "Tours from Dushanbe — Prices and Itineraries | Farosayr",
+        "description": "Tours from Dushanbe by Farosayr travel agency: itineraries, durations and prices. Find a trip by destination and budget and book online."
+      },
+      "destinations": {
+        "title": "Holiday Destinations from Tajikistan | Farosayr",
+        "description": "Where to travel from Tajikistan: Turkey, Dubai, Egypt, Thailand, the Maldives, Uzbekistan and more. Tours and holidays with Farosayr."
+      },
+      "deals": {
+        "title": "Hot Deals on Tours from Dushanbe | Farosayr",
+        "description": "Hot deals and special prices on tours from Dushanbe by Farosayr. Book your trip at a great price."
+      },
+      "about": {
+        "title": "About Farosayr — Travel Agency in Dushanbe",
+        "description": "Farosayr is a travel agency in Dushanbe, Tajikistan. Personal tour planning, visa support and assistance at every stage of your trip."
+      },
+      "contact": {
+        "title": "Contact Farosayr — Travel Agency in Dushanbe",
+        "description": "Contact Farosayr travel agency in Dushanbe: phone +992 11 211 33 77, email, office address and opening hours. Request a tour."
+      },
+      "reviews": {
+        "title": "Farosayr Travel Agency Reviews",
+        "description": "What travellers say about Farosayr travel agency in Dushanbe: impressions of tours, service and trips."
+      },
+      "gallery": {
+        "title": "Travel Photo Gallery | Farosayr",
+        "description": "Photos from trips with Farosayr: beaches, cities and moments from our travellers."
+      },
+      "booking": {
+        "title": "Book a Tour | Farosayr",
+        "description": "Send a tour booking request to Farosayr."
+      },
+      "login": {
+        "title": "Sign In | Farosayr",
+        "description": "Sign in to your Farosayr account."
+      },
+      "register": {
+        "title": "Create an Account | Farosayr",
+        "description": "Create your Farosayr account."
+      },
+      "profile": {
+        "title": "Profile | Farosayr",
+        "description": "Your Farosayr account."
+      },
+      "bookings": {
+        "title": "My Bookings | Farosayr",
+        "description": "Your Farosayr bookings."
+      },
+      "favorites": {
+        "title": "Favourite Tours | Farosayr",
+        "description": "Your favourite Farosayr tours."
+      },
+      "notFound": {
+        "title": "Page Not Found | Farosayr",
+        "description": "This page does not exist."
+      },
+      "admin": {
+        "title": "Admin Panel | Farosayr",
+        "description": "Farosayr admin panel."
+      }
+    },
+    "tourTitle": "{{title}} — Tour from Dushanbe | Farosayr",
+    "tourDescription": "{{description}} {{location}}, {{duration}}. A tour by Farosayr travel agency in Dushanbe.",
+    "destinationTitle": "{{name}} — Tours and Holidays from Dushanbe | Farosayr",
+    "destinationDescription": "{{description}} Tours to {{name}} by Farosayr travel agency in Dushanbe.",
+    "dealTitle": "{{title}} — Special Offer | Farosayr",
+    "dealDescription": "{{description}} A special offer from Farosayr travel agency in Dushanbe.",
+    "home": "Home"
   }
 }

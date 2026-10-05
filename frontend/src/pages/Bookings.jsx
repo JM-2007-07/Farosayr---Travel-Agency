@@ -11,6 +11,7 @@ import { useReveal } from '../hooks/useReveal';
 import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
 import './Bookings.css';
+import Seo from '../seo/Seo';
 
 function BookingStatus({ status }) {
   const { t } = useTranslation();
@@ -145,7 +146,8 @@ export default function Bookings() {
   const [headRef, headInView] = useReveal();
 
   return (
-    <main className="bookings-page">
+    <div className="bookings-page">
+      <Seo page="bookings" noindex />
       <section className="bookings-hero">
         <div className="container">
           <div
@@ -176,6 +178,6 @@ export default function Bookings() {
           </RequireAuth>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

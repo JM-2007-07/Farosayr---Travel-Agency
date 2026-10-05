@@ -155,6 +155,23 @@ h4 {
   background: rgba(255, 255, 255, 0.12);
   transform: translateY(-3px);
 }
+/* Outline variant for light sections (.btn-outline is white-on-dark). */
+.btn-outline-dark {
+  background: transparent;
+  border: 1.5px solid var(--dark-blue);
+  color: var(--dark-blue);
+}
+.btn-outline-dark:hover {
+  background: var(--dark-blue);
+  color: var(--white);
+  transform: translateY(-3px);
+}
+/* "See all …" link under a homepage section's grid. */
+.section-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
 .btn-cta {
   background: var(--dark-blue);
   color: var(--white);

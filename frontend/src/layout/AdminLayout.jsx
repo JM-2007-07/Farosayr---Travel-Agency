@@ -30,6 +30,7 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { useAuth } from '../context/AuthContext';
 import LanguageSwitcher from '../components/common/LanguageSwitcher';
+import Seo from '../seo/Seo';
 
 const DRAWER_WIDTH = 270;
 
@@ -472,6 +473,7 @@ export default function AdminLayout() {
           },
         }}
       >
+        <Seo page="admin" noindex />
         <Outlet />
       </Box>
     </Box>

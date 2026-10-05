@@ -10,6 +10,7 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { useAuth } from '../context/AuthContext';
 import { getApiErrorMessage } from '../utils/getApiErrorMessage';
 import './Register.css';
+import Seo from '../seo/Seo';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
@@ -53,7 +54,8 @@ export default function Register() {
   }
 
   return (
-    <main className="register-page">
+    <div className="register-page">
+      <Seo page="register" noindex />
       <div className="container">
         <div className="register-layout">
           <section className="register-intro">
@@ -228,6 +230,6 @@ export default function Register() {
           </section>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -13,6 +13,7 @@ import { useFavorites } from '../hooks/useFavorites';
 import TourCard from '../components/common/TourCard';
 import AsyncState from '../components/common/AsyncState';
 import './Tours.css';
+import Seo from '../seo/Seo';
 
 const SORT_OPTIONS = [
   { value: '', labelKey: 'tours.sortOptions.default' },
@@ -68,7 +69,8 @@ export default function Tours() {
   }
 
   return (
-    <main className="tours-page">
+    <div className="tours-page">
+      <Seo page="tours" path="/tours" />
       <section className="tours-hero">
         <div className="container">
           <div className="tours-hero-content">
@@ -272,6 +274,6 @@ export default function Tours() {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

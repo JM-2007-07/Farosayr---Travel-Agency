@@ -1,8 +1,35 @@
 {
-  "rewrites": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.farosayr.com" }],
+      "destination": "https://farosayr.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "farosayr-t-a-frontend.vercel.app" }],
+      "destination": "https://farosayr.com/:path*",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    { "source": "/tours/:slug", "destination": "/spa.html" },
+    { "source": "/destinations/:slug", "destination": "/spa.html" },
+    { "source": "/deals/:id", "destination": "/spa.html" },
+    { "source": "/admin", "destination": "/spa.html" },
+    { "source": "/admin/:path*", "destination": "/spa.html" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
     }
   ]
 }

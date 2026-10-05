@@ -86,3 +86,9 @@
     height: 320px;
   }
 }
+
+.about-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}

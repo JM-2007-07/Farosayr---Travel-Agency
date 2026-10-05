@@ -18,6 +18,7 @@ import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
 import { getApiErrorMessage } from '../utils/getApiErrorMessage';
 import './TourDetails.css';
+import { TourSeo } from '../seo/DetailSeo';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
@@ -293,7 +294,8 @@ export default function TourDetails() {
   } = useAsyncData(() => getTourById(id), [id]);
 
   return (
-    <main className="tour-details-page">
+    <div className="tour-details-page">
+      <TourSeo status={status} tour={tour} slug={id} />
       <div className="container">
         <div className="tour-details-top">
           <Link to="/tours" className="back-link">
@@ -426,6 +428,6 @@ export default function TourDetails() {
           </>
         )}
       </div>
-    </main>
+    </div>
   );
 }

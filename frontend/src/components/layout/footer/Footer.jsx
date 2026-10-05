@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
@@ -9,22 +10,23 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
-import { scrollToId } from '../../../utils/scrollToId';
 import { subscribeToNewsletter } from '../../../services/newsletterService';
 import './Footer.css';
 
+// Real routes rather than #anchors: the anchors only existed on the
+// homepage, so these links did nothing on every other page.
 const FOOTER_SECTIONS = [
-  { href: '#tours', labelKey: 'navigation.tours' },
-  { href: '#deals', labelKey: 'navigation.deals' },
-  { href: '#destinations', labelKey: 'navigation.destinations' },
-  { href: '#reviews', labelKey: 'navigation.reviews' },
+  { to: '/tours', labelKey: 'navigation.tours' },
+  { to: '/deals', labelKey: 'navigation.deals' },
+  { to: '/destinations', labelKey: 'navigation.destinations' },
+  { to: '/reviews', labelKey: 'navigation.reviews' },
 ];
 
 const FOOTER_COMPANY = [
-  { href: '#about', labelKey: 'navigation.about' },
-  { href: '#gallery', labelKey: 'navigation.gallery' },
-  { href: '#faq', labelKey: 'navigation.faq' },
-  { href: '#contact', labelKey: 'navigation.contact' },
+  { to: '/about', labelKey: 'navigation.about' },
+  { to: '/gallery', labelKey: 'navigation.gallery' },
+  { to: '/#faq', labelKey: 'navigation.faq' },
+  { to: '/contact', labelKey: 'navigation.contact' },
 ];
 
 const SOCIAL_LINKS = [
@@ -56,11 +58,6 @@ export default function Footer() {
   const [subscribed, setSubscribed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  function handleNavClick(e, href) {
-    e.preventDefault();
-    scrollToId(href.slice(1));
-  }
-
   async function handleSubscribe(e) {
     e.preventDefault();
 
@@ -91,18 +88,14 @@ export default function Footer() {
       <div className="container">
         <div className="footer-top">
           <div className="footer-brand">
-            <a
-              href="#home"
-              className="logo footer-logo"
-              onClick={(e) => handleNavClick(e, '#home')}
-            >
+            <Link to="/" className="logo footer-logo">
               <span className="footer-logo-mark">
-                <img src="/logo.png" alt="FaroSayr" />
+                <img src="/icon-192.png" alt="Farosayr" width="38" height="38" loading="lazy" />
               </span>
               <span className="logo-text">
                 FARO<em>SAYR</em>
               </span>
-            </a>
+            </Link>
 
             <p className="footer-brand-description">
               {t('footer.description')}
@@ -139,7 +132,7 @@ export default function Footer() {
                   aria-label={label}
                   className="social-icon"
                   target={href !== '#' ? '_blank' : undefined}
-                  rel={href !== '#' ? 'noreferrer' : undefined}
+                  rel={href !== '#' ? 'noopener noreferrer' : undefined}
                 >
                   <Icon />
                 </a>
@@ -155,14 +148,11 @@ export default function Footer() {
 
             <ul>
               {FOOTER_SECTIONS.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
-                  >
+                <li key={item.to}>
+                  <Link to={item.to}>
                     <ArrowForwardRoundedIcon />
                     <span>{t(item.labelKey)}</span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -176,14 +166,11 @@ export default function Footer() {
 
             <ul>
               {FOOTER_COMPANY.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
-                  >
+                <li key={item.to}>
+                  <Link to={item.to}>
                     <ArrowForwardRoundedIcon />
                     <span>{t(item.labelKey)}</span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -252,13 +239,9 @@ export default function Footer() {
           <span>{t('footer.rights')}</span>
 
           <div className="footer-bottom-links">
-            <a href="#home" onClick={(e) => handleNavClick(e, '#home')}>
-              {t('navigation.home')}
-            </a>
+            <Link to="/">{t('navigation.home')}</Link>
             <span />
-            <a href="#contact" onClick={(e) => handleNavClick(e, '#contact')}>
-              {t('navigation.contact')}
-            </a>
+            <Link to="/contact">{t('navigation.contact')}</Link>
           </div>
 
           <span className="footer-location">

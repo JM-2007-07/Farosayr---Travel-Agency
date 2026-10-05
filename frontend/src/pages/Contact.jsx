@@ -27,7 +27,8 @@ import {
   WORKING_HOURS,
 } from '../config/siteContact';
 import './Contact.css';
-import logo from '../assets/images/Логотип Farosayr Travel Agency.png'
+import Seo from '../seo/Seo';
+import logo from '../assets/images/farosayr-travel-agency-logo.png';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
@@ -296,7 +297,8 @@ export default function Contact() {
     `https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}`;
 
   return (
-    <main className="contact-page">
+    <div className="contact-page">
+      <Seo page="contact" path="/contact" />
       <section className="contact-hero">
         <div className="container contact-hero-inner">
           <div className="contact-hero-content">
@@ -331,7 +333,7 @@ export default function Contact() {
             <div className="contact-visual-glow" />
 
             <div className="contact-logo-card">
-              <img src={logo} alt="" />
+              <img src={logo} alt="Farosayr Travel Agency" width="600" height="400" />
             </div>
 
             <div className="contact-floating-card contact-floating-card-top">
@@ -576,6 +578,6 @@ export default function Contact() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

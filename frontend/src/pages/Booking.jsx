@@ -15,6 +15,7 @@ import { useReveal } from '../hooks/useReveal';
 import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
 import './Booking.css';
+import Seo from '../seo/Seo';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
@@ -197,7 +198,8 @@ export default function Booking() {
   );
 
   return (
-    <main className="booking-page">
+    <div className="booking-page">
+      <Seo page="booking" noindex />
       <section className="booking-hero">
         <div className="container">
           <div
@@ -294,6 +296,6 @@ export default function Booking() {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

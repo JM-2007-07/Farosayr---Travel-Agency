@@ -32,7 +32,7 @@ function GalleryTile({ item, onOpen }) {
       }}
       aria-label={t('galleryPage.openPhoto', { title: alt })}
     >
-      <img src={item.thumb} alt={alt} onError={onError} />
+      <img src={item.thumb} alt={alt} loading="lazy" decoding="async" onError={onError} />
       <span className="gallery-item-expand" aria-hidden="true">
         <OpenInFullIcon sx={{ fontSize: 22 }} />
       </span>

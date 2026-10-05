@@ -6,8 +6,13 @@ import { useImgFallback } from '../../hooks/useImgFallback';
 import { scrollToId } from '../../utils/scrollToId';
 import './Hero.css';
 
-const HERO_IMG =
-  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=80';
+const HERO_IMG_BASE =
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80';
+const HERO_IMG = `${HERO_IMG_BASE}&w=2000`;
+// Phones don't need the 2000px desktop image for the LCP element.
+const HERO_SRCSET = [800, 1200, 1600, 2000]
+  .map((w) => `${HERO_IMG_BASE}&w=${w} ${w}w`)
+  .join(', ');
 const HERO_VIDEO =
   'https://res.cloudinary.com/m11daqfd/video/upload/v1789411627/hero.mp4';
 
@@ -44,7 +49,11 @@ export default function Hero() {
         <img
           ref={imgRef}
           src={HERO_IMG}
+          srcSet={HERO_SRCSET}
+          sizes="100vw"
           alt=""
+          fetchPriority="high"
+          decoding="async"
           onError={onError}
         />
 
@@ -162,12 +171,15 @@ export default function Hero() {
         </g>
       </svg>
       <div className="container hero-content" ref={contentRef}>
-        <p className={`hero-eyebrow reveal ${isInView ? 'in-view' : ''}`}>
-          {t('home.hero.eyebrow')}
-        </p>
-
-        <h1 className={`hero-title reveal ${isInView ? 'in-view' : ''}`}>
-          <Trans i18nKey="home.hero.title" components={{ accent: <span /> }} />
+        {/* One H1 for both lines, so the heading says what Farosayr is (a
+            travel agency in Dushanbe) without changing the visual design. */}
+        <h1 className="hero-heading">
+          <span className={`hero-eyebrow reveal ${isInView ? 'in-view' : ''}`}>
+            {t('home.hero.eyebrow')}
+          </span>{' '}
+          <span className={`hero-title reveal ${isInView ? 'in-view' : ''}`}>
+            <Trans i18nKey="home.hero.title" components={{ accent: <span /> }} />
+          </span>
         </h1>
 
         <p className={`hero-subtitle reveal ${isInView ? 'in-view' : ''}`}>

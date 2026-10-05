@@ -82,7 +82,14 @@
 .hero-buttons.reveal {
   --d: 460;
 }
+/* .hero-eyebrow and .hero-title are spans inside the one hero <h1>; block
+   display + the eyebrow's own line-height keep the original layout. */
+.hero-eyebrow,
+.hero-title {
+  display: block;
+}
 .hero-eyebrow {
+  line-height: 1.6;
   font-family: var(--font-display);
   text-transform: uppercase;
   letter-spacing: 0.22em;

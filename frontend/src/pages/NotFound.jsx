@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import Seo from '../seo/Seo';
 
 export default function NotFound() {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export default function NotFound() {
         padding: '160px 0 100px',
       }}
     >
+      <Seo page="notFound" noindex />
       <div className="container">
         <section
           style={{
