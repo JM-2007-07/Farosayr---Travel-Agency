@@ -1,2 +1,8 @@
 .vercel
 .env*
+!.env.example
+
+# Private keys / certificates must never be committed.
+*.pem
+*.key
+*.p12

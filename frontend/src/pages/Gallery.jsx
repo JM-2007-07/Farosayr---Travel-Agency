@@ -7,7 +7,9 @@ import { useAsyncData } from '../hooks/useAsyncData';
 import './Gallery.css';
 import { getGalleryItems } from '../services/galleryService';
 import Lightbox from '../components/common/Lightbox';
+import { responsiveImage, GALLERY_WIDTHS, gallerySizes } from '../utils/responsiveImage';
 import AsyncState from '../components/common/AsyncState';
+import PageHero from '../components/common/PageHero';
 import Seo from '../seo/Seo';
 
 function GalleryTile({ item, onOpen }) {
@@ -24,9 +26,11 @@ function GalleryTile({ item, onOpen }) {
       className={`gallery-item reveal ${item.sizeClass ?? ''} ${isInView ? 'in-view' : ''} ${broken ? 'img-fallback' : ''}`}
       ref={ref}
       onClick={() => onOpen(item)}
+      aria-haspopup="dialog"
       aria-label={t('galleryPage.openPhoto', { title: alt })}
     >
-      <img src={item.thumb} alt={alt} loading="lazy" decoding="async" onError={onError} />
+      {/* Named by the button's aria-label and the visible caption below. */}
+      <img {...responsiveImage(item.thumb, GALLERY_WIDTHS, gallerySizes(item.sizeClass))} alt="" loading="lazy" decoding="async" onError={onError} />
       <span className="gallery-item-overlay" aria-hidden="true">
         <span className="gallery-item-expand">
           <OpenInFullIcon sx={{ fontSize: 21 }} />
@@ -39,7 +43,6 @@ function GalleryTile({ item, onOpen }) {
 
 export default function Gallery() {
   const { t } = useTranslation();
-  const [heroRef, heroInView] = useReveal();
   const [gridRef, gridInView] = useReveal();
   const { activeItem, open, close } = useLightbox();
 
@@ -48,6 +51,7 @@ export default function Gallery() {
     data: galleryItems,
     isLoading,
     isError,
+    reload,
   } = useAsyncData(getGalleryItems, []);
 
   const items = galleryItems ?? [];
@@ -55,40 +59,26 @@ export default function Gallery() {
   return (
     <div className="gallery-page">
       <Seo page="gallery" path="/gallery" />
-      <section className="gallery-hero">
-        <div className="container">
-          <div
-            className={`gallery-hero-content reveal ${heroInView ? 'in-view' : ''}`}
-            ref={heroRef}
-          >
-            <span className="gallery-hero-eyebrow">
-              {t('galleryPage.eyebrow')}
-            </span>
+      <PageHero
+        eyebrow={t('galleryPage.eyebrow')}
+        title={<Trans i18nKey="galleryPage.title" components={{ accent: <span /> }} />}
+        text={t('galleryPage.text')}
+        stacked
+      >
+        <div className="page-hero-meta">
+          <div className="page-hero-stat">
+            <strong>{items.length || '—'}</strong>
+            <span>{t('galleryPage.photos', { count: items.length })}</span>
+          </div>
 
-            <h1 style={{color:'white'}}>
-              <Trans i18nKey="galleryPage.title" components={{ accent: <span /> }} />
-            </h1>
+          <div className="page-hero-meta-divider" />
 
-            <p>
-              {t('galleryPage.text')}
-            </p>
-
-            <div className="gallery-hero-meta">
-              <div>
-                <strong>{items.length || '—'}</strong>
-                <span>{t('galleryPage.photos', { count: items.length })}</span>
-              </div>
-
-              <div className="gallery-hero-divider" />
-
-              <div>
-                <strong>FAROSAYR</strong>
-                <span>{t('galleryPage.tagline')}</span>
-              </div>
-            </div>
+          <div className="page-hero-stat">
+            <strong>FAROSAYR</strong>
+            <span>{t('galleryPage.tagline')}</span>
           </div>
         </div>
-      </section>
+      </PageHero>
 
       <section className="gallery-content">
         <div className="container">
@@ -107,6 +97,7 @@ export default function Gallery() {
           </div>
 
           <AsyncState
+            onRetry={reload}
             isLoading={isLoading}
             isError={isError}
             isEmpty={status === 'success' && items.length === 0}

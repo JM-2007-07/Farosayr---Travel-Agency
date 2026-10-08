@@ -1,21 +1,31 @@
+/* A native modal <dialog> stretched over the viewport: the dialog itself is
+   the dark overlay (a click on it, outside the photo, closes it). */
 .lightbox {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  padding: 40px;
   background: rgba(11, 31, 58, 0.94);
+  color: var(--white);
+}
+.lightbox[open] {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.4s var(--ease),
-    visibility 0.4s var(--ease);
-  padding: 40px;
+  animation: lightbox-in 0.4s var(--ease);
 }
-.lightbox.open {
-  opacity: 1;
-  visibility: visible;
+.lightbox::backdrop {
+  background: transparent;
+}
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+  }
 }
 .lightbox img {
   max-width: 90vw;

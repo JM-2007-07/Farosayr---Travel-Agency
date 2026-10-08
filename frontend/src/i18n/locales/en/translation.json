@@ -1,5 +1,6 @@
 {
   "common": {
+    "skipToContent": "Skip to content",
     "bookNow": "Book now",
     "bookTour": "Book this tour",
     "bookTrip": "Book a trip",
@@ -67,11 +68,18 @@
     "error": "We couldn't load this content. Please refresh the page.",
     "empty": "Nothing here yet.",
     "checkingSession": "Checking your session…",
-    "signInPrompt": "Please sign in to continue."
+    "signInPrompt": "Please sign in to continue.",
+    "retry": "Try again"
   },
   "errors": {
     "network": "We couldn't reach the server. Please check your internet connection.",
-    "tooManyRequests": "Too many attempts. Please try again later."
+    "tooManyRequests": "Too many attempts. Please try again later.",
+    "validation": "Please check the fields and try again.",
+    "unauthorized": "Please sign in to continue.",
+    "forbidden": "This action is not allowed. Refresh the page and try again.",
+    "notFound": "The requested item was not found.",
+    "conflict": "This already exists.",
+    "tooLarge": "The text is too long. Please shorten it."
   },
   "language": {
     "label": "Language",
@@ -90,6 +98,7 @@
     "faq": "FAQ"
   },
   "header": {
+    "menu": "Menu",
     "openAccountMenu": "Open account menu",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
@@ -116,12 +125,14 @@
     "subscribed": "Thanks for subscribing!",
     "subscribe": "Subscribe",
     "newsletterNote": "No spam — just travel inspiration and great deals.",
-    "rights": "© 2026 FaroSayr. All rights reserved."
+    "rights": "© 2026 FaroSayr. All rights reserved.",
+    "subscribeError": "Couldn't subscribe. Please try again later."
   },
   "map": {
     "officePopup": "FaroSayr office",
     "ariaLabel": "Map of the FaroSayr office",
-    "loadError": "The map couldn't be loaded."
+    "loadError": "The map couldn't be loaded.",
+    "openInYandex": "Open in Yandex Maps"
   },
   "pagePending": {
     "message": "{{title}} — this page is coming soon"
@@ -143,11 +154,17 @@
     "workingHoursValue": "Mon–Sat: {{from}}:00–{{to}}:00",
     "getInTouch": "Get in touch",
     "formTitle": "Tell us about your trip",
-    "submitError": "We couldn't send your request. Please try again."
+    "submitError": "We couldn't send your request. Please try again.",
+    "errors": {
+      "nameRequired": "Please enter your name.",
+      "phoneInvalid": "Please enter a phone number (at least 7 digits).",
+      "emailInvalid": "Please enter a valid email."
+    }
   },
   "tourCard": {
     "addToFavorites": "Add to favorites",
-    "removeFromFavorites": "Remove from favorites"
+    "removeFromFavorites": "Remove from favorites",
+    "favoriteError": "Couldn't save. Please try again."
   },
   "galleryItems": {
     "dubai-night": "Dubai by night",
@@ -209,7 +226,8 @@
         "upTo500": "Up to $500",
         "from500To1000": "$500 – $1,000",
         "from1000To2000": "$1,000 – $2,000",
-        "over2000": "$2,000+"
+        "over2000": "$2,000+",
+        "any": "Any budget"
       }
     },
     "destinations": {
@@ -288,7 +306,8 @@
       "imageAlt": "FaroSayr travel video",
       "play": "Play video",
       "title": "See how we travel",
-      "text": "A short film about FaroSayr travelers and the places they discovered"
+      "text": "A short film about FaroSayr travelers and the places they discovered",
+      "close": "Close video"
     },
     "reviews": {
       "eyebrow": "Client reviews",
@@ -335,7 +354,9 @@
     "resultsCount_one": "<strong>{{count}}</strong> tour found",
     "resultsCount_other": "<strong>{{count}}</strong> tours found",
     "listKicker": "Our offers",
-    "empty": "No tours match your search."
+    "empty": "No tours match your search.",
+    "emptyFiltered": "No tours match these filters. Change them or reset the filters.",
+    "resetFilters": "Reset filters"
   },
   "tour": {
     "loading": "Loading tour…",
@@ -364,7 +385,12 @@
     "alreadyReviewed": "You've already reviewed this tour.",
     "reviewError": "We couldn't post your review. Please try again.",
     "reviewSuccessTitle": "Thank you for your review!",
-    "reviewSuccessText": "Your review has been published."
+    "reviewSuccessText": "Your review has been published.",
+    "commentRequired": "Please write a few words about the trip.",
+    "reviewsListTitle": "Reviews of this tour",
+    "reviewsLoading": "Loading reviews…",
+    "reviewsLoadError": "Couldn't load the reviews.",
+    "noReviewsYet": "No reviews of this tour yet — yours could be the first."
   },
   "destinationsPage": {
     "heroEyebrow": "The world begins with a choice",
@@ -407,14 +433,16 @@
     "title": "Travel for less",
     "text": "FaroSayr's latest offers at special prices.",
     "ctaTitle": "Didn't find the right offer?",
-    "ctaText": "Contact FaroSayr and we'll help you find a trip that suits you."
+    "ctaText": "Contact FaroSayr and we'll help you find a trip that suits you.",
+    "empty": "There are no active hot deals right now. Check back later or pick a tour from the catalogue."
   },
   "dealDetails": {
     "loading": "Loading offer…",
     "loadError": "We couldn't load this offer. Please refresh the page.",
     "notFound": "Offer not found.",
     "eyebrow": "Hot deal",
-    "aboutTour": "Tour details"
+    "aboutTour": "Tour details",
+    "notBookable": "This offer has ended. See the tour at the regular price or contact us for a similar option."
   },
   "reviewsPage": {
     "eyebrow": "Traveler reviews",
@@ -525,7 +553,10 @@
     "error": "We couldn't create your booking. Please try again.",
     "successLabel": "Booking created",
     "successTitle": "Your tour is booked",
-    "successNumber": "Booking number:<strong> #{{id}}</strong>"
+    "successNumber": "Booking number:<strong> #{{id}}</strong>",
+    "dealUnavailable": "This offer is no longer available. Refresh the page — the tour can be booked at the regular price.",
+    "dealUnavailableNotice": "The special offer has ended — the booking uses the regular tour price.",
+    "dealPrice": "Offer price"
   },
   "bookings": {
     "text": "View your trips, booking statuses and payment details here.",
@@ -556,7 +587,8 @@
     "password": "Password",
     "errors": {
       "invalidCredentials": "Incorrect email or password.",
-      "emailTaken": "An account with this email already exists."
+      "emailTaken": "An account with this email already exists.",
+      "invalidRegistration": "Check your name, email and password (at least 8 characters)."
     },
     "login": {
       "visualTitle": "<line1>The world</line1><line2> is waiting for you.</line2>",

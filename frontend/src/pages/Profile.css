@@ -1,52 +1,7 @@
+/* Hero: shared PageHero. */
 .profile-page {
   min-height: 100vh;
-  padding: 160px 0 110px;
-  background:
-    radial-gradient(circle at 90% 15%, rgba(47, 217, 196, 0.08), transparent 28%),
-    radial-gradient(circle at 10% 50%, rgba(47, 217, 196, 0.05), transparent 25%),
-    #f7fafc;
-}
-
-.profile-page-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
-  margin-bottom: 42px;
-}
-
-.profile-page-header h1 {
-  margin: 0 0 16px;
-  max-width: 700px;
-}
-
-.profile-page-header h1 span {
-  color: var(--turquoise);
-}
-
-.profile-page-description {
-  max-width: 650px;
-  margin: 0;
-  color: #6c7d88;
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-.profile-header-icon {
-  width: 82px;
-  height: 82px;
-  flex: 0 0 82px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 24px;
-  background: var(--dark-blue);
-  color: var(--turquoise);
-  box-shadow: 0 18px 45px rgba(11, 31, 58, 0.16);
-}
-
-.profile-header-icon svg {
-  font-size: 40px;
+  background: var(--color-surface-muted);
 }
 
 .profile-card {
@@ -67,7 +22,7 @@
   left: 0;
   right: 0;
   height: 5px;
-  background: linear-gradient(90deg, #2fd9c4, #0b1f3a, #d4af6a);
+  background: linear-gradient(90deg, var(--turquoise), var(--dark-blue), var(--gold));
 }
 
 .profile-card-top {
@@ -86,7 +41,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0b1f3a, #173b5b);
+  background: linear-gradient(135deg, var(--dark-blue), #173b5b);
   color: #fff;
   box-shadow: 0 14px 35px rgba(11, 31, 58, 0.2);
 }
@@ -124,7 +79,7 @@
   display: block;
   margin-bottom: 7px;
   color: #83939e;
-  font-size: 11px;
+  font-size: var(--fs-caption);
   font-weight: 800;
   letter-spacing: 0.12em;
 }
@@ -148,7 +103,7 @@
   overflow: hidden;
   border-top: 1px solid rgba(11, 31, 58, 0.07);
   border-bottom: 1px solid rgba(11, 31, 58, 0.07);
-  background: #0b1f3a;
+  background: var(--dark-blue);
 }
 
 .profile-route-line {
@@ -212,7 +167,7 @@
 
 .profile-route-text span {
   color: rgba(255, 255, 255, 0.55);
-  font-size: 10px;
+  font-size: var(--fs-caption);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.13em;
@@ -286,7 +241,7 @@
   display: block;
   margin-bottom: 4px;
   color: #8998a2;
-  font-size: 11px;
+  font-size: var(--fs-caption);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -312,69 +267,9 @@
   background: #fafcfd;
 }
 
-.profile-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: #71818c;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.profile-back-link:hover {
-  color: var(--dark-blue);
-}
-
-.profile-back-link svg {
-  font-size: 18px;
-}
-
-.profile-logout-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  min-height: 46px;
-  padding: 0 20px;
-  border: 1px solid rgba(194, 58, 68, 0.2);
-  border-radius: 12px;
-  background: rgba(194, 58, 68, 0.05);
-  color: #c23a44;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.profile-logout-btn:hover {
-  border-color: rgba(194, 58, 68, 0.35);
-  background: rgba(194, 58, 68, 0.1);
-  transform: translateY(-1px);
-}
-
-.profile-logout-btn svg {
-  font-size: 19px;
-}
-
 @media (max-width: 760px) {
-  .profile-page {
-    padding: 110px 0 70px;
-  }
 
-  .profile-page-header {
-    align-items: flex-start;
-    margin-bottom: 30px;
-  }
 
-  .profile-header-icon {
-    display: none;
-  }
 
   .profile-card-top {
     padding: 30px 24px 26px;
@@ -409,17 +304,8 @@
 }
 
 @media (max-width: 480px) {
-  .profile-page {
-    padding-top: 90px;
-  }
 
-  .profile-page-header h1 {
-    font-size: 34px;
-  }
 
-  .profile-page-description {
-    font-size: 14px;
-  }
 
   .profile-card-top {
     align-items: flex-start;

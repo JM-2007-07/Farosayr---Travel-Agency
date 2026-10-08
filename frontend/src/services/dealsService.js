@@ -24,7 +24,10 @@ import { apiGet } from './api/client';
  * out of scope for this sub-phase.
  */
 function mapDeal(d) {
-  const hours = Math.max((new Date(d.endsAt).getTime() - Date.now()) / (60 * 60 * 1000), 0);
+  // isCurrent (from the API) is false for a deal an admin switched off or
+  // that hasn't started — treat it as ended rather than ticking a countdown.
+  const hours =
+    d.isCurrent === false ? 0 : Math.max((new Date(d.endsAt).getTime() - Date.now()) / (60 * 60 * 1000), 0);
   return {
     ...d,
     newPrice: d.price,

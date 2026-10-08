@@ -41,8 +41,8 @@
   border-radius: 50% 50% 50% 0;
   background: linear-gradient(
     135deg,
-    #2fd9c4 0%,
-    #1fa895 100%
+    var(--turquoise) 0%,
+    var(--turquoise-dim) 100%
   );
   box-shadow:
     0 12px 28px rgba(11, 31, 58, 0.3),
@@ -65,7 +65,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #0b1f3a;
+  background: var(--dark-blue);
 }
 
 .yandex-marker-label {
@@ -101,7 +101,7 @@
 }
 
 .yandex-marker-label strong {
-  color: #2fd9c4;
+  color: var(--turquoise);
   font-family: var(--font-display);
   font-size: 13px;
   font-weight: 700;
@@ -131,14 +131,30 @@
       transparent 55%
     ),
     #e8eef0;
-  color: #0b1f3a;
+  color: var(--dark-blue);
   font-size: 13px;
   text-align: center;
 }
 
+/* When the map can't load, the decorative pins drawn over it (home and
+   /contact) would cover the message and its link. */
+.contact-map:has(.location-map-error) .map-marker,
+.contact-map:has(.location-map-error) .contact-map-marker {
+  display: none;
+}
+
+.location-map-error-link {
+  display: block;
+  padding-block: 6px;
+  margin-top: -2px;
+  color: var(--color-accent-text);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .location-map-error svg {
   flex-shrink: 0;
-  color: #1fa895;
+  color: var(--turquoise-dim);
   font-size: 24px;
 }
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
@@ -11,12 +11,13 @@ import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRound
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import RateReviewRoundedIcon from '@mui/icons-material/RateReviewRounded';
 import { getTourById } from '../services/toursService';
-import { createReview } from '../services/reviewsService';
+import { createReview, getReviews } from '../services/reviewsService';
 import { useAsyncData } from '../hooks/useAsyncData';
-import { useImgFallback } from '../hooks/useImgFallback';
+import { useSubmitLock } from '../hooks/useSubmitLock';
 import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
-import { getApiErrorMessage } from '../utils/getApiErrorMessage';
+import { getPublicErrorMessage } from '../utils/getPublicErrorMessage';
+import { responsiveImage, THUMB_WIDTHS } from '../utils/responsiveImage';
 import './TourDetails.css';
 import { TourSeo } from '../seo/DetailSeo';
 
@@ -24,43 +25,63 @@ const IDLE = 'idle';
 const SUBMITTING = 'submitting';
 const SUBMITTED = 'submitted';
 
-function ReviewForm({ tour }) {
+const REVIEW_MAX_LENGTH = 2000; // same limit as the API (validation/review.validation.js)
+
+function ReviewForm({ tour, onSubmitted }) {
   const { t } = useTranslation();
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [status, setStatus] = useState(IDLE);
   const [error, setError] = useState('');
+  const [commentInvalid, setCommentInvalid] = useState(false);
+  const successRef = useRef(null);
+  const runOnce = useSubmitLock();
+
+  // The form is replaced by the thank-you note: keep focus there.
+  useEffect(() => {
+    if (status === SUBMITTED) successRef.current?.focus();
+  }, [status]);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setStatus(SUBMITTING);
-    setError('');
-
-    try {
-      await createReview({
-        tourDbId: tour.dbId,
-        rating: Number(rating),
-        comment,
-      });
-
-      setStatus(SUBMITTED);
-      setComment('');
-    } catch (err) {
-      setStatus(IDLE);
-
-      // The review form previously showed only its own fixed messages
-      // (never the raw backend text), so network/5xx map to the same fallback.
-      setError(
-        getApiErrorMessage(err, t, 'tourDetails.reviewError', {
-          409: 'tourDetails.alreadyReviewed',
-        }),
-      );
+    if (!comment.trim()) {
+      // Tied to the textarea (aria-invalid + describedby) and read when it
+      // gets focus, so it isn't also an alert.
+      setCommentInvalid(true);
+      setError(t('tourDetails.commentRequired'));
+      document.getElementById('comment')?.focus();
+      return;
     }
+    setCommentInvalid(false);
+    await runOnce(async () => {
+      setStatus(SUBMITTING);
+      setError('');
+
+      try {
+        await createReview({
+          tourDbId: tour.dbId,
+          rating: Number(rating),
+          comment: comment.trim(),
+        });
+
+        setStatus(SUBMITTED);
+        setComment('');
+        onSubmitted?.();
+      } catch (err) {
+        setStatus(IDLE);
+        setError(
+          getPublicErrorMessage(err, t, 'tourDetails.reviewError', {
+            409: 'tourDetails.alreadyReviewed',
+            404: 'tour.notFound',
+          })
+        );
+      }
+    });
   }
 
   if (status === SUBMITTED) {
     return (
-      <div className="review-success">
+      <div className="review-success" ref={successRef} tabIndex={-1} role="status">
         <div className="review-success-icon">
           <RateReviewRoundedIcon />
         </div>
@@ -107,9 +128,18 @@ function ReviewForm({ tour }) {
           id="comment"
           rows="5"
           required
+          maxLength={REVIEW_MAX_LENGTH}
           placeholder={t('tourDetails.commentPlaceholder')}
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          aria-invalid={commentInvalid || undefined}
+          aria-describedby={commentInvalid ? 'review-error' : undefined}
+          onChange={(e) => {
+            setComment(e.target.value);
+            if (commentInvalid) {
+              setCommentInvalid(false);
+              setError('');
+            }
+          }}
         />
       </div>
 
@@ -123,8 +153,59 @@ function ReviewForm({ tour }) {
         {status !== SUBMITTING && <ArrowForwardRoundedIcon />}
       </button>
 
-      {error && <p className="review-error">{error}</p>}
+      {error && (
+        <p className="review-error" id="review-error" role={commentInvalid ? undefined : 'alert'}>
+          {error}
+        </p>
+      )}
     </form>
+  );
+}
+
+// Reviews of this tour (GET /api/reviews?tour=<slug>). `refreshKey`
+// changes after the visitor posts a review, so the list includes it.
+function TourReviews({ tour, refreshKey }) {
+  const { t } = useTranslation();
+  const { status, data: reviews, isLoading, isError, reload } = useAsyncData(
+    () => getReviews({ tour: tour.id }),
+    [tour.id, refreshKey]
+  );
+
+  return (
+    <div className="tour-reviews">
+      <h3 className="tour-reviews-title">{t('tourDetails.reviewsListTitle')}</h3>
+
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={status === 'success' && reviews.length === 0}
+        loadingLabel={t('tourDetails.reviewsLoading')}
+        errorLabel={t('tourDetails.reviewsLoadError')}
+        emptyLabel={t('tourDetails.noReviewsYet')}
+        onRetry={reload}
+      />
+
+      {status === 'success' && reviews.length > 0 && (
+        <ul className="tour-reviews-list">
+          {reviews.map((review) => (
+            <li key={review.id} className="tour-review-item">
+              <div className="tour-review-head">
+                <span className="tour-review-avatar" aria-hidden="true">
+                  {review.initials || '★'}
+                </span>
+                <strong>{review.author}</strong>
+                <span className="tour-review-stars" role="img" aria-label={t('tourDetails.ratingOption', { value: review.stars })}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <StarRoundedIcon key={star} className={star <= review.stars ? 'active' : ''} aria-hidden="true" />
+                  ))}
+                </span>
+              </div>
+              <p>{review.text}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
@@ -261,7 +342,7 @@ function TourGallery({ tour }) {
             >
               {!brokenImages[index] ? (
                 <img
-                  src={image.url}
+                  {...responsiveImage(image.url, THUMB_WIDTHS, '140px')}
                   alt={image.alt || `${tour.title} ${index + 1}`}
                   onError={() => handleImageError(index)}
                 />
@@ -291,7 +372,9 @@ export default function TourDetails() {
     data: tour,
     isLoading,
     isError,
+    reload,
   } = useAsyncData(() => getTourById(id), [id]);
+  const [reviewsKey, setReviewsKey] = useState(0);
 
   return (
     <div className="tour-details-page">
@@ -311,6 +394,13 @@ export default function TourDetails() {
           loadingLabel={t('tour.loading')}
           errorLabel={t('tour.loadError')}
           emptyLabel={t('tour.notFound')}
+          onRetry={reload}
+          pageHeading
+          emptyAction={
+            <Link to="/tours" className="btn btn-primary">
+              {t('common.allTours')}
+            </Link>
+          }
         />
 
         {status === 'success' && tour && (
@@ -338,11 +428,6 @@ export default function TourDetails() {
                   <div className="tour-info-item">
                     <span
                       className="tour-info-icon"
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
                     >
                       <LocationOnRoundedIcon />
                     </span>
@@ -356,11 +441,6 @@ export default function TourDetails() {
                   <div className="tour-info-item">
                     <span
                       className="tour-info-icon"
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
                     >
                       <AccessTimeRoundedIcon />
                     </span>
@@ -394,7 +474,7 @@ export default function TourDetails() {
 
                   <Link
                     to="/tours"
-                    className="btn btn-outline tour-secondary-btn"
+                    className="btn btn-outline-dark tour-secondary-btn"
                   >
                     {t('tourDetails.backToTours')}
                   </Link>
@@ -419,9 +499,11 @@ export default function TourDetails() {
                 </div>
               </div>
 
+              <TourReviews tour={tour} refreshKey={reviewsKey} />
+
               <div className="review-card">
                 <RequireAuth prompt={t('tourDetails.reviewSignIn')}>
-                  <ReviewForm tour={tour} />
+                  <ReviewForm tour={tour} onSubmitted={() => setReviewsKey((n) => n + 1)} />
                 </RequireAuth>
               </div>
             </section>

@@ -16,6 +16,34 @@ export const SITE_URL = 'https://farosayr.com';
 export const SITE_NAME = 'Farosayr';
 export const SITE_ALT_NAMES = ['Фаросайр', 'Farosayr Travel', 'FaroSayr'];
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+// public/og-image.jpg is 1200×630.
+export const DEFAULT_OG_IMAGE_META = {
+  url: DEFAULT_OG_IMAGE,
+  width: 1200,
+  height: 630,
+  alt: 'Farosayr — Travel Agency',
+};
+
+/**
+ * Open Graph image for a content photo. Unsplash resizes on the fly, so the
+ * catalogue photos are requested at exactly 1200×630 (the size link
+ * previews expect) and the dimensions can be declared. Any other URL is
+ * used as-is, without dimensions (we don't know them).
+ */
+export function ogImageFor(src) {
+  try {
+    const url = new URL(src);
+    if (url.hostname === 'images.unsplash.com') {
+      url.searchParams.set('w', '1200');
+      url.searchParams.set('h', '630');
+      url.searchParams.set('fit', 'crop');
+      return { url: url.toString(), width: 1200, height: 630 };
+    }
+    return { url: url.toString() };
+  } catch {
+    return null;
+  }
+}
 export const LOGO_URL = `${SITE_URL}/icon-512.png`;
 
 // i18n language code -> og:locale.

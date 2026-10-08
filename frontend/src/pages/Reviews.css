@@ -1,39 +1,7 @@
 .reviews-page {
   min-height: 100vh;
-  background: #f7fafb;
+  background: var(--color-surface-muted);
   color: var(--dark-blue);
-}
-
-.reviews-container {
-  width: min(1180px, calc(100% - 40px));
-  margin: 0 auto;
-}
-
-.reviews-hero {
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 82% 25%, rgba(47, 217, 196, 0.18), transparent 32%),
-    linear-gradient(135deg, var(--dark-blue) 0%, var(--ocean-blue) 100%);
-  color: var(--white);
-}
-
-.reviews-hero::after {
-  content: '';
-  position: absolute;
-  width: 360px;
-  height: 360px;
-  right: -160px;
-  bottom: -220px;
-  border: 1px solid rgba(212, 175, 106, 0.28);
-  border-radius: 50%;
-}
-
-.reviews-hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 720px;
-  padding: 90px 0 84px;
 }
 
 .reviews-eyebrow,
@@ -41,27 +9,15 @@
   display: inline-block;
   margin-bottom: 14px;
   color: var(--turquoise);
-  font-size: 12px;
+  font-size: var(--fs-caption);
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
-.reviews-hero h1 {
-  max-width: 700px;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(38px, 5vw, 64px);
-  line-height: 1.04;
-  letter-spacing: -0.03em;
-}
-
-.reviews-hero p {
-  max-width: 610px;
-  margin: 24px 0 0;
-  color: var(--text-on-dark);
-  font-size: 17px;
-  line-height: 1.7;
+/* On the light section background the bright turquoise is 1.6:1. */
+.reviews-section-label {
+  color: var(--color-accent-text);
 }
 
 .reviews-hero-decoration {
@@ -84,7 +40,7 @@
 }
 
 .reviews-content {
-  padding: 72px 0 84px;
+  padding: clamp(48px, 6vw, 72px) 0 var(--section-y);
 }
 
 .reviews-intro {
@@ -98,7 +54,7 @@
 .reviews-intro h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: var(--fs-h2);
   line-height: 1.08;
 }
 
@@ -126,8 +82,8 @@
 .reviews-summary-rating span {
   display: block;
   margin-top: 2px;
-  color: #718096;
-  font-size: 12px;
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
 }
 
 .reviews-summary-stars,
@@ -207,7 +163,7 @@
   background: linear-gradient(135deg, var(--turquoise), var(--gold));
   color: var(--dark-blue);
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--fs-caption);
   font-weight: 700;
 }
 
@@ -225,7 +181,7 @@
 .reviews-author-info span {
   margin-top: 3px;
   color: var(--text-on-dark);
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .reviews-controls {
@@ -275,106 +231,56 @@
 }
 
 .reviews-counter span {
-  color: #8a97a6;
-  font-size: 12px;
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
 }
 
 .reviews-dots {
   display: flex;
   justify-content: center;
-  gap: 9px;
-  margin-top: 20px;
+  gap: 1px;
+  margin-top: 12px;
 }
 
+/* 24px-tall hit area (WCAG 2.5.8); the visible dot/pill is the ::before. */
 .reviews-dots button {
-  width: 8px;
-  height: 8px;
+  position: relative;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: rgba(11, 31, 58, 0.2);
+  border-radius: 10px;
+  background: transparent;
   cursor: pointer;
+  transition: width 0.25s ease;
+}
+
+.reviews-dots button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 10px;
+  background: rgba(11, 31, 58, 0.2);
+  transform: translate(-50%, -50%);
   transition: 0.25s ease;
 }
 
 .reviews-dots button.active {
+  width: 32px;
+}
+
+.reviews-dots button.active::before {
   width: 24px;
-  border-radius: 10px;
   background: var(--turquoise);
-}
-
-.reviews-bottom {
-  padding: 0 0 72px;
-}
-
-.reviews-bottom-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 35px;
-  padding: 42px 48px;
-  border: 1px solid rgba(11, 31, 58, 0.08);
-  border-radius: 26px;
-  background: var(--white);
-  box-shadow: 0 15px 45px rgba(11, 31, 58, 0.06);
-}
-
-.reviews-bottom-card h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(25px, 3vw, 36px);
-  line-height: 1.15;
-}
-
-.reviews-bottom-card p {
-  max-width: 620px;
-  margin: 12px 0 0;
-  color: #6d7b89;
-  line-height: 1.6;
-}
-
-.reviews-cta {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 9px;
-  padding: 14px 20px;
-  border-radius: 14px;
-  background: var(--turquoise);
-  color: var(--dark-blue);
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: 0.25s ease;
-}
-
-.reviews-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(47, 217, 196, 0.25);
-}
-
-.reviews-cta svg {
-  font-size: 19px;
 }
 
 @media (max-width: 768px) {
-  .reviews-container {
-    width: min(100% - 28px, 1180px);
-  }
 
-  .reviews-hero-content {
-    padding: 58px 0 52px;
-  }
 
-  .reviews-hero h1 {
-    font-size: clamp(34px, 10vw, 48px);
-  }
 
-  .reviews-hero p {
-    margin-top: 17px;
-    font-size: 14px;
-    line-height: 1.6;
-  }
 
   .reviews-hero-decoration {
     top: auto;
@@ -386,9 +292,6 @@
     opacity: 0.7;
   }
 
-  .reviews-content {
-    padding: 42px 0 50px;
-  }
 
   .reviews-intro {
     align-items: stretch;
@@ -397,9 +300,6 @@
     margin-bottom: 25px;
   }
 
-  .reviews-intro h2 {
-    font-size: 30px;
-  }
 
   .reviews-summary-rating {
     width: fit-content;
@@ -446,56 +346,18 @@
     margin-top: 18px;
   }
 
-  .reviews-bottom {
-    padding-bottom: 42px;
-  }
 
-  .reviews-bottom-card {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 22px;
-    padding: 26px 22px;
-    border-radius: 22px;
-  }
 
-  .reviews-bottom-card h2 {
-    font-size: 27px;
-  }
 
-  .reviews-bottom-card p {
-    font-size: 14px;
-  }
 
-  .reviews-cta {
-    width: 100%;
-    justify-content: center;
   }
-}
 
 @media (max-width: 420px) {
-  .reviews-container {
-    width: calc(100% - 24px);
-  }
 
-  .reviews-hero-content {
-    padding: 50px 0 48px;
-  }
 
-  .reviews-eyebrow {
-    font-size: 10px;
-  }
 
-  .reviews-hero h1 {
-    font-size: 34px;
-  }
 
-  .reviews-content {
-    padding-top: 34px;
-  }
 
-  .reviews-intro h2 {
-    font-size: 27px;
-  }
 
   .reviews-main-card {
     padding-right: 17px;
@@ -506,7 +368,4 @@
     font-size: 16px;
   }
 
-  .reviews-bottom-card {
-    padding: 23px 18px;
   }
-}

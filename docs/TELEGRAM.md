@@ -1,9 +1,11 @@
 # FaroSayr Telegram bot
 
-> **Status:** the integration code is in place and tested at code level with a
-> mocked Telegram API (`npm run telegram:selftest`). **No real bot is connected
-> yet** — that happens once the company's official Telegram account exists and
-> the steps in [Production setup](#6-production-setup) are done.
+> **Status:** the bot (FarosayrTravelBot) is connected in production.
+>
+> ⚠️ **Security incident — token rotation required.** The current bot token was
+> committed to the public Git history (commit `a256028`). It must be treated as
+> compromised and revoked — follow [section 9](#9-if-the-token-leaks--rotate-it).
+> Details and status: [SECURITY.md §1](SECURITY.md#1-open-incidents-action-required).
 
 ## 1. What it does
 
@@ -28,7 +30,7 @@ the notifications don't include them.)
 | `/start`, `/menu` | welcome + menu buttons | — |
 | `/tours` | tours, 5 per page with ⬅️/➡️ buttons | `services/tours.service.js` (same as `GET /api/tours`) |
 | `/destinations` | up to 10 destinations | `services/destinations.service.js` |
-| `/deals` | up to 5 active deals | `services/deals.service.js` (same `isActive` rule as the site) |
+| `/deals` | up to 5 current deals (active and within their dates) | `services/deals.service.js` (same rule as the website list) |
 | `/faq` | active FAQ entries | `services/faq.service.js` |
 | `/contact` | phone, email, address, hours, website, socials | `src/config/siteContact.js` |
 | `/help` | command list | — |
@@ -144,10 +146,15 @@ Production URLs found in the project's local configuration (verify in the
 Vercel dashboard before use):
 
 - Backend (Vercel project `farosayr-travel-agency-backend`): `https://farosayr-t-a-backend.vercel.app` (from `frontend/.env` → `VITE_API_URL`)
-- Frontend: `https://farosayr-t-a-frontend.vercel.app` (the backend's `CLIENT_URL`, used for links in bot messages)
+- Frontend: `https://farosayr.com` — the backend's `CLIENT_URL` (first entry), used for links in bot messages
 
-So the webhook URL is expected to be:
+So the webhook URL today is:
 `https://farosayr-t-a-backend.vercel.app/api/telegram/webhook`
+
+After the domain cutover (DEPLOYMENT.md §7) it becomes
+`https://api.farosayr.tj/api/telegram/webhook` — set it together with the
+new token and secret (DEPLOYMENT.md §7, step 7). The bot's links to the
+website follow `CLIENT_URL` automatically.
 
 ### 6.1 Add the variables in Vercel
 
@@ -243,6 +250,9 @@ To test only notifications locally, set `TELEGRAM_BOT_TOKEN` and
 
 ## 9. If the token leaks — rotate it
 
+**This applies now** — see the status note at the top. The repository can't
+revoke a token; these steps must be done by the bot owner.
+
 1. @BotFather → `/revoke` → choose the bot. The old token stops working
    immediately and BotFather issues a new one.
 2. Update `TELEGRAM_BOT_TOKEN` in Vercel and redeploy.
@@ -268,6 +278,13 @@ To test only notifications locally, set `TELEGRAM_BOT_TOKEN` and
 - Webhook management is only possible via the CLI script with the token —
   there is no HTTP endpoint for it.
 - All user or database text in bot messages is HTML-escaped.
+- The token is read only from `TELEGRAM_BOT_TOKEN` (shape-checked at startup,
+  never printed), used only in `services/telegram.service.js`, and masked by
+  `utils/logger.js` if it ever appears in an error message.
+- The webhook passes the API's CSRF guard naturally (Telegram sends JSON and
+  no `Origin` header). Automated checks for the webhook (missing/wrong
+  secret, duplicates, groups, `/admin`, forged buttons):
+  `npm run security:selftest` — no database, no real bot.
 - `TELEGRAM_ADMIN_CHAT_ID` is only a notification target. It gives no extra
   rights in the bot.
 - If admin-only bot features are added later (e.g. viewing bookings), they

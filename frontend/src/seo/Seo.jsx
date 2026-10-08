@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DEFAULT_OG_IMAGE, OG_LOCALES, SITE_NAME, absoluteUrl } from './site';
+import { DEFAULT_OG_IMAGE_META, OG_LOCALES, SITE_NAME, absoluteUrl } from './site';
 
 function upsertMeta(attr, key, content) {
   let el = document.head.querySelector(`meta[${attr}="${key}"]`);
@@ -49,20 +49,21 @@ function upsertPageJsonLd(data) {
 
 /**
  * Per-route document metadata for the SPA. The initial HTML for every
- * static route already carries the same tags (see vite.config.js); this
- * keeps them correct across client-side navigation, language switches and
- * data-driven pages (tour/destination/deal details).
+ * static route (and every known tour/destination) already carries the same
+ * single set of tags (see vite.config.js); this keeps them correct across
+ * client-side navigation, language switches and data-driven pages.
  *
  * Either pass `page` (a key under seo.pages.* in the translations) or an
  * explicit `title`/`description`. `path` is the canonical path; omit it for
- * pages that must not be indexed.
+ * pages that must not be indexed — noindex pages never get a canonical or
+ * og:url. `image`: { url, width?, height?, alt? } (default: og-image.jpg).
  */
 export default function Seo({
   page,
   title,
   description,
   path,
-  image = DEFAULT_OG_IMAGE,
+  image = null,
   type = 'website',
   noindex = false,
   jsonLd = null,
@@ -73,7 +74,11 @@ export default function Seo({
   const finalDescription =
     description ?? (page ? t(`seo.pages.${page}.description`) : t('seo.pages.home.description'));
   const url = !noindex && path ? absoluteUrl(path) : null;
-  const imageUrl = absoluteUrl(image);
+  const og = image?.url ? image : DEFAULT_OG_IMAGE_META;
+  const imageUrl = absoluteUrl(og.url);
+  const imageWidth = og.width ? String(og.width) : null;
+  const imageHeight = og.height ? String(og.height) : null;
+  const imageAlt = og.alt ?? finalTitle;
   const jsonLdKey = jsonLd ? JSON.stringify(jsonLd) : '';
 
   useEffect(() => {
@@ -88,6 +93,11 @@ export default function Seo({
     upsertMeta('property', 'og:description', finalDescription);
     upsertMeta('property', 'og:url', url);
     upsertMeta('property', 'og:image', imageUrl);
+    // Unknown dimensions are removed rather than left over from the
+    // previous page's image.
+    upsertMeta('property', 'og:image:width', imageWidth);
+    upsertMeta('property', 'og:image:height', imageHeight);
+    upsertMeta('property', 'og:image:alt', imageAlt);
     upsertMeta('property', 'og:locale', OG_LOCALES[i18n.language] ?? OG_LOCALES.ru);
 
     upsertMeta('name', 'twitter:card', 'summary_large_image');
@@ -96,7 +106,7 @@ export default function Seo({
     upsertMeta('name', 'twitter:image', imageUrl);
 
     upsertPageJsonLd(jsonLdKey ? JSON.parse(jsonLdKey) : null);
-  }, [finalTitle, finalDescription, url, imageUrl, type, noindex, jsonLdKey, i18n.language]);
+  }, [finalTitle, finalDescription, url, imageUrl, imageWidth, imageHeight, imageAlt, type, noindex, jsonLdKey, i18n.language]);
 
   return null;
 }

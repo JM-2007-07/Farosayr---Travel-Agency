@@ -10,11 +10,14 @@
 }
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 body {
   font-family: var(--font-body);
-  color: var(--text-dark);
-  background: var(--white);
+  font-size: var(--fs-body);
+  color: var(--color-text);
+  background: var(--color-bg);
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -49,7 +52,7 @@ h3,
 h4 {
   font-family: var(--font-display);
   color: var(--dark-blue);
-  line-height: 1.2;
+  line-height: var(--lh-heading);
   font-weight: 700;
 }
 :focus-visible {
@@ -57,23 +60,80 @@ h4 {
   outline-offset: 3px;
   border-radius: 4px;
 }
+/* Non-interactive jump targets (skip link, in-page "scroll to" buttons)
+   receive focus only so the next Tab continues from there — no ring. */
+:is(main, section)[tabindex='-1']:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 3000;
+  padding: 10px 16px;
+  border-radius: var(--radius-control);
+  background: var(--dark-blue);
+  color: var(--white);
+  font-weight: 700;
+}
+/* Read by screen readers, never shown (e.g. the route announcer). */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+/* Visually hidden until focused (still read by screen readers). */
+.skip-link:not(:focus) {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 
 /* =========================================================
-   Shared layout primitives
+   Layout primitives
+   One public container (≈1200px of content) and one section
+   rhythm for every page. Full-width backgrounds go on the
+   section; content inside always sits in .container.
    ========================================================= */
 .container {
-  max-width: 1240px;
+  width: 100%;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 28px;
+  padding: 0 var(--container-pad);
 }
 
 .section {
-  padding: 110px 0;
+  padding: var(--section-y) 0;
   position: relative;
 }
+.section--muted {
+  background: var(--color-surface-muted);
+}
+.section--tight {
+  padding: calc(var(--section-y) * 0.6) 0;
+}
+/* Main content block right below a PageHero. */
+.page-content {
+  padding: clamp(48px, 6vw, 72px) 0 var(--section-y);
+  position: relative;
+}
+
+/* =========================================================
+   Typography
+   ========================================================= */
 .section-head {
   max-width: 640px;
-  margin: 0 auto 56px;
+  margin: 0 auto var(--section-head-gap);
   text-align: center;
 }
 .section-head.light h2,
@@ -83,11 +143,11 @@ h4 {
 .eyebrow {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--fs-caption);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
-  color: var(--turquoise-dim);
+  color: var(--color-accent-text);
   margin-bottom: 14px;
   position: relative;
   padding-left: 30px;
@@ -103,16 +163,26 @@ h4 {
   transform: translateY(-50%);
 }
 .section-head h2 {
-  font-size: clamp(30px, 4vw, 44px);
+  font-size: var(--fs-h2);
   margin-bottom: 16px;
 }
 .section-desc {
-  color: var(--text-mid);
-  font-size: 17px;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-lg);
 }
 
 /* =========================================================
    Buttons
+   One recognizable Farosayr button: pill shape, Poppins 600,
+   shared heights with form fields.
+
+   Variants:  .btn-primary       turquoise, the main action
+              .btn-secondary     navy, the action on light surfaces
+              .btn-outline       white outline, on dark/photo surfaces
+              .btn-outline-dark  navy outline, on light surfaces
+              .btn-ghost         text-like, low emphasis
+              .btn-danger        destructive actions only
+   Sizes:     .btn-sm / (default) / .btn-lg, .btn-block for full width
    ========================================================= */
 .btn {
   position: relative;
@@ -120,67 +190,210 @@ h4 {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 16px 32px;
-  border-radius: 100px;
+  min-height: var(--control-h);
+  padding: 0 28px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-pill);
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 15px;
+  line-height: 1.2;
   letter-spacing: 0.01em;
+  text-align: center;
+  cursor: pointer;
   transition:
-    transform 0.35s var(--ease),
-    box-shadow 0.35s var(--ease),
-    background 0.35s var(--ease),
-    color 0.35s var(--ease);
+    transform var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease),
+    background var(--dur-base) var(--ease),
+    border-color var(--dur-base) var(--ease),
+    color var(--dur-base) var(--ease);
   overflow: hidden;
   white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn svg {
+  flex-shrink: 0;
+  font-size: 1.25em;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--turquoise);
+  outline-offset: 3px;
+  border-radius: var(--radius-pill);
+}
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-sm {
+  min-height: var(--control-h-sm);
+  padding: 0 20px;
+  font-size: 14px;
+  gap: 8px;
+}
+.btn-lg {
+  min-height: var(--control-h-lg);
+  padding: 0 34px;
+  font-size: 16px;
 }
 .btn-block {
   width: 100%;
 }
+
 .btn-primary {
   background: linear-gradient(135deg, var(--turquoise) 0%, var(--turquoise-dim) 100%);
   color: var(--dark-blue);
-  box-shadow: 0 14px 30px -10px rgba(47, 217, 196, 0.55);
+  box-shadow: var(--shadow-brand);
 }
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 20px 36px -12px rgba(47, 217, 196, 0.65);
 }
-.btn-outline {
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
+
+.btn-secondary {
+  background: var(--dark-blue);
   color: var(--white);
+  box-shadow: 0 12px 26px -14px rgba(11, 31, 58, 0.55);
 }
-.btn-outline:hover {
-  background: rgba(255, 255, 255, 0.12);
+.btn-secondary:hover:not(:disabled) {
+  background: var(--ocean-blue-2);
   transform: translateY(-3px);
 }
+
+.btn-outline {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--white);
+}
+.btn-outline:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.75);
+  transform: translateY(-3px);
+}
+
 /* Outline variant for light sections (.btn-outline is white-on-dark). */
 .btn-outline-dark {
   background: transparent;
-  border: 1.5px solid var(--dark-blue);
+  border-color: var(--color-border-strong);
   color: var(--dark-blue);
 }
-.btn-outline-dark:hover {
+.btn-outline-dark:hover:not(:disabled) {
   background: var(--dark-blue);
+  border-color: var(--dark-blue);
   color: var(--white);
   transform: translateY(-3px);
 }
-/* "See all …" link under a homepage section's grid. */
-.section-more {
-  display: flex;
-  justify-content: center;
-  margin-top: 48px;
+
+.btn-ghost {
+  background: transparent;
+  color: var(--dark-blue);
 }
+.btn-ghost:hover:not(:disabled) {
+  background: var(--color-surface-muted);
+}
+
+.btn-danger {
+  background: var(--color-error);
+  color: var(--white);
+}
+.btn-danger:hover:not(:disabled) {
+  background: #b93636;
+  transform: translateY(-2px);
+}
+
+/* Header CTA — the secondary button at the small size. */
 .btn-cta {
   background: var(--dark-blue);
   color: var(--white);
-  padding: 13px 26px;
+  min-height: var(--control-h-sm);
+  padding: 0 24px;
   font-size: 14px;
 }
 .btn-cta:hover {
   background: var(--ocean-blue-2);
   transform: translateY(-2px);
+}
+
+/* A trailing arrow icon nudges forward on hover — one rule for every
+   button instead of a copy per page. */
+.btn > svg:last-child:not(:first-child) {
+  transition: transform var(--dur-fast) ease;
+}
+.btn:hover > svg:last-child:not(:first-child) {
+  transform: translateX(3px);
+}
+
+/* Inline text action ("Learn more →", "View tour", "Reset"). */
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  /* Taller hit area for touch without moving anything. */
+  padding-block: 8px;
+  margin-block: -8px;
+  color: var(--color-accent-text);
+  font-size: var(--fs-body-sm);
+  font-weight: 700;
+  line-height: 1.3;
+  transition:
+    color var(--dur-fast) ease,
+    gap var(--dur-fast) ease;
+}
+.text-link svg {
+  width: 18px;
+  height: 18px;
+}
+.text-link:hover {
+  color: var(--ocean-blue);
+  gap: 9px;
+}
+.text-link--muted {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+.text-link--muted:hover {
+  color: var(--color-accent-text);
+  gap: 6px;
+}
+.text-link--dark {
+  color: var(--dark-blue);
+}
+
+/* "← All tours" style link at the top of detail pages. */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  /* Taller hit area for touch without moving anything. */
+  padding-block: 8px;
+  margin-block: -8px;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-sm);
+  font-weight: 600;
+  transition:
+    color var(--dur-fast) ease,
+    gap var(--dur-fast) ease;
+}
+.back-link svg {
+  width: 19px;
+  height: 19px;
+}
+.back-link:hover {
+  gap: 10px;
+  color: var(--color-accent-text);
+}
+
+/* "See all …" link under a section's grid. */
+.section-more {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-7);
 }
 
 .btn .ripple {
@@ -198,6 +411,429 @@ h4 {
   }
 }
 
+/* =========================================================
+   Form fields
+   Same height scale as buttons, 16px text so iOS doesn't zoom
+   on focus, one focus ring for every input on the site.
+   ========================================================= */
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+.field-label {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--color-text);
+}
+.input {
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--fs-body);
+  outline: none;
+  transition:
+    border-color var(--dur-fast) ease,
+    box-shadow var(--dur-fast) ease;
+}
+textarea.input {
+  min-height: 132px;
+  padding: 14px 16px;
+  resize: vertical;
+  line-height: 1.6;
+}
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+.input:hover {
+  border-color: var(--color-border-strong);
+}
+.input:focus {
+  border-color: var(--turquoise);
+  box-shadow: var(--focus-ring);
+}
+.input[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+.field-hint {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+.field-error {
+  font-size: var(--fs-caption);
+  color: var(--color-error);
+}
+.form-alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-control);
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+}
+.form-alert-error {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}
+.form-alert-success {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+/* =========================================================
+   Page hero — the shared intro for every inner public page
+   (rendered by components/common/PageHero.jsx). The homepage
+   hero (components/hero) stays its own, larger composition.
+   ========================================================= */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: var(--page-hero-pt) 0 var(--page-hero-pb);
+  background:
+    radial-gradient(circle at 84% 22%, rgba(47, 217, 196, 0.14), transparent 32%),
+    radial-gradient(circle at 12% 82%, rgba(212, 175, 106, 0.09), transparent 30%),
+    linear-gradient(135deg, var(--dark-blue) 0%, #102d4d 100%);
+  color: var(--white);
+}
+/* Two thin route rings — the shared Farosayr hero decoration. */
+.page-hero::before,
+.page-hero::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.page-hero::before {
+  width: 520px;
+  height: 520px;
+  top: -260px;
+  right: -140px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.page-hero::after {
+  width: 420px;
+  height: 420px;
+  bottom: -280px;
+  left: -160px;
+  border: 1px solid rgba(212, 175, 106, 0.18);
+}
+.page-hero-decoration {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.page-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+.page-hero-content {
+  position: relative;
+  max-width: 780px;
+}
+.page-hero--center .page-hero-content {
+  margin: 0 auto;
+  text-align: center;
+}
+/* Dark sections keep the original turquoise (5.6:1 on navy); the darker
+   --color-accent-text is only for light backgrounds. */
+.section-head.light .eyebrow {
+  color: var(--turquoise-dim);
+}
+.page-hero .eyebrow {
+  color: var(--turquoise);
+}
+/* Eyebrow led by an icon instead of the gold rule. */
+.eyebrow--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 0;
+}
+.eyebrow--icon::before {
+  content: none;
+}
+.eyebrow--icon svg {
+  font-size: 18px;
+}
+/* Two columns (text + visual) on wide screens, stacked below 1100px. */
+.page-hero--split .page-hero-inner {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: clamp(32px, 5vw, 60px);
+}
+@media (max-width: 1100px) {
+  .page-hero--split .page-hero-inner {
+    grid-template-columns: 1fr;
+  }
+}
+.page-hero-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  color: var(--turquoise);
+  background: rgba(47, 217, 196, 0.1);
+  border: 1px solid rgba(47, 217, 196, 0.2);
+}
+.page-hero--center .page-hero-icon {
+  margin-left: auto;
+  margin-right: auto;
+}
+.page-hero-icon svg {
+  font-size: 32px;
+}
+.page-hero-title {
+  margin: 0;
+  color: var(--white);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-heading);
+}
+.page-hero-title span {
+  color: var(--turquoise);
+}
+.page-hero-title--stacked span {
+  display: block;
+}
+.page-hero-text {
+  max-width: 620px;
+  margin-top: var(--space-5);
+  color: var(--color-text-on-dark-secondary);
+  font-size: var(--fs-body-lg);
+  line-height: 1.7;
+}
+.page-hero--center .page-hero-text {
+  margin-left: auto;
+  margin-right: auto;
+}
+.page-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.page-hero--center .page-hero-actions {
+  justify-content: center;
+}
+/* Small stat row under the hero text (counts, taglines). */
+.page-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+  margin-top: var(--space-7);
+}
+.page-hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.page-hero-stat strong {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 1.1;
+}
+.page-hero-stat span {
+  color: var(--text-on-dark);
+  font-size: var(--fs-caption);
+}
+.page-hero-meta-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--color-border-on-dark);
+}
+
+/* =========================================================
+   CTA band — closing call to action (components/common/CTASection)
+   ========================================================= */
+.cta-section {
+  padding: 0 0 var(--section-y);
+}
+.cta-band {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: clamp(28px, 4.5vw, 52px);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 90% 15%, rgba(47, 217, 196, 0.18), transparent 35%),
+    var(--dark-blue);
+  color: var(--white);
+}
+.cta-band::after {
+  content: '';
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  right: -90px;
+  bottom: -150px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 106, 0.22);
+  pointer-events: none;
+}
+.cta-band-body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+  max-width: 720px;
+}
+.cta-band-icon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  color: var(--turquoise);
+  background: rgba(47, 217, 196, 0.1);
+}
+.cta-band-icon svg {
+  font-size: 28px;
+}
+.cta-band .eyebrow {
+  color: var(--turquoise);
+}
+.cta-band-title {
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.cta-band-title span {
+  color: var(--turquoise);
+}
+.cta-band-text {
+  margin-top: var(--space-3);
+  color: var(--color-text-on-dark-secondary);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+}
+.cta-band-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: var(--space-3);
+}
+@media (max-width: 860px) {
+  .cta-band {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+@media (max-width: 480px) {
+  .cta-band-body {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .cta-band-actions,
+  .cta-band-actions .btn {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   Card & badge primitives
+   Shared surface rules; specific cards (TourCard, DealCard…)
+   build their own layout on top of these values.
+   ========================================================= */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.card-hover {
+  transition:
+    transform var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease);
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* =========================================================
+   Async state & sign-in prompt
+   ========================================================= */
+.async-state {
+  padding: var(--space-6) var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body);
+  text-align: center;
+}
+.async-state--error {
+  color: var(--color-error);
+}
+/* Same look whether the message is a <p> or the page's <h1>. */
+.async-state .async-state-message {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+.async-state-action {
+  margin-top: var(--space-4);
+}
+.async-state > .async-state-action {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+/* Short inline feedback under a form or control (success / error). */
+.form-feedback {
+  margin-top: var(--space-3);
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+}
+.form-feedback--error {
+  color: var(--color-error);
+}
+.form-feedback--success {
+  color: var(--color-success);
+}
+.require-auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+.require-auth {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+  max-width: 560px;
+  margin: 0 auto;
+  padding: clamp(28px, 4vw, 40px);
+  text-align: center;
+}
+
 /* reveal-on-scroll (driven by useReveal hook toggling .in-view) */
 .reveal {
   opacity: 0;
@@ -209,6 +845,12 @@ h4 {
 .reveal.in-view {
   opacity: 1;
   transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* image fallback wrapper, used by any <img> that risks a broken hotlink */
@@ -230,8 +872,11 @@ h4 {
   color: rgba(255, 255, 255, 0.35);
 }
 
-@media (max-width: 720px) {
-  .section {
-    padding: 76px 0;
+@media (max-width: 480px) {
+  .btn {
+    padding: 0 22px;
+  }
+  .btn-lg {
+    padding: 0 26px;
   }
 }

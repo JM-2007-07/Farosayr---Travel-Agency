@@ -1,76 +1,59 @@
-# FaroSair — Backend
+# FaroSayr — Backend
 
-Express 5 API + Prisma/PostgreSQL data layer + authentication. See
-`MIGRATION_PLAN.md` at the repo root for phase status and reasoning.
+Express 5 API + Prisma/PostgreSQL + cookie-based JWT authentication +
+Telegram bot/notifications.
 
 ## Setup
 
 ```bash
-# 1. install dependencies
 npm install
-
-# 2. create a PostgreSQL database (locally or via a hosted instance) —
-#    this repo does not create or manage the PostgreSQL server itself
-createdb farosayr   # or your preferred method
-
-# 3. copy the env template
-cp .env.example .env
-
-# 4. edit .env: set DATABASE_URL, and set JWT_SECRET to your own random
-#    value (see the comment in .env.example for how to generate one — do
-#    NOT use the example placeholder value anywhere real)
-
-# 5. generate the Prisma client
+cp .env.example .env     # edit: LOCAL DATABASE_URL, your own JWT_SECRET
 npm run prisma:generate
-
-# 6. run migrations (creates the first migration now that real models exist)
-npm run prisma:migrate
-
-# 7. seed demo data (idempotent — safe to run more than once)
-npm run prisma:seed
-
-# 8. start the backend
-npm run dev     # node --watch, restarts on file changes
-# or
-npm start
+npm run prisma:migrate   # local database only
+npm run prisma:seed      # optional demo data (local only, see below)
+npm run dev              # node --watch → http://localhost:5000/api
 ```
 
-## Endpoints
+Details, including why a development `.env` must not point at the
+production database: [../docs/DEVELOPMENT.md](../docs/DEVELOPMENT.md).
 
-- `GET /api/health` → `{ success: true, message: "...", database: "connected" | "disconnected", timestamp: "..." }`
-- `POST /api/auth/register` → `{ name, email, password }` → sets auth cookie, returns safe user
-- `POST /api/auth/login` → `{ email, password }` → sets auth cookie, returns safe user
-- `POST /api/auth/logout` → clears the auth cookie (safe to call when already logged out)
-- `GET /api/auth/me` → requires the auth cookie, returns the current safe user, `401` if not authenticated
-- `GET /api/auth/admin-check` → requires the auth cookie **and** `ADMIN` role; `401` if not authenticated, `403` if authenticated but not admin — exists only to prove role middleware works, not a real feature
-- Anything else → `404 { success: false, message: "Route not found" }`
+## Seed (development only)
 
-## Seed dev login
+`npm run prisma:seed` creates demo content and demo users, including an
+ADMIN (`admin@farosayr.test`). It refuses to run in production or against
+a non-local database. The demo password comes from `SEED_DEV_PASSWORD` or
+is generated and printed at the end of the run — it is never stored in
+the repository. (An older version used a fixed password that is now
+public; it must not work anywhere — see ../docs/SECURITY.md §1.2.)
 
-After `npm run prisma:seed`, every seeded user (including the one
-`ADMIN`, `admin@farosayr.test`) shares this **development-only** password:
+## Scripts
 
-```
-DevSeedPassword123!
-```
+| Script | Purpose |
+|---|---|
+| `dev` / `start` | Run the API |
+| `prisma:generate` / `prisma:migrate` / `prisma:studio` / `prisma:seed` | Prisma |
+| `security:selftest` | Security regression tests (no database, mocked Telegram) |
+| `telegram:selftest` | Bot tests against the local database (read-only) |
+| `telegram:webhook -- info|set <url>|delete` | Manage the Telegram webhook |
+| `demo:accounts [-- --lock]` | Find / disable seed demo accounts in a database |
 
-This is a real, working credential in *your local dev database only* —
-never reuse it anywhere real, and never commit a database dump containing
-it to a public repo. It exists purely so you can `POST /api/auth/login`
-against seeded data without registering a fresh account first.
+## API
 
-## Status
+Full endpoint list and contracts: [../docs/API.md](../docs/API.md).
 
-Full database schema + idempotent seed, and now a complete auth foundation:
-`bcrypt` password hashing, JWT in an httpOnly cookie, Zod-validated
-register/login, centralized `requireAuth`/`requireRole` middleware. No
-business CRUD (tours/destinations/bookings/etc.) yet, and no complete
-frontend auth UI — those are later phases. The frontend (`../frontend`)
-does not call this API yet — its services still read from local seed data,
-on purpose.
+Base path `/api`. Public: `GET /health`, `/tours`, `/tours/:slug`,
+`/destinations`, `/destinations/:slug`, `/deals`, `/deals/:id`, `/reviews`,
+`/faq`, `/gallery`, `/stats`, `POST /contact`, `POST /newsletter/subscribe`,
+`POST /auth/register`, `POST /auth/login`, `POST /auth/logout`.
+Signed in: `GET /auth/me`, `/bookings`, `/favorites`, `POST /reviews`.
+Admin: `/admin/*`. Telegram: `POST /telegram/webhook`.
 
-## Telegram bot
+All bodies are JSON. Requests from browsers must come from an origin in
+`CLIENT_URL` (CORS + CSRF guard).
 
-Optional Telegram admin notifications (new contact messages and bookings) and
-a public info bot. Setup, env vars and testing: [../docs/telegram.md](../docs/telegram.md).
-Code-level self-test (mocked Telegram API): `npm run telegram:selftest`.
+## Documentation
+
+- Security: [../docs/SECURITY.md](../docs/SECURITY.md)
+- Authentication: [../docs/AUTHENTICATION.md](../docs/AUTHENTICATION.md)
+- Telegram bot: [../docs/TELEGRAM.md](../docs/TELEGRAM.md)
+- Deployment: [../docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)

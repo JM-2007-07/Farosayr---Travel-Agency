@@ -22,13 +22,13 @@
 .footer-glow-one {
   top: -220px;
   left: -180px;
-  background: #2fd9c4;
+  background: var(--turquoise);
 }
 
 .footer-glow-two {
   right: -180px;
   bottom: -250px;
-  background: #d4af6a;
+  background: var(--gold);
 }
 
 .footer > .container {
@@ -85,7 +85,7 @@
 }
 
 .footer-logo .logo-text em {
-  color: #2fd9c4;
+  color: var(--turquoise);
   font-style: normal;
 }
 
@@ -110,13 +110,13 @@
   gap: 11px;
   width: fit-content;
   color: rgba(255, 255, 255, 0.67);
-  font-size: 13px;
+  font-size: var(--fs-caption);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a.footer-contact-item:hover {
-  color: #2fd9c4;
+  color: var(--turquoise);
 }
 
 .footer-contact-icon {
@@ -128,7 +128,7 @@ a.footer-contact-item:hover {
   border: 1px solid rgba(47, 217, 196, 0.14);
   border-radius: 9px;
   background: rgba(47, 217, 196, 0.06);
-  color: #2fd9c4;
+  color: var(--turquoise);
 }
 
 .footer-contact-icon svg {
@@ -161,8 +161,8 @@ a.footer-contact-item:hover {
 .social-icon:hover {
   transform: translateY(-4px);
   color: #071728;
-  background: #2fd9c4;
-  border-color: #2fd9c4;
+  background: var(--turquoise);
+  border-color: var(--turquoise);
 }
 
 .social-icon svg {
@@ -180,10 +180,10 @@ a.footer-contact-item:hover {
   width: 24px;
   height: 2px;
   border-radius: 10px;
-  background: #2fd9c4;
+  background: var(--turquoise);
 }
 
-.footer-heading h4 {
+.footer-heading h2 {
   margin: 0;
   color: #fff;
   font-size: 14px;
@@ -204,8 +204,11 @@ a.footer-contact-item:hover {
   display: inline-flex;
   align-items: center;
   gap: 7px;
+  /* ~33px touch target; the negative margin keeps the list spacing. */
+  padding-block: 6px;
+  margin-block: -6px;
   color: rgba(255, 255, 255, 0.54);
-  font-size: 13px;
+  font-size: var(--fs-caption);
   text-decoration: none;
   transition:
     color 0.2s ease,
@@ -215,7 +218,7 @@ a.footer-contact-item:hover {
 .footer-col li a svg {
   width: 14px;
   font-size: 15px;
-  color: #2fd9c4;
+  color: var(--turquoise);
   opacity: 0;
   transform: translateX(-5px);
   transition:
@@ -240,7 +243,7 @@ a.footer-contact-item:hover {
 .footer-newsletter > p {
   margin: 0 0 18px;
   color: rgba(255, 255, 255, 0.54);
-  font-size: 13px;
+  font-size: var(--fs-caption);
   line-height: 1.75;
 }
 
@@ -280,14 +283,14 @@ a.footer-contact-item:hover {
 .newsletter-input-wrap input {
   width: 100%;
   min-width: 0;
-  height: 42px;
+  height: 44px;
   padding: 0;
   border: 0;
   outline: 0;
   background: transparent;
-  color: #fff;
+  color: var(--white);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-body);
 }
 
 .newsletter-input-wrap input::placeholder {
@@ -307,7 +310,7 @@ a.footer-contact-item:hover {
   justify-content: center;
   border: 0;
   border-radius: 11px;
-  background: #2fd9c4;
+  background: var(--turquoise);
   color: #071728;
   cursor: pointer;
   transition:
@@ -334,7 +337,7 @@ a.footer-contact-item:hover {
   display: block;
   margin-top: 11px;
   color: rgba(255, 255, 255, 0.3);
-  font-size: 10px;
+  font-size: var(--fs-caption);
 }
 
 .footer-route {
@@ -381,7 +384,7 @@ a.footer-contact-item:hover {
   z-index: 1;
   width: 8px;
   height: 8px;
-  border: 2px solid #2fd9c4;
+  border: 2px solid var(--turquoise);
   border-radius: 50%;
   background: #071728;
 }
@@ -390,7 +393,7 @@ a.footer-contact-item:hover {
 .footer-route-line span:last-child {
   width: 12px;
   height: 12px;
-  border-color: #d4af6a;
+  border-color: var(--gold);
 }
 
 .footer-route-plane {
@@ -406,7 +409,7 @@ a.footer-contact-item:hover {
   border: 1px solid rgba(47, 217, 196, 0.35);
   border-radius: 50%;
   background: #071728;
-  color: #2fd9c4;
+  color: var(--turquoise);
   transform: translate(-50%, -50%);
   box-shadow: 0 0 0 8px #071728;
 }
@@ -441,7 +444,7 @@ a.footer-contact-item:hover {
 
 .footer-route-text span {
   color: rgba(255, 255, 255, 0.38);
-  font-size: 10px;
+  font-size: var(--fs-caption);
   font-weight: 600;
   letter-spacing: 0.14em;
   line-height: 1;
@@ -469,7 +472,7 @@ a.footer-contact-item:hover {
   justify-content: space-between;
   gap: 20px;
   color: rgba(255, 255, 255, 0.38);
-  font-size: 11px;
+  font-size: var(--fs-caption);
 }
 
 .footer-bottom-links {
@@ -485,7 +488,7 @@ a.footer-contact-item:hover {
 }
 
 .footer-bottom-links a:hover {
-  color: #2fd9c4;
+  color: var(--turquoise);
 }
 
 .footer-bottom-links span {
@@ -503,7 +506,7 @@ a.footer-contact-item:hover {
 
 .footer-location svg {
   font-size: 15px;
-  color: #2fd9c4;
+  color: var(--turquoise);
 }
 
 @media (max-width: 1100px) {
@@ -575,7 +578,7 @@ a.footer-contact-item:hover {
   }
 
   .footer-brand-description {
-    font-size: 13px;
+    font-size: var(--fs-caption);
   }
 
   .footer-route {
@@ -622,4 +625,17 @@ a.footer-contact-item:hover {
   .footer-newsletter {
     grid-column: 1 / -1;
   }
+}
+
+/* Result of the newsletter form (Step 4). */
+.newsletter-feedback {
+  margin-top: var(--space-2);
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+}
+.newsletter-feedback.is-success {
+  color: var(--turquoise);
+}
+.newsletter-feedback.is-error {
+  color: #ff9a9a;
 }

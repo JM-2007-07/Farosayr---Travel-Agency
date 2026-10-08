@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import * as favoritesService from '../services/favoritesService';
 
@@ -13,6 +13,9 @@ import * as favoritesService from '../services/favoritesService';
 export function useFavorites() {
   const { isAuthenticated } = useAuth();
   const [favoriteIds, setFavoriteIds] = useState(() => new Set());
+  // Tours with a request in flight — a second click waits for the first
+  // instead of firing a competing add/remove.
+  const pending = useRef(new Set());
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -41,6 +44,8 @@ export function useFavorites() {
   const toggleFavorite = useCallback(
     async (tourDbId) => {
       if (!isAuthenticated) return { requiresAuth: true };
+      if (pending.current.has(tourDbId)) return { requiresAuth: false };
+      pending.current.add(tourDbId);
 
       const wasFavorited = favoriteIds.has(tourDbId);
       setFavoriteIds((prev) => {
@@ -62,6 +67,8 @@ export function useFavorites() {
           return next;
         });
         throw err;
+      } finally {
+        pending.current.delete(tourDbId);
       }
 
       return { requiresAuth: false };

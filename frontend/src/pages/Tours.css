@@ -1,104 +1,18 @@
 .tours-page {
   min-height: 100vh;
-  background: #f5f8fa;
+  background: var(--color-surface-muted);
 }
 
+/* The filter card overlaps the hero, so the hero keeps extra room below. */
 .tours-hero {
-  position: relative;
-  overflow: hidden;
-  padding: 168px 0 145px;
-  background:
-    radial-gradient(circle at 82% 25%, rgba(47, 217, 196, 0.13), transparent 30%),
-    radial-gradient(circle at 12% 80%, rgba(47, 217, 196, 0.08), transparent 28%),
-    var(--dark-blue);
-}
-
-.tours-hero::before {
-  content: '';
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  top: -260px;
-  right: -120px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 50%;
-}
-
-.tours-hero::after {
-  content: '';
-  position: absolute;
-  width: 720px;
-  height: 720px;
-  bottom: -610px;
-  left: -180px;
-  border: 1px solid rgba(47, 217, 196, 0.08);
-  border-radius: 50%;
-}
-
-.tours-hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 760px;
-}
-
-.tours-hero .eyebrow {
-  margin-top: 24px;
-  margin-bottom: 13px;
-  color: var(--turquoise);
-}
-
-.tours-hero h1 {
-  max-width: 720px;
-  margin: 0;
-  color: var(--white);
-  font-family: var(--font-display);
-  font-size: clamp(42px, 5vw, 68px);
-  font-weight: 700;
-  line-height: 1.04;
-  letter-spacing: -0.035em;
-}
-
-.tours-hero h1 span {
-  display: block;
-  color: var(--turquoise);
-}
-
-.tours-hero-description {
-  max-width: 620px;
-  margin: 25px 0 0;
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 16px;
-  line-height: 1.75;
-}
-
-.tours-hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 8px 14px;
-  border: 1px solid rgba(47, 217, 196, 0.2);
-  border-radius: 100px;
-  background: rgba(255, 255, 255, 0.055);
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 12px;
-  font-weight: 600;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-}
-
-.tours-hero-badge-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--turquoise);
-  box-shadow: 0 0 0 5px rgba(47, 217, 196, 0.1);
+  padding-bottom: calc(var(--page-hero-pb) + 64px);
 }
 
 .tours-content {
   position: relative;
   z-index: 2;
   margin-top: -70px;
-  padding-bottom: 110px;
+  padding-bottom: var(--section-y);
 }
 
 .tours-filter-card {
@@ -152,22 +66,7 @@
 .filter-title p {
   margin: 3px 0 0;
   color: var(--text-mid);
-  font-size: 12.5px;
-}
-
-.filter-reset {
-  border: 0;
-  background: transparent;
-  color: var(--text-mid);
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: color 0.25s ease;
-}
-
-.filter-reset:hover {
-  color: var(--turquoise-dim);
+  font-size: var(--fs-caption);
 }
 
 .tours-filter-grid {
@@ -186,11 +85,9 @@
   align-items: center;
   gap: 6px;
   margin: 0 0 8px;
-  color: var(--ocean-blue);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
+  color: var(--color-text);
+  font-size: var(--fs-label);
+  font-weight: 600;
 }
 
 .tour-filter-field label svg {
@@ -201,19 +98,15 @@
 .tour-filter-field select,
 .tour-filter-field input {
   width: 100%;
-  height: 52px;
-  box-sizing: border-box;
-  border: 1px solid #dfe7ec;
-  border-radius: 13px;
+  height: var(--control-h);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
   outline: none;
-  background: #fff;
-  color: var(--dark-blue);
+  background: var(--white);
+  color: var(--color-text);
   font-family: inherit;
-  font-size: 13.5px;
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
+  font-size: var(--fs-body);
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
 }
 
 .tour-filter-field select {
@@ -227,14 +120,13 @@
 
 .tour-filter-field select:hover,
 .tour-filter-field input:hover {
-  border-color: rgba(47, 217, 196, 0.55);
+  border-color: var(--color-border-strong);
 }
 
 .tour-filter-field select:focus,
 .tour-filter-field input:focus {
   border-color: var(--turquoise);
-  box-shadow: 0 0 0 4px rgba(47, 217, 196, 0.12);
-  background: #fff;
+  box-shadow: var(--focus-ring);
 }
 
 .filter-input-wrap {
@@ -250,8 +142,8 @@
   top: 50%;
   right: 14px;
   transform: translateY(-50%);
-  color: var(--text-mid);
-  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-sm);
   pointer-events: none;
 }
 
@@ -274,44 +166,6 @@
   padding-left: 43px;
 }
 
-.tours-search-button {
-  height: 52px;
-  min-width: 132px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: 0;
-  border-radius: 13px;
-  padding: 0 18px;
-  background: linear-gradient(135deg, #2fd9c4, #21bfae);
-  color: #0b1f3a;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 0 9px 22px rgba(47, 217, 196, 0.23);
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    filter 0.25s ease;
-}
-
-.tours-search-button svg {
-  font-size: 19px;
-}
-
-.tours-search-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 13px 28px rgba(47, 217, 196, 0.32);
-  filter: brightness(1.03);
-}
-
-.tours-search-button:active {
-  transform: translateY(0);
-}
-
 .filter-card-footer {
   display: flex;
   align-items: center;
@@ -326,8 +180,8 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #8997a3;
-  font-size: 11.5px;
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
 }
 
 .filter-footer-info svg {
@@ -336,11 +190,11 @@
 
 .results-counter {
   color: var(--text-mid);
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .results-counter strong {
-  color: var(--turquoise-dim);
+  color: var(--color-accent-text);
 }
 
 .tours-list-header {
@@ -354,9 +208,9 @@
 .tours-list-kicker {
   display: block;
   margin-bottom: 7px;
-  color: var(--turquoise-dim);
+  color: var(--color-accent-text);
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--fs-caption);
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -366,7 +220,7 @@
   margin: 0;
   color: var(--dark-blue);
   font-family: var(--font-display);
-  font-size: 32px;
+  font-size: var(--fs-h2);
   line-height: 1.15;
 }
 
@@ -376,7 +230,7 @@
   border-radius: 100px;
   background: var(--white);
   color: var(--text-mid);
-  font-size: 11.5px;
+  font-size: var(--fs-caption);
   font-weight: 600;
 }
 
@@ -401,9 +255,6 @@
 }
 
 @media (max-width: 980px) {
-  .tours-hero {
-    padding: 145px 0 125px;
-  }
 
   .tours-filter-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -415,17 +266,8 @@
 }
 
 @media (max-width: 700px) {
-  .tours-hero {
-    padding: 125px 0 105px;
-  }
 
-  .tours-hero h1 {
-    font-size: 40px;
-  }
 
-  .tours-hero-description {
-    font-size: 14px;
-  }
 
   .tours-content {
     margin-top: -50px;
@@ -462,9 +304,6 @@
     margin-bottom: 24px;
   }
 
-  .tours-list-header h2 {
-    font-size: 28px;
-  }
 
   .tours-grid {
     grid-template-columns: 1fr;
@@ -473,27 +312,12 @@
 }
 
 @media (max-width: 480px) {
-  .tours-hero {
-    padding-top: 110px;
-  }
 
-  .tours-hero h1 {
-    font-size: 35px;
-  }
 
-  .tours-hero-badge {
-    font-size: 10.5px;
-  }
 
-  .tours-hero-description {
-    line-height: 1.65;
-  }
 
   .filter-card-header {
     margin-bottom: 20px;
   }
 
-  .filter-reset {
-    font-size: 11px;
   }
-}

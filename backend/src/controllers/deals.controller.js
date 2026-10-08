@@ -1,14 +1,18 @@
 import { prisma } from '../config/database.js';
 import { notFoundError } from '../utils/httpErrors.js';
-import { findActiveDeals } from '../services/deals.service.js';
+import { findActiveDeals, isDealCurrent } from '../services/deals.service.js';
 
 // Deals don't have a slug in the schema (see schema.prisma's Deal model —
 // it wasn't given one), so real database UUIDs are used as the id here.
 // This is the one exception to the slug-based id pattern used for
 // destinations/tours — documented in the sub-phase report.
+//
+// The list contains only CURRENT deals (deals.service.js); a single deal is
+// returned by id whatever its state, with `isCurrent` telling the client
+// whether it can still be booked at the deal price.
 export async function listDeals(req, res) {
   const deals = await findActiveDeals();
-  res.status(200).json({ success: true, data: deals });
+  res.status(200).json({ success: true, data: deals.map((deal) => ({ ...deal, isCurrent: true })) });
 }
 
 export async function getDeal(req, res) {
@@ -17,5 +21,5 @@ export async function getDeal(req, res) {
     include: { tour: true },
   });
   if (!deal) throw notFoundError('Deal not found');
-  res.status(200).json({ success: true, data: deal });
+  res.status(200).json({ success: true, data: { ...deal, isCurrent: isDealCurrent(deal) } });
 }

@@ -28,9 +28,20 @@ function mapDestination(d) {
   };
 }
 
-export async function getDestinations() {
-  const data = await apiGet('/destinations');
-  return data.map(mapDestination);
+// The destination list is small, rarely changes and is needed by several
+// components on one page (homepage grid + search form, tours filter). One
+// shared request, reused for a minute; failures are not cached.
+const LIST_TTL_MS = 60_000;
+let listCache = null; // { promise, at }
+
+export function getDestinations() {
+  if (listCache && Date.now() - listCache.at < LIST_TTL_MS) return listCache.promise;
+  const promise = apiGet('/destinations').then((data) => data.map(mapDestination));
+  listCache = { promise, at: Date.now() };
+  promise.catch(() => {
+    if (listCache?.promise === promise) listCache = null;
+  });
+  return promise;
 }
 
 export async function getDestinationById(id) {

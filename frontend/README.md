@@ -1,32 +1,30 @@
-# FaroSair — Frontend
+# FaroSayr — Frontend
 
-React 19 + Vite + react-router (not react-router-dom). Public site keeps the
-original hand-written CSS design system — Tailwind/MUI are in the dependency
-baseline but not used on public pages (see `MIGRATION_PLAN.md` at the repo
-root for the reasoning).
+React 19 + Vite + react-router. Styling: the project's own CSS design
+system (`src/styles/tokens.css`, `src/styles/global.css`) plus MUI with a
+Farosayr theme (`src/theme/muiTheme.js`), mostly in the admin panel.
 
 ## Setup
 
 ```bash
 npm install
-npm run dev       # http://localhost:5173
+cp .env.example .env   # VITE_API_URL=http://localhost:5000/api
+npm run dev            # http://localhost:5173
 npm run lint
 npm run build
 npm run preview
 ```
 
-## One manual step before first run
+## Environment
 
-`public/farosayr_icon_48x48_palette_v2.png` is **not included** — it was
-referenced by filename in the original site but the actual image file was
-never provided to this migration. Copy your real logo/favicon PNG into
-`public/farosayr_icon_48x48_palette_v2.png` (same filename the components
-already reference), or update the `src` in `Header.jsx`, `Footer.jsx`, and
-`index.html`'s favicon link if you rename it.
+Every `VITE_*` variable is compiled into the public bundle — only public
+values belong there (`VITE_API_URL`, `VITE_YANDEX_MAPS_API_KEY`). Never put
+secrets in the frontend. See [../docs/SECURITY.md](../docs/SECURITY.md).
 
-## Status: Phase 1 complete
+## Notes
 
-See `MIGRATION_PLAN.md` for full phase-by-phase status. Phase 1 delivers the
-React/Vite foundation and a real Loader, ScrollProgress, Header (+ mobile
-menu), Hero, and Footer. The remaining homepage sections render as labeled
-placeholders (`<SectionPending>`) at their correct anchors until Phase 2.
+- API access goes through `src/services/api/client.js` only
+  (`credentials: 'include'`, JSON bodies).
+- Security headers for the deployed site are set in `vercel.json`.
+- Setup and checks: [../docs/DEVELOPMENT.md](../docs/DEVELOPMENT.md);
+  deployment: [../docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md).

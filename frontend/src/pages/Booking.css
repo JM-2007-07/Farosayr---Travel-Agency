@@ -2,64 +2,6 @@
   overflow: hidden;
 }
 
-.booking-hero {
-  padding: 150px 0 90px;
-  background:
-    radial-gradient(circle at 85% 20%, rgba(47, 217, 196, 0.12), transparent 32%),
-    radial-gradient(circle at 15% 80%, rgba(212, 175, 106, 0.1), transparent 30%),
-    var(--dark-blue);
-  color: var(--white);
-}
-
-.booking-hero-content {
-  max-width: 760px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.booking-hero-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  color: var(--turquoise);
-  background: rgba(47, 217, 196, 0.1);
-  border: 1px solid rgba(47, 217, 196, 0.2);
-}
-
-.booking-hero-icon svg {
-  font-size: 32px;
-}
-
-.booking-hero .eyebrow {
-  margin-bottom: 14px;
-  color: var(--turquoise);
-}
-
-.booking-hero h1 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(40px, 6vw, 64px);
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-}
-
-.booking-hero-content > p:last-child {
-  max-width: 580px;
-  margin: 22px auto 0;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-.booking-section {
-  padding-top: 65px;
-  padding-bottom: 100px;
-}
-
 .booking-layout {
   max-width: 1050px;
   margin: 0 auto;
@@ -96,7 +38,7 @@
 .booking-tour-label {
   margin: 0 0 9px;
   color: var(--ocean-blue);
-  font-size: 11px;
+  font-size: var(--fs-caption);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -119,32 +61,13 @@
 
 .booking-tour-price span {
   color: var(--text-mid);
-  font-size: 13px;
+  font-size: var(--fs-caption);
 }
 
 .booking-tour-price strong {
   color: var(--ocean-blue);
   font-family: var(--font-display);
   font-size: 25px;
-}
-
-.booking-tour-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--dark-blue);
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: color 0.25s ease;
-}
-
-.booking-tour-link:hover {
-  color: var(--ocean-blue);
-}
-
-.booking-tour-link svg {
-  font-size: 17px;
 }
 
 .booking-form {
@@ -187,7 +110,7 @@
 .booking-form-title p {
   margin: 0;
   color: var(--text-mid);
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .booking-field {
@@ -198,7 +121,7 @@
   display: block;
   margin-bottom: 8px;
   color: var(--dark-blue);
-  font-size: 13px;
+  font-size: var(--fs-caption);
   font-weight: 600;
 }
 
@@ -228,7 +151,7 @@
   background: #eaf5f5;
 }
 
-.quantity-control button:disabled {
+.quantity-control button[aria-disabled='true'] {
   opacity: 0.35;
   cursor: not-allowed;
 }
@@ -265,7 +188,7 @@
 
 .booking-total span {
   color: var(--text-mid);
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .booking-total strong {
@@ -285,50 +208,14 @@
   border-radius: 8px;
   color: #b63e48;
   background: rgba(232, 85, 90, 0.08);
-  font-size: 13px;
+  font-size: var(--fs-caption);
   line-height: 1.5;
-}
-
-.booking-submit {
-  width: 100%;
-  margin-top: 20px;
-  min-height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border: 0;
-  border-radius: 10px;
-  color: var(--white);
-  background: var(--dark-blue);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    background 0.25s ease,
-    transform 0.25s ease;
-}
-
-.booking-submit:hover:not(:disabled) {
-  background: var(--ocean-blue);
-  transform: translateY(-2px);
-}
-
-.booking-submit:disabled {
-  opacity: 0.65;
-  cursor: wait;
-}
-
-.booking-submit svg {
-  font-size: 18px;
 }
 
 .booking-note {
   margin: 15px 0 0;
   color: var(--text-mid);
-  font-size: 11px;
+  font-size: var(--fs-caption);
   line-height: 1.55;
   text-align: center;
 }
@@ -363,7 +250,7 @@
 .booking-success-label {
   margin: 0 0 7px;
   color: var(--ocean-blue);
-  font-size: 11px;
+  font-size: var(--fs-caption);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -379,7 +266,7 @@
 .booking-success-text {
   margin: 0;
   color: var(--text-mid);
-  font-size: 13px;
+  font-size: var(--fs-caption);
 }
 
 .booking-success-text strong {
@@ -412,13 +299,13 @@
 .booking-result span {
   margin-bottom: 4px;
   color: var(--text-mid);
-  font-size: 10px;
+  font-size: var(--fs-caption);
 }
 
 .booking-result strong {
   overflow: hidden;
   color: var(--dark-blue);
-  font-size: 12px;
+  font-size: var(--fs-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -461,35 +348,15 @@
   max-width: 420px;
   margin: 0 auto 22px;
   color: var(--text-mid);
-  font-size: 13px;
+  font-size: var(--fs-caption);
   line-height: 1.6;
-}
-
-.booking-back-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 12px 17px;
-  border-radius: 9px;
-  color: var(--white);
-  background: var(--dark-blue);
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.25s ease;
-}
-
-.booking-back-button:hover {
-  background: var(--ocean-blue);
-}
-
-.booking-back-button svg {
-  font-size: 18px;
 }
 
 @media (max-width: 820px) {
   .booking-layout {
-    grid-template-columns: 1fr;
+    /* minmax(0, …): a plain 1fr can't shrink below the form's content, which
+       pushed the form past the right edge (clipped) at 320px. */
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .booking-tour-image {
@@ -498,29 +365,10 @@
 }
 
 @media (max-width: 720px) {
-  .booking-hero {
-    padding: 120px 0 65px;
-  }
 
-  .booking-hero-icon {
-    width: 56px;
-    height: 56px;
-    margin-bottom: 18px;
-  }
 
-  .booking-hero h1 {
-    font-size: 42px;
-  }
 
-  .booking-hero-content > p:last-child {
-    margin-top: 18px;
-    font-size: 14px;
-  }
 
-  .booking-section {
-    padding-top: 35px;
-    padding-bottom: 65px;
-  }
 
   .booking-tour-image {
     height: 230px;
@@ -536,13 +384,7 @@
 }
 
 @media (max-width: 480px) {
-  .booking-hero {
-    padding-top: 105px;
-  }
 
-  .booking-hero h1 {
-    font-size: 36px;
-  }
 
   .booking-success {
     padding: 28px 20px;
@@ -568,4 +410,19 @@
   .booking-empty {
     padding: 35px 20px;
   }
+}
+/* Visuals come from .btn; only placement is page-specific. */
+.booking-submit {
+  margin-top: 20px;
+}
+
+/* Deal pricing in the booking form (Step 4). */
+.booking-old-price {
+  margin-right: 6px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+.booking-deal-notice {
+  max-width: 1050px;
+  margin: 0 auto var(--space-5);
 }

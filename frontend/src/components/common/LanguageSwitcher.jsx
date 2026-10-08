@@ -32,7 +32,9 @@ export default function LanguageSwitcher({ variant = 'dropdown', onChange }) {
     }
 
     function handleKeyDown(e) {
-      if (e.key === 'Escape') setIsOpen(false);
+      if (e.key !== 'Escape') return;
+      setIsOpen(false);
+      wrapperRef.current?.querySelector('.lang-switcher-button')?.focus();
     }
 
     document.addEventListener('click', handleOutsideClick);

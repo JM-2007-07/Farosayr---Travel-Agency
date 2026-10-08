@@ -28,5 +28,5 @@
   font-family: var(--font-display);
   color: var(--white);
   letter-spacing: 0.25em;
-  font-size: 13px;
+  font-size: var(--fs-caption);
 }

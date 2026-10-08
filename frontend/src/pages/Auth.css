@@ -1,12 +1,13 @@
+/* Shared by /login and /register. */
 .auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: 150px 24px 90px;
+  padding: var(--detail-page-pt) var(--container-pad) var(--section-y);
   background:
     radial-gradient(circle at 10% 20%, rgba(47, 217, 196, 0.07), transparent 30%),
     radial-gradient(circle at 90% 80%, rgba(212, 175, 106, 0.07), transparent 30%),
-    #f5f8fa;
+    var(--color-surface-muted);
 }
 
 .auth-container {
@@ -33,7 +34,7 @@
   justify-content: space-between;
   overflow: hidden;
   padding: 52px;
-  background: #0b1f3a;
+  background: var(--dark-blue);
   color: #fff;
 }
 
@@ -92,9 +93,9 @@
   top: calc(50% - 4px);
   width: 8px;
   height: 8px;
-  border: 2px solid #2fd9c4;
+  border: 2px solid var(--turquoise);
   border-radius: 50%;
-  background: #0b1f3a;
+  background: var(--dark-blue);
 }
 
 .auth-route span:nth-child(1) {
@@ -124,10 +125,10 @@
   justify-content: center;
   border: 1px solid rgba(47, 217, 196, 0.3);
   border-radius: 50%;
-  background: #0b1f3a;
-  color: #2fd9c4;
+  background: var(--dark-blue);
+  color: var(--turquoise);
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 8px #0b1f3a;
+  box-shadow: 0 0 0 8px var(--dark-blue);
 }
 
 .auth-route-plane svg {
@@ -145,14 +146,15 @@
 .auth-visual-kicker {
   display: inline-block;
   margin-bottom: 22px;
-  color: #2fd9c4;
-  font-size: 11px;
+  color: var(--turquoise);
+  font-size: var(--fs-caption);
   font-weight: 700;
   letter-spacing: 0.16em;
 }
 
 .auth-visual-content h2 {
   margin: 0 0 20px;
+  color: var(--white);
   font-size: clamp(36px, 4vw, 54px);
   font-weight: 700;
   line-height: 1.05;
@@ -161,7 +163,7 @@
 
 .auth-visual-content h2 span {
   display: block;
-  color: #2fd9c4;
+  color: var(--turquoise);
 }
 
 .auth-visual-content p {
@@ -185,11 +187,11 @@
   align-items: center;
   gap: 10px;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 
 .auth-benefit svg {
-  color: #2fd9c4;
+  color: var(--turquoise);
   font-size: 18px;
 }
 
@@ -210,16 +212,20 @@
 
 .auth-header h1 {
   margin: 0 0 8px;
-  color: #0b1f3a;
-  font-size: 38px;
+  color: var(--dark-blue);
+  font-size: clamp(30px, 3.4vw, 38px);
   line-height: 1.1;
   letter-spacing: -0.035em;
 }
 
 .auth-description {
   margin: 0;
-  color: #74838e;
-  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-sm);
+}
+
+.auth-header h1 span {
+  color: var(--color-accent-text);
 }
 
 .auth-mobile-icon {
@@ -236,9 +242,9 @@
   padding: 13px 15px;
   border: 1px solid rgba(194, 58, 68, 0.18);
   border-radius: 10px;
-  background: rgba(194, 58, 68, 0.06);
-  color: #c23a44;
-  font-size: 13px;
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  font-size: var(--fs-body-sm);
   line-height: 1.5;
 }
 
@@ -249,9 +255,14 @@
 }
 
 .auth-field label {
-  color: #304552;
-  font-size: 12px;
-  font-weight: 700;
+  color: var(--color-text);
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+
+.auth-field-hint {
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
 }
 
 .auth-input-wrap {
@@ -263,37 +274,37 @@
 .auth-input-wrap > svg {
   position: absolute;
   left: 15px;
-  color: #9aa7b0;
+  color: var(--color-text-muted);
   font-size: 20px;
   pointer-events: none;
 }
 
 .auth-input-wrap input {
   width: 100%;
-  height: 52px;
+  height: var(--control-h);
   padding: 0 48px;
-  border: 1px solid #dce4e8;
-  border-radius: 11px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
   outline: none;
   background: #fbfcfd;
-  color: #0b1f3a;
+  color: var(--color-text);
   font-family: inherit;
-  font-size: 14px;
+  font-size: var(--fs-body);
   transition: 0.2s ease;
 }
 
 .auth-input-wrap input::placeholder {
-  color: #aab5bb;
+  color: var(--color-text-muted);
 }
 
 .auth-input-wrap input:hover {
-  border-color: #c7d2d8;
+  border-color: var(--color-border-strong);
 }
 
 .auth-input-wrap input:focus {
-  border-color: #2fd9c4;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(47, 217, 196, 0.08);
+  border-color: var(--turquoise);
+  background: var(--white);
+  box-shadow: var(--focus-ring);
 }
 
 .password-toggle {
@@ -315,32 +326,11 @@
 
 .password-toggle:hover {
   background: rgba(11, 31, 58, 0.05);
-  color: #0b1f3a;
+  color: var(--dark-blue);
 }
 
 .password-toggle svg {
   font-size: 19px;
-}
-
-.auth-submit {
-  min-height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  margin-top: 5px;
-  border: 0;
-  border-radius: 11px;
-  font-weight: 700;
-}
-
-.auth-submit svg {
-  font-size: 19px;
-  transition: transform 0.2s ease;
-}
-
-.auth-submit:hover svg {
-  transform: translateX(3px);
 }
 
 .auth-divider {
@@ -363,8 +353,8 @@
   position: relative;
   padding: 0 14px;
   background: #fff;
-  color: #a0adb5;
-  font-size: 11px;
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
 }
 
 .auth-register {
@@ -372,21 +362,21 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  color: #7b8a94;
-  font-size: 13px;
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
 }
 
 .auth-register a {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  color: #0b1f3a;
+  color: var(--dark-blue);
   font-weight: 700;
   text-decoration: none;
 }
 
 .auth-register a:hover {
-  color: #2fd9c4;
+  color: var(--turquoise);
 }
 
 .auth-register svg {
@@ -417,7 +407,7 @@
     margin-bottom: 22px;
     border-radius: 13px;
     background: rgba(47, 217, 196, 0.1);
-    color: #2fd9c4;
+    color: var(--turquoise);
   }
 
   .auth-mobile-icon svg {
@@ -426,10 +416,6 @@
 }
 
 @media (max-width: 600px) {
-  .auth-page {
-    padding: 110px 16px 50px;
-  }
-
   .auth-card {
     border-radius: 20px;
   }
@@ -438,12 +424,17 @@
     padding: 38px 24px;
   }
 
-  .auth-header h1 {
-    font-size: 32px;
-  }
-
   .auth-register {
     flex-direction: column;
     gap: 5px;
   }
+}
+.auth-submit {
+  margin-top: 5px;
+}
+
+.auth-back {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-5);
 }

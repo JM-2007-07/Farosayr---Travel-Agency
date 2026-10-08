@@ -1,9 +1,10 @@
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Seo from '../seo/Seo';
 import AboutSection from '../components/home/AboutSection';
 import WhyChooseUs from '../components/home/WhyChooseUs';
 import Statistics from '../components/home/Statistics';
+import PageHero from '../components/common/PageHero';
 import './About.css';
 
 const ABOUT_LINKS = [
@@ -22,28 +23,20 @@ export default function About() {
     <>
       <Seo page="about" path="/about" />
 
-      <section className="about-page-hero">
-        <div className="container">
-          <div className="about-page-hero-content">
-            <p className="eyebrow">{t('aboutPage.eyebrow')}</p>
-            <h1>{t('aboutPage.title')}</h1>
-            <p className="about-page-lead">{t('aboutPage.text')}</p>
-
-            <nav className="about-page-links" aria-label={t('aboutPage.linksTitle')}>
-              <span className="about-page-links-title">{t('aboutPage.linksTitle')}</span>
-              {ABOUT_LINKS.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`btn ${link.primary ? 'btn-primary' : 'btn-outline'}`}
-                >
-                  {t(link.labelKey)}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </section>
+      <PageHero eyebrow={t('aboutPage.eyebrow')} title={t('aboutPage.title')} text={t('aboutPage.text')}>
+        <nav className="about-page-links" aria-label={t('aboutPage.linksTitle')}>
+          <span className="about-page-links-title">{t('aboutPage.linksTitle')}</span>
+          {ABOUT_LINKS.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={`btn btn-sm ${link.primary ? 'btn-primary' : 'btn-outline'}`}
+            >
+              {t(link.labelKey)}
+            </Link>
+          ))}
+        </nav>
+      </PageHero>
 
       <AboutSection showMoreLink={false} />
       <WhyChooseUs />

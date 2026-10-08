@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useScrollState } from '../../hooks/useScrollState';
+import { scrollBehavior } from '../../utils/scrollToId';
 import './BackToTop.css';
 
 // Ports the original: backToTop.classList.toggle('show', window.scrollY > 700)
@@ -9,7 +10,7 @@ export default function BackToTop() {
   const show = scrollY > 700;
 
   function handleClick() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: scrollBehavior() });
   }
 
   return (

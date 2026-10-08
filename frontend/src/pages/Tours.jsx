@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { Trans, useTranslation } from 'react-i18next';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
@@ -12,6 +13,7 @@ import { useAsyncData } from '../hooks/useAsyncData';
 import { useFavorites } from '../hooks/useFavorites';
 import TourCard from '../components/common/TourCard';
 import AsyncState from '../components/common/AsyncState';
+import PageHero from '../components/common/PageHero';
 import './Tours.css';
 import Seo from '../seo/Seo';
 
@@ -30,11 +32,33 @@ const EMPTY_FILTERS = {
   sort: '',
 };
 
+// Applied filters live in the URL (/tours?destination=dubai&maxPrice=1000),
+// so a filtered list can be shared, survives a refresh, works with the
+// browser's Back button, and the homepage search can link straight to it.
+function readFilters(searchParams) {
+  return Object.fromEntries(Object.keys(EMPTY_FILTERS).map((key) => [key, searchParams.get(key) ?? '']));
+}
+
+function toSearchParams(values, extra = {}) {
+  return Object.fromEntries(
+    Object.entries({ ...values, ...extra }).filter(([, v]) => v !== '' && v !== null && v !== undefined)
+  );
+}
+
 export default function Tours() {
   const { t } = useTranslation();
-  const [draft, setDraft] = useState(EMPTY_FILTERS);
-  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterKey = searchParams.toString();
+  const filters = useMemo(() => readFilters(searchParams), [filterKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Travellers chosen in the homepage search — carried into the booking form.
+  const travelers = searchParams.get('travelers') ?? '';
+  const [draft, setDraft] = useState(filters);
   const { isFavorited, toggleFavorite } = useFavorites();
+
+  // Keep the form in sync when the URL changes (Back button, a new search).
+  useEffect(() => {
+    setDraft(filters);
+  }, [filters]);
 
   const fetchTours = useCallback(() => getTours(filters), [filters]);
 
@@ -43,15 +67,12 @@ export default function Tours() {
     data: tours,
     isLoading,
     isError,
-  } = useAsyncData(fetchTours, [
-    filters.destination,
-    filters.minPrice,
-    filters.maxPrice,
-    filters.q,
-    filters.sort,
-  ]);
+    reload,
+  } = useAsyncData(fetchTours, [filterKey]);
 
   const { data: destinations } = useAsyncData(getDestinations, []);
+
+  const hasFilters = Object.values(filters).some(Boolean);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -60,34 +81,30 @@ export default function Tours() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setFilters(draft);
+    setSearchParams(toSearchParams(draft, { travelers }));
   }
 
   function handleReset() {
     setDraft(EMPTY_FILTERS);
-    setFilters(EMPTY_FILTERS);
+    setSearchParams({});
   }
+
+  const bookingHref = (tour) => {
+    const params = new URLSearchParams({ tour: tour.id });
+    if (/^\d{1,2}$/.test(travelers)) params.set('quantity', travelers);
+    return `/booking?${params}`;
+  };
 
   return (
     <div className="tours-page">
       <Seo page="tours" path="/tours" />
-      <section className="tours-hero">
-        <div className="container">
-          <div className="tours-hero-content">
-            
-
-            <p className="eyebrow">{t('tours.eyebrow')}</p>
-
-            <h1>
-              <Trans i18nKey="tours.title" components={{ accent: <span /> }} />
-            </h1>
-
-            <p className="tours-hero-description">
-              {t('tours.text')}
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        className="tours-hero"
+        eyebrow={t('tours.eyebrow')}
+        title={<Trans i18nKey="tours.title" components={{ accent: <span /> }} />}
+        text={t('tours.text')}
+        stacked
+      />
 
       <section className="tours-content">
         <div className="container">
@@ -106,7 +123,7 @@ export default function Tours() {
 
               <button
                 type="button"
-                className="filter-reset"
+                className="text-link text-link--muted filter-reset"
                 onClick={handleReset}
               >
                 {t('tours.reset')}
@@ -215,7 +232,7 @@ export default function Tours() {
                 </select>
               </div>
 
-              <button type="submit" className="tours-search-button">
+              <button type="submit" className="btn btn-primary tours-search-button">
                 <SearchRoundedIcon />
                 <span>{t('common.findTour')}</span>
               </button>
@@ -256,7 +273,15 @@ export default function Tours() {
             isLoading={isLoading}
             isError={isError}
             isEmpty={status === 'success' && tours.length === 0}
-            emptyLabel={t('tours.empty')}
+            emptyLabel={hasFilters ? t('tours.emptyFiltered') : t('tours.empty')}
+            onRetry={reload}
+            emptyAction={
+              hasFilters ? (
+                <button type="button" className="btn btn-outline-dark" onClick={handleReset}>
+                  {t('tours.resetFilters')}
+                </button>
+              ) : null
+            }
           />
 
           {status === 'success' && tours.length > 0 && (
@@ -267,7 +292,7 @@ export default function Tours() {
                   tour={tour}
                   isFavorited={isFavorited(tour.dbId)}
                   onToggleFavorite={toggleFavorite}
-                  bookHref={`/booking?tour=${encodeURIComponent(tour.id)}`}
+                  bookHref={bookingHref(tour)}
                 />
               ))}
             </div>

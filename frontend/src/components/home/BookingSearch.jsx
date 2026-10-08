@@ -1,58 +1,40 @@
-
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useReveal } from '../../hooks/useReveal';
-import { scrollToId } from '../../utils/scrollToId';
-import {
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material';
+import { FormControl, InputAdornment, InputLabel, MenuItem, Select } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import muiTheme from '../../theme/muiTheme';
 import FlightTakeoffOutlinedIcon from '@mui/icons-material/FlightTakeoffOutlined';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import { useReveal } from '../../hooks/useReveal';
+import { useAsyncData } from '../../hooks/useAsyncData';
+import { getDestinations } from '../../services/destinationsService';
 import './BookingSearch.css';
 
-// Option values are stable ids; their labels are translated at render.
-const DESTINATIONS_OPTIONS = [
-  'dubai',
-  'istanbul',
-  'maldives',
-  'hurghada',
-  'phuket',
-  'jeddah',
-  'moscow',
-  'samarkand',
-];
-
+// Each option maps onto a real filter of GET /api/tours (via /tours?…) or
+// onto the booking form's traveller count. Labels are translated at render.
 const TRAVELERS_OPTIONS = [
-  'oneAdult',
-  'twoAdults',
-  'twoAdultsOneChild',
-  'threeToFive',
-  'groupSixPlus',
+  { id: 'oneAdult', quantity: 1 },
+  { id: 'twoAdults', quantity: 2 },
+  { id: 'twoAdultsOneChild', quantity: 3 },
+  { id: 'threeToFive', quantity: 3 },
+  { id: 'groupSixPlus', quantity: 6 },
 ];
 
 const BUDGET_OPTIONS = [
-  'upTo500',
-  'from500To1000',
-  'from1000To2000',
-  'over2000',
+  { id: 'any', minPrice: '', maxPrice: '' },
+  { id: 'upTo500', minPrice: '', maxPrice: '500' },
+  { id: 'from500To1000', minPrice: '500', maxPrice: '1000' },
+  { id: 'from1000To2000', minPrice: '1000', maxPrice: '2000' },
+  { id: 'over2000', minPrice: '2000', maxPrice: '' },
 ];
-
-const IDLE = 'idle';
-const SEARCHING = 'searching';
-const DONE = 'done';
 
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
-    minHeight: 58,
-    borderRadius: '14px',
+    minHeight: 'var(--control-h-lg)',
+    borderRadius: 'var(--radius-control)',
     backgroundColor: 'rgba(255, 255, 255, 0.96)',
     color: '#0B1F3A',
     transition: 'all 0.25s ease',
@@ -70,51 +52,51 @@ const fieldSx = {
     },
   },
   '& .MuiInputLabel-root': {
-    color: 'rgba(11, 31, 58, 0.58)',
+    color: 'var(--color-text-muted)',
   },
   '& .MuiInputLabel-root.Mui-focused': {
     color: '#0B1F3A',
   },
 };
 
+/**
+ * Homepage tour search. Previously it only played a "searching… done"
+ * animation and discarded the input; now it opens the tour catalogue with
+ * real filters: destination (from the API) and budget (price range). The
+ * traveller count is carried along and pre-fills the booking form.
+ */
 export default function BookingSearch() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [ref, isInView] = useReveal();
+  const { data: destinations } = useAsyncData(getDestinations, []);
   const [form, setForm] = useState({
     destination: '',
-    depart: '',
-    return: '',
-    travelers: TRAVELERS_OPTIONS[0],
-    budget: BUDGET_OPTIONS[0],
+    travelers: TRAVELERS_OPTIONS[0].id,
+    budget: BUDGET_OPTIONS[0].id,
   });
-  const [status, setStatus] = useState(IDLE);
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    setStatus(SEARCHING);
-    setTimeout(() => {
-      setStatus(DONE);
-      setTimeout(() => setStatus(IDLE), 2200);
-    }, 900);
-    scrollToId('contact');
+    const budget = BUDGET_OPTIONS.find((b) => b.id === form.budget) ?? BUDGET_OPTIONS[0];
+    const travelers = TRAVELERS_OPTIONS.find((o) => o.id === form.travelers) ?? TRAVELERS_OPTIONS[0];
+    const params = new URLSearchParams();
+    if (form.destination) params.set('destination', form.destination);
+    if (budget.minPrice) params.set('minPrice', budget.minPrice);
+    if (budget.maxPrice) params.set('maxPrice', budget.maxPrice);
+    params.set('travelers', String(travelers.quantity));
+    navigate(`/tours?${params}`);
   }
 
-  const buttonLabel =
-    status === SEARCHING
-      ? t('home.search.searching')
-      : status === DONE
-        ? t('home.search.done')
-        : t('common.findTour');
-
+  // MUI theme only here (the one public MUI form) — not at the app root,
+  // so pages without MUI components don't load it.
   return (
+    <ThemeProvider theme={muiTheme}>
     <section className="search-section" id="booking">
       <div className="container">
         <form
@@ -144,84 +126,14 @@ export default function BookingSearch() {
                   </InputAdornment>
                 }
               >
-                <MenuItem value="">
-                  {t('home.search.destinationPlaceholder')}
-                </MenuItem>
-                {DESTINATIONS_OPTIONS.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {t(`home.search.destinationOptions.${option}`)}
+                <MenuItem value="">{t('home.search.destinationPlaceholder')}</MenuItem>
+                {(destinations ?? []).map((destination) => (
+                  <MenuItem key={destination.slug} value={destination.slug}>
+                    {destination.title}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-
-            <TextField
-  fullWidth
-  type="date"
-  label={t('home.search.departDate')}
-  name="depart"
-  value={form.depart}
-  onChange={handleChange}
-  slotProps={{
-    inputLabel: {
-      shrink: true,
-    },
-  }}
-  sx={{
-    ...fieldSx,
-    '& .MuiInputLabel-root': {
-      transform: 'translate(14px, -9px) scale(0.75)',
-      backgroundColor: '#fff',
-      padding: '0 5px',
-    },
-  }}
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <CalendarMonthOutlinedIcon
-          sx={{
-            color: '#2FD9C4',
-            fontSize: 21,
-          }}
-        />
-      </InputAdornment>
-    ),
-  }}
-/>
-
-<TextField
-  fullWidth
-  type="date"
-  label={t('home.search.returnDate')}
-  name="return"
-  value={form.return}
-  onChange={handleChange}
-  slotProps={{
-    inputLabel: {
-      shrink: true,
-    },
-  }}
-  sx={{
-    ...fieldSx,
-    '& .MuiInputLabel-root': {
-      transform: 'translate(14px, -9px) scale(0.75)',
-      backgroundColor: '#fff',
-      padding: '0 5px',
-    },
-  }}
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <CalendarMonthOutlinedIcon
-          sx={{
-            color: '#D4AF6A',
-            fontSize: 21,
-          }}
-        />
-      </InputAdornment>
-    ),
-  }}
-/>
 
             <FormControl fullWidth sx={fieldSx}>
               <InputLabel id="travelers-label">{t('home.search.travelers')}</InputLabel>
@@ -239,8 +151,8 @@ export default function BookingSearch() {
                 }
               >
                 {TRAVELERS_OPTIONS.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {t(`home.search.travelerOptions.${option}`)}
+                  <MenuItem key={option.id} value={option.id}>
+                    {t(`home.search.travelerOptions.${option.id}`)}
                   </MenuItem>
                 ))}
               </Select>
@@ -262,24 +174,21 @@ export default function BookingSearch() {
                 }
               >
                 {BUDGET_OPTIONS.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {t(`home.search.budgetOptions.${option}`)}
+                  <MenuItem key={option.id} value={option.id}>
+                    {t(`home.search.budgetOptions.${option.id}`)}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
-            <button
-              type="submit"
-              className="btn btn-search"
-              disabled={status === SEARCHING}
-            >
+            <button type="submit" className="btn btn-primary btn-lg btn-search">
               <SearchRoundedIcon />
-              <span>{buttonLabel}</span>
+              {t('common.findTour')}
             </button>
           </div>
         </form>
       </div>
     </section>
+    </ThemeProvider>
   );
 }

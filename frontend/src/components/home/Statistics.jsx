@@ -27,13 +27,14 @@ function StatItem({ stat, start }) {
 }
 
 export default function Statistics() {
-  const { status, data: stats, isLoading, isError } = useAsyncData(getStats, []);
+  const { status, data: stats, isLoading, isError, reload } = useAsyncData(getStats, []);
 
   return (
     <section className="section stats">
       <div className="stats-route" aria-hidden="true" />
       <div className="container">
         <AsyncState
+          onRetry={reload}
           isLoading={isLoading}
           isError={isError}
           isEmpty={status === 'success' && stats.length === 0}

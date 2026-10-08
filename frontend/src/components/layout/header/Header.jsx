@@ -48,6 +48,18 @@ export default function Header() {
     };
   }, []);
 
+  // Esc closes the account dropdown and returns focus to its button.
+  useEffect(() => {
+    if (!isAccountOpen) return undefined;
+    function handleKeyDown(e) {
+      if (e.key !== 'Escape') return;
+      setIsAccountOpen(false);
+      document.querySelector('.account-button')?.focus();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isAccountOpen]);
+
   async function handleLogout() {
     setIsAccountOpen(false);
     setIsMenuOpen(false);
@@ -75,8 +87,9 @@ export default function Header() {
             }}
           >
             <img
-              src="/icon-192.png"
-              alt="Farosayr"
+              src="/logo-100.webp"
+              // Decorative: the link's name comes from the FAROSAYR text next to it.
+              alt=""
               width="50"
               height="50"
               className="logo-image"
@@ -87,7 +100,7 @@ export default function Header() {
             </span>
           </Link>
 
-          <nav className="nav">
+          <nav className="nav" aria-label={t('header.navigationTitle')}>
             <ul className="nav-list">
               {NAV_ITEMS.map((item) => (
                 <li key={item.to}>
@@ -119,6 +132,7 @@ export default function Header() {
                   className={`account-button ${isAccountOpen ? 'open' : ''}`}
                   aria-label={t('header.openAccountMenu')}
                   aria-expanded={isAccountOpen}
+                  aria-controls="account-menu"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsAccountOpen((open) => !open);
@@ -129,7 +143,7 @@ export default function Header() {
                 </button>
 
                 {isAccountOpen && (
-                  <div className="account-menu">
+                  <div className="account-menu" id="account-menu">
                     {isAuthenticated ? (
                       <>
                         <div className="account-user">
@@ -227,6 +241,7 @@ export default function Header() {
                 isMenuOpen ? t('header.closeMenu') : t('header.openMenu')
               }
               aria-expanded={isMenuOpen}
+              aria-controls="mobileMenu"
               onClick={() => setIsMenuOpen((open) => !open)}
             >
               <span />

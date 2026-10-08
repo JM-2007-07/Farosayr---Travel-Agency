@@ -1,23 +1,29 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { Trans, useTranslation } from 'react-i18next';
+import AccessTimeRounded from '@mui/icons-material/AccessTimeRounded';
+import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
+import EmailRounded from '@mui/icons-material/EmailRounded';
+import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
+import FacebookRounded from '@mui/icons-material/FacebookRounded';
+import Instagram from '@mui/icons-material/Instagram';
+import LocationOnRounded from '@mui/icons-material/LocationOnRounded';
+import NavigationRounded from '@mui/icons-material/NavigationRounded';
+import PhoneRounded from '@mui/icons-material/PhoneRounded';
+import SendRounded from '@mui/icons-material/SendRounded';
+import Telegram from '@mui/icons-material/Telegram';
+import WhatsApp from '@mui/icons-material/WhatsApp';
 import {
-  AccessTimeRounded,
-  CheckCircleRounded,
-  EmailRounded,
-  ExpandMoreRounded,
-  FacebookRounded,
-  Instagram,
-  LocationOnRounded,
-  NavigationRounded,
-  PhoneRounded,
-  SendRounded,
-  Telegram,
-  WhatsApp,
-} from '@mui/icons-material';
-import { submitContactMessage } from '../services/contactService';
-import { getApiErrorMessage } from '../utils/getApiErrorMessage';
+  CONTACT_ERROR_FIELDS,
+  CONTACT_LIMITS,
+  submitContactRequest,
+  validateContactRequest,
+} from '../services/contactService';
+import { getPublicErrorMessage } from '../utils/getPublicErrorMessage';
+import { useSubmitLock } from '../hooks/useSubmitLock';
 import LocationMap from '../components/common/LocationMap';
+import PageHero from '../components/common/PageHero';
+import CTASection from '../components/common/CTASection';
 import {
   CONTACT_EMAIL,
   CONTACT_PHONE,
@@ -25,10 +31,14 @@ import {
   OFFICE_LNG,
   SOCIAL_LINKS,
   WORKING_HOURS,
+  EMAIL_HREF,
+  PHONE_HREF,
+  WHATSAPP_URL,
+  YANDEX_MAPS_URL,
 } from '../config/siteContact';
 import './Contact.css';
 import Seo from '../seo/Seo';
-import logo from '../assets/images/farosayr-travel-agency-logo.png';
+import logo from '../assets/images/farosayr-travel-agency-logo.webp';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
@@ -127,9 +137,28 @@ function ContactForm() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState(IDLE);
   const [error, setError] = useState('');
+  const [invalidField, setInvalidField] = useState(null);
+  const successRef = useRef(null);
+  const runOnce = useSubmitLock();
+
+  // After sending, the form is replaced by the success card: move focus
+  // there so it isn't lost (and the message is read out).
+  useEffect(() => {
+    if (status === SUBMITTED) successRef.current?.focus();
+  }, [status]);
+
+  // A client-side validation message belongs to one field: that field is
+  // marked invalid, described by the message and focused (the message is
+  // then read with the field, so it isn't also an alert).
+  const fieldA11y = (field) =>
+    invalidField === field ? { 'aria-invalid': true, 'aria-describedby': 'contact-form-error' } : {};
 
   function handleChange(e) {
     const { name, value } = e.target;
+    if (name === invalidField) {
+      setInvalidField(null);
+      setError('');
+    }
 
     setForm((prev) => ({
       ...prev,
@@ -140,32 +169,34 @@ function ContactForm() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (!form.name || !form.phone || !form.email) {
+    const problem = validateContactRequest(form);
+    if (problem) {
+      const field = CONTACT_ERROR_FIELDS[problem];
+      setInvalidField(field);
+      setError(t(problem));
+      document.getElementById(`contact-${field}`)?.focus();
       return;
     }
 
-    setStatus(SUBMITTING);
-    setError('');
+    await runOnce(async () => {
+      setStatus(SUBMITTING);
+      setError('');
+      setInvalidField(null);
 
-    try {
-      await submitContactMessage({
-        name: form.name,
-        email: form.email,
-        subject: 'Заявка с сайта FaroSayr',
-        message: `Телефон: ${form.phone}\n\n${form.message || '(без сообщения)'}`,
-      });
-
-      setStatus(SUBMITTED);
-      setForm(EMPTY_FORM);
-    } catch (err) {
-      setStatus(IDLE);
-      setError(getApiErrorMessage(err, t, 'contact.submitError'));
-    }
+      try {
+        await submitContactRequest(form);
+        setStatus(SUBMITTED);
+        setForm(EMPTY_FORM);
+      } catch (err) {
+        setStatus(IDLE);
+        setError(getPublicErrorMessage(err, t, 'contact.submitError'));
+      }
+    });
   }
 
   if (status === SUBMITTED) {
     return (
-      <div className="contact-success">
+      <div className="contact-success" ref={successRef} tabIndex={-1} role="status">
         <div className="contact-success-icon">
           <CheckCircleRounded />
         </div>
@@ -179,7 +210,7 @@ function ContactForm() {
         </p>
 
         <div className="contact-success-actions">
-          <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`} className="btn btn-primary">
+          <a href={PHONE_HREF} className="btn btn-primary">
             <PhoneRounded />
             {t('contactPage.callUs')}
           </a>
@@ -212,11 +243,14 @@ function ContactForm() {
           <input
             id="contact-name"
             name="name"
+            maxLength={CONTACT_LIMITS.name}
+            autoComplete="name"
             type="text"
             value={form.name}
             onChange={handleChange}
             placeholder={t('contactPage.namePlaceholder')}
             required
+            {...fieldA11y('name')}
           />
         </div>
 
@@ -225,11 +259,15 @@ function ContactForm() {
           <input
             id="contact-phone"
             name="phone"
+            maxLength={CONTACT_LIMITS.phone}
+            inputMode="tel"
+            autoComplete="tel"
             type="tel"
             value={form.phone}
             onChange={handleChange}
             placeholder="+992 ..."
             required
+            {...fieldA11y('phone')}
           />
         </div>
       </div>
@@ -239,11 +277,14 @@ function ContactForm() {
         <input
           id="contact-email"
           name="email"
+          maxLength={CONTACT_LIMITS.email}
+          autoComplete="email"
           type="email"
           value={form.email}
           onChange={handleChange}
           placeholder="example@mail.com"
           required
+          {...fieldA11y('email')}
         />
       </div>
 
@@ -252,6 +293,7 @@ function ContactForm() {
         <textarea
           id="contact-message"
           name="message"
+          maxLength={CONTACT_LIMITS.message}
           value={form.message}
           onChange={handleChange}
           placeholder={t('contactPage.messagePlaceholder')}
@@ -259,7 +301,11 @@ function ContactForm() {
         />
       </div>
 
-      {error && <p className="contact-form-error">{error}</p>}
+      {error && (
+        <p className="contact-form-error" id="contact-form-error" role={invalidField ? undefined : 'alert'}>
+          {error}
+        </p>
+      )}
 
       <button
         type="submit"
@@ -287,53 +333,31 @@ export default function Contact() {
   const { t } = useTranslation();
   const isOpen = useMemo(() => getCurrentWorkingState(), []);
 
-  const yandexMapsUrl = `https://yandex.ru/maps/?ll=${OFFICE_LNG},${OFFICE_LAT}&z=17&pt=${OFFICE_LNG},${OFFICE_LAT},pm2rdm`;
-
-  const phoneHref = `tel:${CONTACT_PHONE.replace(/\s/g, '')}`;
-  const emailHref = `mailto:${CONTACT_EMAIL}`;
-
-  const whatsappHref =
-    SOCIAL_LINKS.whatsapp ||
-    `https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}`;
+  const yandexMapsUrl = YANDEX_MAPS_URL;
+  const phoneHref = PHONE_HREF;
+  const emailHref = EMAIL_HREF;
+  const whatsappHref = WHATSAPP_URL;
 
   return (
     <div className="contact-page">
       <Seo page="contact" path="/contact" />
-      <section className="contact-hero">
-        <div className="container contact-hero-inner">
-          <div className="contact-hero-content">
-            <span className="contact-hero-badge">
-              <span className={isOpen ? 'status-dot' : 'status-dot closed'} />
-              {isOpen ? t('contactPage.openNow') : t('contactPage.closedNow')}
-            </span>
-
-            <p className="eyebrow">{t('contactPage.eyebrow')}</p>
-
-            <h1>
-              <Trans i18nKey="contactPage.title" components={{ accent: <span /> }} />
-            </h1>
-
-            <p className="contact-hero-description">
-              {t('contactPage.text')}
-            </p>
-
-            <div className="contact-hero-actions">
-              <a href={phoneHref} className="btn btn-primary">
-                <PhoneRounded />
-                {t('contactPage.call')}
-              </a>
-
-              <a href="#contact-form" className="btn btn-secondary">
-                {t('contactPage.leaveRequest')}
-              </a>
-            </div>
-          </div>
-
+      <PageHero
+        className="contact-hero"
+        badge={
+          <span className="contact-hero-badge">
+            <span className={isOpen ? 'status-dot' : 'status-dot closed'} />
+            {isOpen ? t('contactPage.openNow') : t('contactPage.closedNow')}
+          </span>
+        }
+        eyebrow={t('contactPage.eyebrow')}
+        title={<Trans i18nKey="contactPage.title" components={{ accent: <span /> }} />}
+        text={t('contactPage.text')}
+        aside={
           <div className="contact-hero-visual">
             <div className="contact-visual-glow" />
 
             <div className="contact-logo-card">
-              <img src={logo} alt="Farosayr Travel Agency" width="600" height="400" />
+              <img src={logo} alt="Farosayr Travel Agency" />
             </div>
 
             <div className="contact-floating-card contact-floating-card-top">
@@ -352,8 +376,19 @@ export default function Contact() {
               </div>
             </div>
           </div>
+        }
+      >
+        <div className="page-hero-actions">
+          <a href={phoneHref} className="btn btn-primary">
+            <PhoneRounded />
+            {t('contactPage.call')}
+          </a>
+
+          <a href="#contact-form" className="btn btn-outline">
+            {t('contactPage.leaveRequest')}
+          </a>
         </div>
-      </section>
+      </PageHero>
 
       <section className="contact-actions-section">
         <div className="container">
@@ -554,30 +589,23 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="contact-final-cta">
-        <div className="container">
-          <div className="contact-final-card">
-            <div>
-              <p className="eyebrow">FaroSayr</p>
-              <h2 style={{color: 'white'}}>{t('contactPage.finalTitle')}</h2>
-              <p>
-                {t('contactPage.finalText')}
-              </p>
-            </div>
+      <CTASection
+        eyebrow="FaroSayr"
+        title={t('contactPage.finalTitle')}
+        text={t('contactPage.finalText')}
+        actions={
+          <>
+            <Link to="/destinations" className="btn btn-primary">
+              {t('navigation.destinations')}
+            </Link>
 
-            <div className="contact-final-actions">
-              <Link to="/destinations" className="btn btn-primary">
-                {t('navigation.destinations')}
-              </Link>
-
-              <a href={phoneHref} className="btn btn-secondary">
-                <PhoneRounded />
-                {t('contactPage.finalContact')}
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+            <a href={phoneHref} className="btn btn-outline">
+              <PhoneRounded />
+              {t('contactPage.finalContact')}
+            </a>
+          </>
+        }
+      />
     </div>
   );
 }
