@@ -24,7 +24,13 @@ secrets in the frontend. See [../docs/SECURITY.md](../docs/SECURITY.md).
 ## Notes
 
 - API access goes through `src/services/api/client.js` only
-  (`credentials: 'include'`, JSON bodies).
+  (`credentials: 'include'`, JSON bodies, 20 s timeout). A 401 outside
+  `/auth/*` means the session expired: the client fires
+  `farosayr:session-expired` and `AuthContext` switches to signed-out.
+- Data loading: `useAsyncData` (loading/error/empty + retry); the two
+  call-back forms share `useContactForm`.
+- SEO, PWA and accessibility conventions: [../docs/SEO.md](../docs/SEO.md),
+  [../docs/PWA.md](../docs/PWA.md), [../docs/ACCESSIBILITY.md](../docs/ACCESSIBILITY.md).
 - Security headers for the deployed site are set in `vercel.json`.
 - Setup and checks: [../docs/DEVELOPMENT.md](../docs/DEVELOPMENT.md);
   deployment: [../docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md).

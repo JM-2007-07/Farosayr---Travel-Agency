@@ -19,7 +19,7 @@ login/register (AUTHENTICATION.md).
 | GET | `/destinations` · `/destinations/:slug` | detail includes its tours |
 | GET | `/deals` | **Current deals only**: `isActive` and `startsAt ≤ now < endsAt`, ending soonest first; each item has `isCurrent: true` |
 | GET | `/deals/:id` | Any deal by id, with `isCurrent` (false when expired, not started or switched off) |
-| GET | `/reviews` | Optional `?tour=<slug>` — reviews of one tour. Reviewer name only (no email) |
+| GET | `/reviews` | Optional `?tour=<slug>` — reviews of one tour. Newest first, at most 100. Reviewer name only (no email) |
 | GET | `/faq` · `/gallery` · `/stats` | |
 | POST | `/contact` | `{ name, email, subject, message }` → 201. Rate-limited. Saved even if the Telegram notification fails |
 | POST | `/newsletter/subscribe` | `{ email }` → 201 (idempotent) |

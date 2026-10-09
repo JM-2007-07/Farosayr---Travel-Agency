@@ -134,9 +134,6 @@
     "loadError": "The map couldn't be loaded.",
     "openInYandex": "Open in Yandex Maps"
   },
-  "pagePending": {
-    "message": "{{title}} — this page is coming soon"
-  },
   "notFound": {
     "title": "Looks like we've gone off route",
     "text": "This page doesn't exist or has been moved. Don't worry — your journey can still continue.",

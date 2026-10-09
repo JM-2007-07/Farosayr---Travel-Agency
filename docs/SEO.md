@@ -129,12 +129,12 @@ region. See ACCESSIBILITY.md.
 
 - Detail URLs are rewritten to the fallback shell; files that exist
   (`tours/<slug>.html` etc.) are served first.
-- **Known production problem (2026-10-07):** the committed rewrite
-  destination is `/spa.html`; with `cleanUrls` production answers
+- **Known production problem (2026-10-07):** production's rewrite
+  destination is `/spa.html`; with `cleanUrls` it answers
   `/tours/<slug>`, `/destinations/<slug>`, `/deals/<id>` and `/admin` with
   **HTTP 404** (+ the noindex 404 page), while `/spa` answers 200. The
-  working copy uses `/spa`. This must be verified on a **Preview**
-  deployment before it reaches production (§10).
+  `upgrade` branch (commit `1b7f8cf`) uses `/spa`. This must be verified on
+  a **Preview** deployment before it reaches production (§10).
 - `farosayr-t-a-frontend.vercel.app` currently answers 200 instead of
   redirecting (the host redirect in vercel.json doesn't apply there);
   canonical tags point to farosayr.com, so it's not a duplicate-content

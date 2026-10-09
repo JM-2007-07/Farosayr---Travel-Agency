@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Alert, Avatar, Chip, MenuItem, Select, Stack, Typography } from '@mui/material';
+import { Alert, Avatar, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';

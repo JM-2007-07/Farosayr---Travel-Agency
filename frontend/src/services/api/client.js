@@ -9,6 +9,16 @@
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+// A request that hangs (cold serverless start, flaky network) would
+// otherwise leave the page loading forever; after this it fails like any
+// network error and the page offers "Try again".
+const REQUEST_TIMEOUT_MS = 20_000;
+
+// Fired when a request outside /auth/* gets 401: the session cookie
+// expired while the page was open. AuthContext listens and switches to
+// signed-out, so the UI offers to sign in again instead of acting logged in.
+export const SESSION_EXPIRED_EVENT = 'farosayr:session-expired';
+
 export class ApiError extends Error {
   constructor(message, { status, data } = {}) {
     super(message);
@@ -41,12 +51,15 @@ async function rawRequest(method, path, { searchParams, body } = {}) {
         Accept: 'application/json',
         ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
       },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+      // AbortSignal.timeout is missing before Safari 16 — no timeout there
+      // rather than every request failing.
+      signal: typeof AbortSignal.timeout === 'function' ? AbortSignal.timeout(REQUEST_TIMEOUT_MS) : undefined,
     });
   } catch {
     // fetch() itself throwing means a network failure (offline, DNS,
-    // CORS preflight rejection, backend not running) — not an HTTP
-    // error status, so there's no response to parse.
+    // CORS preflight rejection, backend not running, timeout) — not an
+    // HTTP error status, so there's no response to parse.
     throw new ApiError('Network error — could not reach the server', { status: null });
   }
 
@@ -62,6 +75,9 @@ async function rawRequest(method, path, { searchParams, body } = {}) {
   }
 
   if (!response.ok) {
+    if (response.status === 401 && !path.startsWith('/auth/')) {
+      window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
+    }
     const message =
       (responseBody && typeof responseBody.message === 'string' && responseBody.message) ||
       `Request failed (${response.status})`;

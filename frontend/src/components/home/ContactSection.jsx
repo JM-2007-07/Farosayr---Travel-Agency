@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -7,14 +7,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import NavigationRoundedIcon from '@mui/icons-material/NavigationRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { useReveal } from '../../hooks/useReveal';
-import {
-  CONTACT_ERROR_FIELDS,
-  CONTACT_LIMITS,
-  submitContactRequest,
-  validateContactRequest,
-} from '../../services/contactService';
-import { getPublicErrorMessage } from '../../utils/getPublicErrorMessage';
-import { useSubmitLock } from '../../hooks/useSubmitLock';
+import { CONTACT_LIMITS } from '../../services/contactService';
+import { CONTACT_STATUS, useContactForm } from '../../hooks/useContactForm';
 import LocationMap from '../common/LocationMap';
 import {
   CONTACT_EMAIL,
@@ -55,79 +49,22 @@ const CONTACT_INFO = [
   },
 ];
 
-const IDLE = 'idle';
-const SUBMITTING = 'submitting';
-const SUBMITTED = 'submitted';
-
-const EMPTY_FORM = {
-  name: '',
-  phone: '',
-  email: '',
-  message: '',
-};
-
 export default function ContactSection() {
   const { t } = useTranslation();
   const [infoRef, infoInView] = useReveal();
   const [formRef, formInView] = useReveal();
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [status, setStatus] = useState(IDLE);
-  const [error, setError] = useState('');
-  const [invalidField, setInvalidField] = useState(null);
-  const runOnce = useSubmitLock();
-
   // Validation message → that field is aria-invalid, described by the note
   // below and focused; the note then stays silent (no double announcement).
-  const fieldA11y = (field) =>
-    invalidField === field ? { 'aria-invalid': true, 'aria-describedby': 'home-contact-note' } : {};
+  const { form, status, error, invalidField, fieldA11y, handleChange, handleSubmit, reset } = useContactForm({
+    errorId: 'home-contact-note',
+  });
 
   // The success note fades after a few seconds (timer cleared on unmount).
   useEffect(() => {
-    if (status !== SUBMITTED) return undefined;
-    const timer = setTimeout(() => setStatus(IDLE), 5000);
+    if (status !== CONTACT_STATUS.SUBMITTED) return undefined;
+    const timer = setTimeout(reset, 5000);
     return () => clearTimeout(timer);
-  }, [status]);
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    if (name === invalidField) {
-      setInvalidField(null);
-      setError('');
-    }
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    const problem = validateContactRequest(form);
-    if (problem) {
-      const field = CONTACT_ERROR_FIELDS[problem];
-      setInvalidField(field);
-      setError(t(problem));
-      document.getElementById(field)?.focus();
-      return;
-    }
-
-    await runOnce(async () => {
-      setStatus(SUBMITTING);
-      setError('');
-      setInvalidField(null);
-
-      try {
-        await submitContactRequest(form);
-        setStatus(SUBMITTED);
-        setForm(EMPTY_FORM);
-      } catch (err) {
-        setStatus(IDLE);
-        setError(getPublicErrorMessage(err, t, 'contact.submitError'));
-      }
-    });
-  }
+  }, [status, reset]);
 
   return (
     <section className="section contact" id="contact">
@@ -295,9 +232,9 @@ export default function ContactSection() {
           <button
             type="submit"
             className="btn btn-primary btn-block"
-            disabled={status === SUBMITTING}
+            disabled={status === CONTACT_STATUS.SUBMITTING}
           >
-            {status === SUBMITTING
+            {status === CONTACT_STATUS.SUBMITTING
               ? t('common.sending')
               : t('common.submitRequest')}
           </button>
@@ -309,7 +246,7 @@ export default function ContactSection() {
             id="home-contact-note"
             aria-live={invalidField ? 'off' : 'polite'}
           >
-            {status === SUBMITTED &&
+            {status === CONTACT_STATUS.SUBMITTED &&
               t('home.contact.success')}
 
             {error}

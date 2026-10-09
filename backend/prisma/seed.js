@@ -92,7 +92,7 @@ async function seedUsers() {
 }
 
 async function seedDestinations() {
-  // Same entities as frontend/src/data/destinations.js — duplicated here
+  // Same entities as the original static frontend/src/data/destinations.js (removed — the database is the source) — duplicated here
   // deliberately (not imported) since frontend and backend are separate
   // deployable packages; the frontend file itself is untouched.
   const data = [
@@ -168,7 +168,7 @@ async function seedDestinations() {
 }
 
 async function seedTours(destinations) {
-  // Same entities as frontend/src/data/tours.js.
+  // Same entities as the original static frontend/src/data/tours.js (removed — the database is the source).
   const data = [
     {
       slug: 'dubai-desert-skyline',
@@ -280,7 +280,7 @@ async function seedTourImages(tours) {
 }
 
 async function seedDeals(tours) {
-  // Same entities as frontend/src/data/deals.js. The Istanbul deal has no
+  // Same entities as the original static frontend/src/data/deals.js (removed — the database is the source). The Istanbul deal has no
   // matching seeded tour (the frontend tours list never had an Istanbul
   // tour), so its tourId is deliberately left null — a live demonstration
   // of Deal.tourId being genuinely optional, not just optional on paper.
@@ -349,7 +349,7 @@ async function seedDeals(tours) {
 }
 
 async function seedFaqs() {
-  // Same entities as frontend/src/data/faq.js.
+  // Same entities as the original static frontend/src/data/faq.js (removed — the database is the source).
   const data = [
     {
       id: IDS.faqPayment,
@@ -404,7 +404,7 @@ async function seedFaqs() {
 }
 
 async function seedReviews(users, tours) {
-  // Same review text/authors as frontend/src/data/reviews.js, now attached
+  // Same review text/authors as the original static frontend/src/data/reviews.js (removed — the database is the source), now attached
   // to real seeded users and one tour each (the original frontend reviews
   // were generic testimonials with no tour reference — assigning one here
   // is a seed-layer decision, not a frontend data change).

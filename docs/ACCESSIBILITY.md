@@ -26,6 +26,10 @@ full audit with a real screen reader has been done.
   found a visible change on every stop.
 - **In-page jumps** ("Забронировать" → contact form, `/#faq` links) move
   focus to the target section as well as scrolling (`utils/scrollToId.js`).
+- **Page changes** (client-side navigation) move focus to `<main>` and
+  announce the new page title once in a polite live region
+  (`components/common/RouteAnnouncer.jsx`) — not on the first load, not for
+  `#hash` links, not when only the query string changes.
 - **Cards** — the tour card's image link duplicates its title link, so it is
   out of the Tab order. "Подробнее" / "Забронировать тур" / favourite buttons
   are described by the card title (`aria-describedby`), so they are
@@ -139,5 +143,3 @@ Not done: testing with NVDA/JAWS/VoiceOver/TalkBack, on real phones, with
 - MUI `Select` menus (home search, admin) follow MUI's implementation.
 - The admin panel was only checked for regressions (redirect, shared
   components), not audited.
-- No route-change announcement / focus move on client-side navigation
-  (focus stays on the activated link; the page title updates).

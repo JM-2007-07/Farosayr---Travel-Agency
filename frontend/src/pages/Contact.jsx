@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router';
 import { Trans, useTranslation } from 'react-i18next';
 import AccessTimeRounded from '@mui/icons-material/AccessTimeRounded';
@@ -13,14 +13,8 @@ import PhoneRounded from '@mui/icons-material/PhoneRounded';
 import SendRounded from '@mui/icons-material/SendRounded';
 import Telegram from '@mui/icons-material/Telegram';
 import WhatsApp from '@mui/icons-material/WhatsApp';
-import {
-  CONTACT_ERROR_FIELDS,
-  CONTACT_LIMITS,
-  submitContactRequest,
-  validateContactRequest,
-} from '../services/contactService';
-import { getPublicErrorMessage } from '../utils/getPublicErrorMessage';
-import { useSubmitLock } from '../hooks/useSubmitLock';
+import { CONTACT_LIMITS } from '../services/contactService';
+import { CONTACT_STATUS, useContactForm } from '../hooks/useContactForm';
 import LocationMap from '../components/common/LocationMap';
 import PageHero from '../components/common/PageHero';
 import CTASection from '../components/common/CTASection';
@@ -39,17 +33,6 @@ import {
 import './Contact.css';
 import Seo from '../seo/Seo';
 import logo from '../assets/images/farosayr-travel-agency-logo.webp';
-
-const IDLE = 'idle';
-const SUBMITTING = 'submitting';
-const SUBMITTED = 'submitted';
-
-const EMPTY_FORM = {
-  name: '',
-  phone: '',
-  email: '',
-  message: '',
-};
 
 // Question/answer text lives in the i18n files (contactPage.faq.<id>).
 const FAQ_ITEMS = ['custom', 'account', 'consultation', 'fastest'];
@@ -134,67 +117,21 @@ function FAQItem({ id }) {
 
 function ContactForm() {
   const { t } = useTranslation();
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [status, setStatus] = useState(IDLE);
-  const [error, setError] = useState('');
-  const [invalidField, setInvalidField] = useState(null);
+  // A validation message is tied to its field (aria-invalid, described by
+  // the message, focused) — so the message isn't also an alert.
+  const { form, status, error, invalidField, fieldA11y, handleChange, handleSubmit, reset } = useContactForm({
+    fieldIdPrefix: 'contact-',
+    errorId: 'contact-form-error',
+  });
   const successRef = useRef(null);
-  const runOnce = useSubmitLock();
 
   // After sending, the form is replaced by the success card: move focus
   // there so it isn't lost (and the message is read out).
   useEffect(() => {
-    if (status === SUBMITTED) successRef.current?.focus();
+    if (status === CONTACT_STATUS.SUBMITTED) successRef.current?.focus();
   }, [status]);
 
-  // A client-side validation message belongs to one field: that field is
-  // marked invalid, described by the message and focused (the message is
-  // then read with the field, so it isn't also an alert).
-  const fieldA11y = (field) =>
-    invalidField === field ? { 'aria-invalid': true, 'aria-describedby': 'contact-form-error' } : {};
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    if (name === invalidField) {
-      setInvalidField(null);
-      setError('');
-    }
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    const problem = validateContactRequest(form);
-    if (problem) {
-      const field = CONTACT_ERROR_FIELDS[problem];
-      setInvalidField(field);
-      setError(t(problem));
-      document.getElementById(`contact-${field}`)?.focus();
-      return;
-    }
-
-    await runOnce(async () => {
-      setStatus(SUBMITTING);
-      setError('');
-      setInvalidField(null);
-
-      try {
-        await submitContactRequest(form);
-        setStatus(SUBMITTED);
-        setForm(EMPTY_FORM);
-      } catch (err) {
-        setStatus(IDLE);
-        setError(getPublicErrorMessage(err, t, 'contact.submitError'));
-      }
-    });
-  }
-
-  if (status === SUBMITTED) {
+  if (status === CONTACT_STATUS.SUBMITTED) {
     return (
       <div className="contact-success" ref={successRef} tabIndex={-1} role="status">
         <div className="contact-success-icon">
@@ -218,7 +155,7 @@ function ContactForm() {
           <button
             type="button"
             className="btn btn-secondary"
-            onClick={() => setStatus(IDLE)}
+            onClick={reset}
           >
             {t('contactPage.newRequest')}
           </button>
@@ -310,9 +247,9 @@ function ContactForm() {
       <button
         type="submit"
         className="btn btn-primary btn-block contact-submit"
-        disabled={status === SUBMITTING}
+        disabled={status === CONTACT_STATUS.SUBMITTING}
       >
-        {status === SUBMITTING ? (
+        {status === CONTACT_STATUS.SUBMITTING ? (
           t('common.sending')
         ) : (
           <>

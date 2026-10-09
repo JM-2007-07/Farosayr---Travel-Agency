@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import * as authService from '../services/authService';
+import { SESSION_EXPIRED_EVENT } from '../services/api/client';
 
 const AuthContext = createContext(null);
 
@@ -29,6 +30,18 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  // The session cookie expired while the page was open (a protected request
+  // got 401 — see services/api/client.js): show the visitor as signed out,
+  // so RequireAuth/AdminGuard offer to sign in again.
+  useEffect(() => {
+    function onSessionExpired() {
+      setUser(null);
+      setStatus('guest');
+    }
+    window.addEventListener(SESSION_EXPIRED_EVENT, onSessionExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onSessionExpired);
+  }, []);
 
   const login = useCallback(async (credentials) => {
     const loggedInUser = await authService.login(credentials);

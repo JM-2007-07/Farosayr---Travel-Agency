@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Seo from '../seo/Seo';
 import AboutSection from '../components/home/AboutSection';
@@ -14,8 +14,7 @@ const ABOUT_LINKS = [
   { to: '/contact', labelKey: 'aboutPage.contactLink' },
 ];
 
-// Composes the existing homepage "about" blocks under a page-specific hero,
-// so /about is a real page instead of the PagePending placeholder.
+// Composes the existing homepage "about" blocks under a page-specific hero.
 export default function About() {
   const { t } = useTranslation();
 
