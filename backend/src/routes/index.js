@@ -18,15 +18,6 @@ import telegramRoutes from './telegram.routes.js';
 
 const router = Router();
 
-router.get('/__router-debug', (req, res) => {
-  res.json({
-    message: 'API router works',
-    url: req.url,
-    originalUrl: req.originalUrl,
-    baseUrl: req.baseUrl,
-    path: req.path,
-  });
-});
 // getHealth is async (it awaits a database check), so it's wrapped in
 // asyncHandler.
 router.get('/health', asyncHandler(getHealth));

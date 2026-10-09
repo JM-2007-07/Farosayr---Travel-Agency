@@ -32,8 +32,9 @@ function mapReview(r) {
   };
 }
 
-export async function getReviews() {
-  const data = await apiGet('/reviews');
+// `tour` (optional): a tour slug — only that tour's reviews.
+export async function getReviews({ tour } = {}) {
+  const data = await apiGet('/reviews', { searchParams: { tour } });
   return data.map(mapReview);
 }
 

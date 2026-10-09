@@ -86,3 +86,46 @@
     bottom: 20px;
   }
 }
+
+/* Video dialog (Step 4) — opened by the play button. */
+.video-dialog {
+  width: min(960px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: #000;
+  overflow: visible;
+}
+.video-dialog::backdrop {
+  background: rgba(11, 31, 58, 0.82);
+}
+.video-dialog-player {
+  display: block;
+  width: 100%;
+  max-height: calc(100vh - 32px);
+  border-radius: var(--radius-md);
+  background: #000;
+}
+.video-dialog-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--dark-blue);
+  box-shadow: var(--shadow-card);
+}
+@media (max-width: 600px) {
+  .video-dialog-close {
+    top: 8px;
+    right: 8px;
+  }
+}

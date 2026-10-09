@@ -6,6 +6,7 @@ import { useImgFallback } from '../../hooks/useImgFallback';
 import { useLightbox } from '../../hooks/useLightbox';
 import { useAsyncData } from '../../hooks/useAsyncData';
 import Lightbox from '../common/Lightbox';
+import { responsiveImage, GALLERY_WIDTHS, gallerySizes } from '../../utils/responsiveImage';
 import AsyncState from '../common/AsyncState';
 import './GallerySection.css';
 
@@ -18,25 +19,20 @@ function GalleryTile({ item, onOpen }) {
   const alt = t(`galleryItems.${item.id}`, { defaultValue: item.alt });
 
   return (
-    <div
+    <button
+      type="button"
       className={`gallery-item reveal ${item.sizeClass} img-wrap ${isInView ? 'in-view' : ''} ${broken ? 'img-fallback' : ''}`}
       ref={ref}
       onClick={() => onOpen(item)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onOpen(item);
-        }
-      }}
+      aria-haspopup="dialog"
       aria-label={t('galleryPage.openPhoto', { title: alt })}
     >
-      <img src={item.thumb} alt={alt} loading="lazy" decoding="async" onError={onError} />
+      {/* The button's aria-label names the photo; the image itself adds nothing. */}
+      <img {...responsiveImage(item.thumb, GALLERY_WIDTHS, gallerySizes(item.sizeClass))} alt="" loading="lazy" decoding="async" onError={onError} />
       <span className="gallery-item-expand" aria-hidden="true">
         <OpenInFullIcon sx={{ fontSize: 22 }} />
       </span>
-    </div>
+    </button>
   );
 }
 
@@ -44,7 +40,7 @@ export default function GallerySection() {
   const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
   const { activeItem, open, close } = useLightbox();
-  const { status, data: galleryItems, isLoading, isError } = useAsyncData(getGalleryItems, []);
+  const { status, data: galleryItems, isLoading, isError, reload } = useAsyncData(getGalleryItems, []);
 
   return (
     <section className="section gallery" id="gallery">
@@ -56,6 +52,7 @@ export default function GallerySection() {
         </div>
 
         <AsyncState
+          onRetry={reload}
           isLoading={isLoading}
           isError={isError}
           isEmpty={status === 'success' && galleryItems.length === 0}

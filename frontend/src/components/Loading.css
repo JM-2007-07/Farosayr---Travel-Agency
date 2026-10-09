@@ -1,5 +1,10 @@
+/* Fills the first screen while a page chunk loads. With less height the
+   footer was painted in the viewport and then pushed down when the page
+   arrived — a large layout shift (CLS ≈ 0.6) and the footer text being
+   reported as the LCP element. */
 .route-loading {
-  min-height: 40vh;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;

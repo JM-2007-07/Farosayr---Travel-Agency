@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const registerSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(120),
-  email: z.string().trim().toLowerCase().email('Invalid email address'),
+  email: z.string().trim().toLowerCase().max(254).email('Invalid email address'),
   // Minimum-length only for the complexity policy — this is a foundation
   // phase, not a full password policy (breach-list checks, etc. are a
   // later concern if ever needed). Max length IS worth enforcing though:
@@ -13,6 +13,6 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z.string().trim().toLowerCase().email('Invalid email address'),
+  email: z.string().trim().toLowerCase().max(254).email('Invalid email address'),
   password: z.string().min(1, 'Password is required').max(128),
 });

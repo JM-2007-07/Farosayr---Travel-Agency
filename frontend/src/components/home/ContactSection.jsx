@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -7,13 +7,18 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import NavigationRoundedIcon from '@mui/icons-material/NavigationRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { useReveal } from '../../hooks/useReveal';
-import { submitContactMessage } from '../../services/contactService';
-import { getApiErrorMessage } from '../../utils/getApiErrorMessage';
+import { CONTACT_LIMITS } from '../../services/contactService';
+import { CONTACT_STATUS, useContactForm } from '../../hooks/useContactForm';
 import LocationMap from '../common/LocationMap';
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  OFFICE_LAT,
+  OFFICE_LNG,
+  WORKING_HOURS,
+  YANDEX_MAPS_URL,
+} from '../../config/siteContact';
 import './ContactSection.css';
-
-const OFFICE_LAT = 38.5594;
-const OFFICE_LNG = 68.7651;
 
 // labelKey/valueKey are i18n keys; `value` is used as-is (not translatable).
 const CONTACT_INFO = [
@@ -27,82 +32,39 @@ const CONTACT_INFO = [
     id: 'phone',
     icon: PhoneIcon,
     labelKey: 'common.phone',
-    value: '+992 11 211 33 77',
+    value: CONTACT_PHONE,
   },
   {
     id: 'email',
     icon: EmailIcon,
     labelKey: 'common.email',
-    value: 'farosayrtour@mail.ru',
+    value: CONTACT_EMAIL,
   },
   {
     id: 'hours',
     icon: AccessTimeIcon,
     labelKey: 'common.workingHours',
     valueKey: 'contact.workingHoursValue',
-    valueParams: { from: 9, to: 19 },
+    valueParams: { from: WORKING_HOURS.from, to: WORKING_HOURS.to },
   },
 ];
-
-const IDLE = 'idle';
-const SUBMITTING = 'submitting';
-const SUBMITTED = 'submitted';
-
-const EMPTY_FORM = {
-  name: '',
-  phone: '',
-  email: '',
-  message: '',
-};
 
 export default function ContactSection() {
   const { t } = useTranslation();
   const [infoRef, infoInView] = useReveal();
   const [formRef, formInView] = useReveal();
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [status, setStatus] = useState(IDLE);
-  const [error, setError] = useState('');
+  // Validation message → that field is aria-invalid, described by the note
+  // below and focused; the note then stays silent (no double announcement).
+  const { form, status, error, invalidField, fieldA11y, handleChange, handleSubmit, reset } = useContactForm({
+    errorId: 'home-contact-note',
+  });
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    if (!form.name || !form.phone || !form.email) {
-      return;
-    }
-
-    setStatus(SUBMITTING);
-    setError('');
-
-    try {
-      await submitContactMessage({
-        name: form.name,
-        email: form.email,
-        subject: 'Заявка с сайта FaroSayr',
-        message: `Телефон: ${form.phone}\n\n${form.message || '(без сообщения)'}`,
-      });
-
-      setStatus(SUBMITTED);
-      setForm(EMPTY_FORM);
-
-      setTimeout(() => {
-        setStatus(IDLE);
-      }, 5000);
-    } catch (err) {
-      setStatus(IDLE);
-      setError(getApiErrorMessage(err, t, 'contact.submitError'));
-    }
-  }
-
-  const yandexMapsUrl = `https://yandex.ru/maps/?ll=${OFFICE_LNG},${OFFICE_LAT}&z=17&pt=${OFFICE_LNG},${OFFICE_LAT},pm2rdm`;
+  // The success note fades after a few seconds (timer cleared on unmount).
+  useEffect(() => {
+    if (status !== CONTACT_STATUS.SUBMITTED) return undefined;
+    const timer = setTimeout(reset, 5000);
+    return () => clearTimeout(timer);
+  }, [status, reset]);
 
   return (
     <section className="section contact" id="contact">
@@ -172,7 +134,7 @@ export default function ContactSection() {
 
               <a
                 className="map-route"
-                href={yandexMapsUrl}
+                href={YANDEX_MAPS_URL}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -207,10 +169,13 @@ export default function ContactSection() {
                 type="text"
                 id="name"
                 name="name"
+                maxLength={CONTACT_LIMITS.name}
+                autoComplete="name"
                 placeholder={t('common.yourName')}
                 value={form.name}
                 onChange={handleChange}
                 required
+                {...fieldA11y('name')}
               />
             </div>
 
@@ -221,10 +186,14 @@ export default function ContactSection() {
                 type="tel"
                 id="phone"
                 name="phone"
+                maxLength={CONTACT_LIMITS.phone}
+                inputMode="tel"
+                autoComplete="tel"
                 placeholder="+992 ___ __ __ __"
                 value={form.phone}
                 onChange={handleChange}
                 required
+                {...fieldA11y('phone')}
               />
             </div>
           </div>
@@ -236,10 +205,13 @@ export default function ContactSection() {
               type="email"
               id="email"
               name="email"
+              maxLength={CONTACT_LIMITS.email}
+              autoComplete="email"
               placeholder="you@email.com"
               value={form.email}
               onChange={handleChange}
               required
+              {...fieldA11y('email')}
             />
           </div>
 
@@ -249,6 +221,7 @@ export default function ContactSection() {
             <textarea
               id="message"
               name="message"
+              maxLength={CONTACT_LIMITS.message}
               rows="5"
               placeholder={t('home.contact.messagePlaceholder')}
               value={form.message}
@@ -259,9 +232,9 @@ export default function ContactSection() {
           <button
             type="submit"
             className="btn btn-primary btn-block"
-            disabled={status === SUBMITTING}
+            disabled={status === CONTACT_STATUS.SUBMITTING}
           >
-            {status === SUBMITTING
+            {status === CONTACT_STATUS.SUBMITTING
               ? t('common.sending')
               : t('common.submitRequest')}
           </button>
@@ -270,8 +243,10 @@ export default function ContactSection() {
             className={`form-note ${
               error ? 'form-note-error' : ''
             }`}
+            id="home-contact-note"
+            aria-live={invalidField ? 'off' : 'polite'}
           >
-            {status === SUBMITTED &&
+            {status === CONTACT_STATUS.SUBMITTED &&
               t('home.contact.success')}
 
             {error}

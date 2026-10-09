@@ -4,6 +4,12 @@
   "redirects": [
     {
       "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.farosayr.tj" }],
+      "destination": "https://farosayr.tj/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "www.farosayr.com" }],
       "destination": "https://farosayr.com/:path*",
       "permanent": true
@@ -16,13 +22,23 @@
     }
   ],
   "rewrites": [
-    { "source": "/tours/:slug", "destination": "/spa.html" },
-    { "source": "/destinations/:slug", "destination": "/spa.html" },
-    { "source": "/deals/:id", "destination": "/spa.html" },
-    { "source": "/admin", "destination": "/spa.html" },
-    { "source": "/admin/:path*", "destination": "/spa.html" }
+    { "source": "/tours/:slug", "destination": "/spa" },
+    { "source": "/destinations/:slug", "destination": "/spa" },
+    { "source": "/deals/:id", "destination": "/spa" },
+    { "source": "/admin", "destination": "/spa" },
+    { "source": "/admin/:path*", "destination": "/spa" }
   ],
   "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+      ]
+    },
     {
       "source": "/assets/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]

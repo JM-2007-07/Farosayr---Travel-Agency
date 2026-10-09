@@ -30,10 +30,10 @@
 .about-badge strong {
   font-family: var(--font-display);
   font-size: 30px;
-  color: var(--turquoise-dim);
+  color: var(--color-accent-text);
 }
 .about-badge span {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   color: var(--text-mid);
   max-width: 150px;
 }
@@ -65,7 +65,7 @@
   border-radius: 50%;
   background: var(--turquoise);
   color: var(--dark-blue);
-  font-size: 12px;
+  font-size: var(--fs-caption);
   font-weight: 700;
   display: flex;
   align-items: center;

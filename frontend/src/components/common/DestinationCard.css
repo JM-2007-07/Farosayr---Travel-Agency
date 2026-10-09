@@ -1,0 +1,191 @@
+/* Destination card — one design for the homepage grid (compact) and
+   /destinations (full). Previously the homepage card had no styles for
+   its overlay / title / footer elements at all. */
+.destination-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease);
+}
+.destination-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.destination-card-media {
+  position: relative;
+  display: block;
+  height: 330px;
+  overflow: hidden;
+  color: var(--white);
+}
+.destination-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.65s var(--ease);
+}
+.destination-card:hover .destination-card-media img {
+  transform: scale(1.06);
+}
+.destination-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(11, 31, 58, 0.85),
+    rgba(11, 31, 58, 0.12) 65%,
+    rgba(11, 31, 58, 0.05)
+  );
+}
+
+.destination-card-top {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.destination-card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-pill);
+  background: rgba(11, 31, 58, 0.42);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+.destination-card-top svg {
+  font-size: 16px;
+}
+.destination-card-arrow {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--turquoise);
+  color: var(--dark-blue);
+  transition: transform var(--dur-base) var(--ease);
+}
+.destination-card:hover .destination-card-arrow {
+  transform: rotate(-45deg);
+}
+
+.destination-card-title {
+  position: absolute;
+  z-index: 1;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+}
+.destination-card-title span {
+  color: var(--turquoise);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.destination-card-name {
+  margin: 5px 0 0;
+  color: var(--white);
+  font-size: clamp(26px, 3vw, 36px);
+  line-height: 1.05;
+}
+
+.destination-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px;
+}
+.destination-card-body > p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: 1.65;
+}
+.destination-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+}
+.destination-card-body > p + .destination-card-footer {
+  margin-top: 20px;
+}
+.destination-card-tours {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--dark-blue);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+.destination-card-tours svg {
+  color: var(--turquoise);
+  font-size: 19px;
+}
+.destination-card-book {
+  margin-top: var(--space-4);
+}
+
+/* Compact variant — the 4-column homepage grid. */
+.destination-card--compact .destination-card-media {
+  height: 240px;
+}
+.destination-card--compact .destination-card-name {
+  font-size: clamp(22px, 2vw, 26px);
+}
+.destination-card--compact .destination-card-body > p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .destination-card-media {
+    height: 280px;
+  }
+}
+@media (max-width: 680px) {
+  .destination-card-media,
+  .destination-card--compact .destination-card-media {
+    height: 240px;
+  }
+}
+@media (max-width: 420px) {
+  .destination-card-media,
+  .destination-card--compact .destination-card-media {
+    height: 220px;
+  }
+  .destination-card-title {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+  .destination-card-arrow {
+    width: 36px;
+    height: 36px;
+  }
+}

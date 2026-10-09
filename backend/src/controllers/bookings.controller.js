@@ -1,7 +1,9 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../config/database.js';
 import { createBookingSchema } from '../validation/booking.validation.js';
-import { notFoundError, zodBadRequest } from '../utils/httpErrors.js';
+import { notFoundError, conflictError, zodBadRequest } from '../utils/httpErrors.js';
 import { sendNewBookingNotification } from '../services/telegram.service.js';
+import { isDealCurrent } from '../services/deals.service.js';
 
 // Creates a Booking + its one BookingItem together, in a transaction, so a
 // crash between the two writes can't leave an orphaned Booking with no
@@ -17,13 +19,23 @@ import { sendNewBookingNotification } from '../services/telegram.service.js';
 export async function createBooking(req, res) {
   const result = createBookingSchema.safeParse(req.body);
   if (!result.success) throw zodBadRequest(result);
-  const { tourId, quantity } = result.data;
+  const { tourId, quantity, dealId } = result.data;
 
   const tour = await prisma.tour.findUnique({ where: { id: tourId } });
   if (!tour) throw notFoundError('Tour not found');
 
-  const unitPrice = tour.price;
-  const totalPrice = Number(unitPrice) * quantity;
+  // Booking through a deal: the deal price applies only if the deal is
+  // current and belongs to this very tour — the client can't pick a price.
+  let unitPrice = tour.price;
+  if (dealId) {
+    const deal = await prisma.deal.findUnique({ where: { id: dealId } });
+    if (!deal || deal.tourId !== tour.id || !isDealCurrent(deal)) {
+      throw conflictError('This offer is no longer available');
+    }
+    unitPrice = deal.price;
+  }
+  // Decimal arithmetic for money (no floating-point rounding).
+  const totalPrice = new Prisma.Decimal(unitPrice).mul(quantity).toDecimalPlaces(2);
 
   const booking = await prisma.$transaction(async (tx) => {
     const created = await tx.booking.create({

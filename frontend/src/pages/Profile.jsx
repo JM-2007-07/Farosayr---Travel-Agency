@@ -9,6 +9,7 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { Link } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 import RequireAuth from '../components/common/RequireAuth';
+import PageHero from '../components/common/PageHero';
 import './Profile.css';
 import Seo from '../seo/Seo';
 
@@ -107,14 +108,14 @@ function ProfileCard() {
       </div>
 
       <div className="profile-card-footer">
-        <Link to="/" className="profile-back-link">
+        <Link to="/" className="back-link">
           <ArrowBackRoundedIcon />
           {t('common.backToHome')}
         </Link>
 
         <button
           type="button"
-          className="profile-logout-btn"
+          className="btn btn-outline-dark profile-logout-btn"
           onClick={handleLogout}
         >
           <LogoutRoundedIcon />
@@ -131,29 +132,21 @@ export default function Profile() {
   return (
     <div className="profile-page">
       <Seo page="profile" noindex />
-      <div className="container">
-        <div className="profile-page-header">
-          <div>
-            <p className="eyebrow">{t('account.personalArea')}</p>
+      <PageHero
+        align="center"
+        icon={<PersonRoundedIcon />}
+        eyebrow={t('account.personalArea')}
+        title={<Trans i18nKey="profile.title" components={{ accent: <span /> }} />}
+        text={t('profile.text')}
+      />
 
-            <h1>
-              <Trans i18nKey="profile.title" components={{ accent: <span /> }} />
-            </h1>
-
-            <p className="profile-page-description">
-              {t('profile.text')}
-            </p>
-          </div>
-
-          <div className="profile-header-icon">
-            <PersonRoundedIcon />
-          </div>
+      <section className="page-content">
+        <div className="container">
+          <RequireAuth prompt={t('profile.signInPrompt')}>
+            <ProfileCard />
+          </RequireAuth>
         </div>
-
-        <RequireAuth prompt={t('profile.signInPrompt')}>
-          <ProfileCard />
-        </RequireAuth>
-      </div>
+      </section>
     </div>
   );
 }

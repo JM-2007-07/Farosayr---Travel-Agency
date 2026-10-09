@@ -1,9 +1,8 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { createBrowserRouter, RouterProvider, useLocation, Outlet } from 'react-router';
 import Layout from './layout/Layout';
-import AdminLayout from './layout/AdminLayout';
-import AdminGuard from './components/admin/AdminGuard';
 import Loading from './components/Loading';
+import RouteAnnouncer from './components/common/RouteAnnouncer';
 import { AuthProvider } from './context/AuthContext';
 import { scrollToId } from './utils/scrollToId';
 
@@ -26,6 +25,8 @@ const Bookings = lazy(() => import('./pages/Bookings'));
 const Favorites = lazy(() => import('./pages/Favorites'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
+// Admin guard + layout + MUI theme in one lazy chunk (layout/AdminShell.jsx).
+const AdminShell = lazy(() => import('./layout/AdminShell'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminTours = lazy(() => import('./pages/admin/AdminTours'));
 const AdminTourDetails = lazy(() => import('./pages/admin/AdminTourDetails'));
@@ -80,16 +81,9 @@ function RootShell() {
   return (
     <>
       <ScrollToTop />
+      <RouteAnnouncer />
       <Outlet />
     </>
-  );
-}
-
-function AdminShell() {
-  return (
-    <AdminGuard>
-      <AdminLayout />
-    </AdminGuard>
   );
 }
 
@@ -122,6 +116,9 @@ const router = createBrowserRouter([
           { path: 'profile', element: withSuspense(Profile) },
           { path: 'bookings', element: withSuspense(Bookings) },
           { path: 'favorites', element: withSuspense(Favorites) },
+          // Inside Layout so the 404 page gets the same Header, Footer and
+          // <main> landmark as every other public page.
+          { path: '*', element: withSuspense(NotFound) },
         ],
       },
       {
@@ -132,7 +129,7 @@ const router = createBrowserRouter([
         // redirects unauthenticated to /login, shows a 403 message for
         // authenticated non-admins, and only then renders AdminLayout.
         path: 'admin',
-        element: <AdminShell />,
+        element: withSuspense(AdminShell),
         children: [
           { index: true, element: withSuspense(AdminDashboard) },
           { path: 'tours', element: withSuspense(AdminTours) },
@@ -146,7 +143,6 @@ const router = createBrowserRouter([
           { path: '*', element: withSuspense(NotFound) },
         ],
       },
-      { path: '*', element: withSuspense(NotFound) },
     ],
   },
 ]);

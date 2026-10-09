@@ -5,8 +5,18 @@ const decimalString = z
   .transform((v) => Number(v))
   .refine((v) => Number.isFinite(v) && v >= 0, 'Must be a non-negative number');
 
+// Image URLs end up in <img src> on the public site: only http(s) URLs or
+// site-relative paths, never javascript:/data: or other schemes.
+const imageUrl = (requiredMessage) =>
+  z
+    .string()
+    .trim()
+    .min(1, requiredMessage)
+    .max(2048)
+    .refine((v) => /^https?:\/\//i.test(v) || /^\/(?!\/)/.test(v), 'Image URL must start with https:// or /');
+
 const tourImageSchema = z.object({
-  url: z.string().trim().min(1, 'Image URL is required'),
+  url: imageUrl('Image URL is required'),
   alt: z.string().trim().max(200).optional(),
 });
 
@@ -44,7 +54,7 @@ export const createDestinationSchema = z.object({
     .max(200)
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Slug must be lowercase, alphanumeric, hyphen-separated'),
   description: z.string().trim().min(1, 'Description is required'),
-  image: z.string().trim().min(1, 'Image URL is required'),
+  image: imageUrl('Image URL is required'),
 });
 
 export const updateDestinationSchema = createDestinationSchema.partial();
@@ -55,7 +65,7 @@ export const updateDestinationSchema = createDestinationSchema.partial();
 export const createDealSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(200),
   description: z.string().trim().min(1, 'Description is required'),
-  image: z.string().trim().min(1, 'Image URL is required'),
+  image: imageUrl('Image URL is required'),
   price: decimalString,
   oldPrice: decimalString,
   discount: z.number().int().min(0).max(100),

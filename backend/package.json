@@ -8,11 +8,14 @@
     "start": "node src/server.js",
     "vercel-build": "prisma generate",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate": "node scripts/assert-local-db.js && prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "prisma db seed",
     "telegram:webhook": "node scripts/telegram-webhook.js",
-    "telegram:selftest": "node scripts/telegram-selftest.js"
+    "telegram:selftest": "node scripts/telegram-selftest.js",
+    "security:selftest": "node scripts/security-selftest.js",
+    "demo:accounts": "node scripts/demo-accounts.js",
+    "prisma:migrate:deploy": "prisma migrate deploy"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -32,5 +35,8 @@
   },
   "devDependencies": {
     "prisma": "^5.22.0"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

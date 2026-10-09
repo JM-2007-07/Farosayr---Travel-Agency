@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import { useReveal } from '../hooks/useReveal';
 import AsyncState from '../components/common/AsyncState';
 import RequireAuth from '../components/common/RequireAuth';
+import PageHero from '../components/common/PageHero';
 import './Bookings.css';
 import Seo from '../seo/Seo';
 
@@ -117,6 +118,7 @@ function BookingsList() {
     data: bookings,
     isLoading,
     isError,
+    reload,
   } = useAsyncData(getMyBookings, [isAuthenticated]);
 
   const items = bookings ?? [];
@@ -124,10 +126,16 @@ function BookingsList() {
   return (
     <>
       <AsyncState
+        onRetry={reload}
         isLoading={isLoading}
         isError={isError}
         isEmpty={status === 'success' && items.length === 0}
         emptyLabel={t('bookings.empty')}
+        emptyAction={
+          <Link to="/tours" className="btn btn-primary">
+            {t('common.viewTours')}
+          </Link>
+        }
       />
 
       {status === 'success' && items.length > 0 && (
@@ -143,35 +151,19 @@ function BookingsList() {
 
 export default function Bookings() {
   const { t } = useTranslation();
-  const [headRef, headInView] = useReveal();
 
   return (
     <div className="bookings-page">
       <Seo page="bookings" noindex />
-      <section className="bookings-hero">
-        <div className="container">
-          <div
-            ref={headRef}
-            className={`bookings-hero-content reveal ${
-              headInView ? 'in-view' : ''
-            }`}
-          >
-            <div className="bookings-hero-icon">
-              <ReceiptLongRoundedIcon />
-            </div>
+      <PageHero
+        align="center"
+        icon={<ReceiptLongRoundedIcon />}
+        eyebrow={t('account.personalArea')}
+        title={t('account.bookings')}
+        text={t('bookings.text')}
+      />
 
-            <p className="eyebrow">{t('account.personalArea')}</p>
-
-            <h1 style={{color: 'white'}}>{t('account.bookings')}</h1>
-
-            <p>
-              {t('bookings.text')}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="section bookings-section">
+      <section className="page-content bookings-section">
         <div className="container">
           <RequireAuth prompt={t('bookings.signInPrompt')}>
             <BookingsList />

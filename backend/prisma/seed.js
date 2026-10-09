@@ -1,5 +1,14 @@
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { checkSeedEnvironment } from './seed-guard.js';
+
+// Safety gate BEFORE anything touches the database — see seed-guard.js.
+const seedCheck = checkSeedEnvironment(process.env);
+if (!seedCheck.ok) {
+  console.error(`Seed refused: ${seedCheck.reason}`);
+  process.exit(1);
+}
 
 const prisma = new PrismaClient();
 
@@ -25,13 +34,11 @@ const IDS = {
   contactMessageDemo: '9c2f3a10-0000-4000-8000-000000000031',
 };
 
-// A real bcrypt hash of a fixed development-only password, generated at
-// seed time. This IS a working credential in your local dev database —
-// see backend/README.md's "Seed dev login" section for the actual
-// password and an explicit warning not to reuse it anywhere real. Never
-// logged, never returned by any API response (the auth controller only
-// ever returns an allow-listed safe-user object, never passwordHash).
-const DEV_SEED_PASSWORD = 'DevSeedPassword123!';
+// Shared password of every seeded demo user (including the demo ADMIN):
+// SEED_DEV_PASSWORD from the environment, or a fresh random value printed
+// once at the end of the run. Never a constant in the repository — the old
+// fixed password was public and is considered compromised.
+const DEV_SEED_PASSWORD = seedCheck.password;
 const DEV_SEED_BCRYPT_COST = 10; // lower than the app's runtime cost (12) — seed speed, not a real login path
 
 async function seedUsers() {
@@ -85,7 +92,7 @@ async function seedUsers() {
 }
 
 async function seedDestinations() {
-  // Same entities as frontend/src/data/destinations.js — duplicated here
+  // Same entities as the original static frontend/src/data/destinations.js (removed — the database is the source) — duplicated here
   // deliberately (not imported) since frontend and backend are separate
   // deployable packages; the frontend file itself is untouched.
   const data = [
@@ -161,7 +168,7 @@ async function seedDestinations() {
 }
 
 async function seedTours(destinations) {
-  // Same entities as frontend/src/data/tours.js.
+  // Same entities as the original static frontend/src/data/tours.js (removed — the database is the source).
   const data = [
     {
       slug: 'dubai-desert-skyline',
@@ -273,7 +280,7 @@ async function seedTourImages(tours) {
 }
 
 async function seedDeals(tours) {
-  // Same entities as frontend/src/data/deals.js. The Istanbul deal has no
+  // Same entities as the original static frontend/src/data/deals.js (removed — the database is the source). The Istanbul deal has no
   // matching seeded tour (the frontend tours list never had an Istanbul
   // tour), so its tourId is deliberately left null — a live demonstration
   // of Deal.tourId being genuinely optional, not just optional on paper.
@@ -342,7 +349,7 @@ async function seedDeals(tours) {
 }
 
 async function seedFaqs() {
-  // Same entities as frontend/src/data/faq.js.
+  // Same entities as the original static frontend/src/data/faq.js (removed — the database is the source).
   const data = [
     {
       id: IDS.faqPayment,
@@ -397,7 +404,7 @@ async function seedFaqs() {
 }
 
 async function seedReviews(users, tours) {
-  // Same review text/authors as frontend/src/data/reviews.js, now attached
+  // Same review text/authors as the original static frontend/src/data/reviews.js (removed — the database is the source), now attached
   // to real seeded users and one tour each (the original frontend reviews
   // were generic testimonials with no tour reference — assigning one here
   // is a seed-layer decision, not a frontend data change).
@@ -556,6 +563,11 @@ async function main() {
     destinations: Object.keys(destinations).length,
     tours: Object.keys(tours).length,
   });
+  if (seedCheck.generated) {
+    // Local development only (the guard above guarantees that). Existing
+    // users keep their old password — upsert never rewrites passwordHash.
+    console.log(`Demo users created in this run can sign in with the generated password: ${DEV_SEED_PASSWORD}`);
+  }
 }
 
 main()

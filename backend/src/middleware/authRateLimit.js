@@ -1,5 +1,11 @@
 import rateLimit from 'express-rate-limit';
 
+// KNOWN LIMITATION (docs/SECURITY.md): every limiter here uses
+// express-rate-limit's default in-memory store. On Vercel each serverless
+// instance keeps its own counters and loses them on a cold start, so these
+// limits are per-instance and best-effort, not a hard global cap. A shared
+// store (e.g. Redis/Upstash) is the fix once such infrastructure exists.
+
 /**
  * Stricter limiter for the two endpoints an attacker would actually brute-
  * force (login — password guessing; register — account-creation spam).
@@ -44,6 +50,19 @@ export const telegramWebhookRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 20,
   skipSuccessfulRequests: true,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests. Please try again later.' },
+});
+
+/**
+ * Writes made by a signed-in user (bookings, reviews, favorites). Generous
+ * for a real person, but stops a script with a stolen session from flooding
+ * the database — and the admin Telegram chat, since every booking notifies it.
+ */
+export const userWriteRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 60,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests. Please try again later.' },

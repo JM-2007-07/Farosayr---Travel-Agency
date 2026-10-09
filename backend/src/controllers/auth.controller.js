@@ -99,9 +99,3 @@ export async function logout(req, res) {
   res.clearCookie(AUTH_COOKIE_NAME, getAuthCookieOptions());
   res.status(200).json({ success: true, data: null });
 }
-
-// Minimal route to prove requireRole actually works end-to-end — not a
-// real feature, just infrastructure verification per this phase's scope.
-export async function adminCheck(req, res) {
-  res.status(200).json({ success: true, data: { message: 'Admin access confirmed', user: req.user } });
-}

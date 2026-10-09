@@ -1,5 +1,5 @@
 /**
- * Manage the Telegram webhook from the command line (see docs/telegram.md).
+ * Manage the Telegram webhook from the command line (see docs/TELEGRAM.md).
  *
  *   npm run telegram:webhook -- info
  *   npm run telegram:webhook -- set https://YOUR-BACKEND-DOMAIN/api/telegram/webhook

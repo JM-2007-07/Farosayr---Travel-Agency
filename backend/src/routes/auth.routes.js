@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { register, login, logout, me, adminCheck } from '../controllers/auth.controller.js';
+import { register, login, logout, me } from '../controllers/auth.controller.js';
 import { requireAuth } from '../middleware/auth.middleware.js';
-import { requireRole } from '../middleware/role.middleware.js';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 import { authRateLimit } from '../middleware/authRateLimit.js';
 
@@ -17,11 +16,5 @@ router.post('/login', authRateLimit, asyncHandler(login));
 // already logged out (clearing an unset cookie is a harmless no-op).
 router.post('/logout', asyncHandler(logout));
 router.get('/me', requireAuth, asyncHandler(me));
-
-// Minimal route proving requireRole works end-to-end — infrastructure
-// verification for this phase, not a real feature. Not a business
-// endpoint, so it stays under /auth rather than implying an admin API
-// exists yet.
-router.get('/admin-check', requireAuth, requireRole('ADMIN'), asyncHandler(adminCheck));
 
 export default router;

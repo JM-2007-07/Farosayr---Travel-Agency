@@ -1,4 +1,5 @@
-import { Link, useNavigate } from 'react-router';
+import { useEffect, useId, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
@@ -10,6 +11,8 @@ import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useReveal } from '../../hooks/useReveal';
 import { useImgFallback } from '../../hooks/useImgFallback';
 import { scrollToId } from '../../utils/scrollToId';
+import { loginState } from '../../utils/authRedirect';
+import { responsiveImage, CARD_WIDTHS, CARD_SIZES } from '../../utils/responsiveImage';
 import '../home/FeaturedTours.css';
 
 export default function TourCard({
@@ -22,6 +25,17 @@ export default function TourCard({
   const [ref, isInView] = useReveal();
   const [broken, onError] = useImgFallback();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [favoriteError, setFavoriteError] = useState(false);
+  // The card's generic actions ("Learn more", "Book tour") are described
+  // by its title, so they make sense out of context (screen-reader link lists).
+  const titleId = useId();
+
+  useEffect(() => {
+    if (!favoriteError) return undefined;
+    const timer = setTimeout(() => setFavoriteError(false), 3500);
+    return () => clearTimeout(timer);
+  }, [favoriteError]);
 
   const mainImage = tour.images?.[0];
   const imageUrl = mainImage?.url;
@@ -39,10 +53,12 @@ export default function TourCard({
       const result = await onToggleFavorite(tour.dbId);
 
       if (result?.requiresAuth) {
-        navigate('/login');
+        // Come back to this page after signing in.
+        navigate('/login', { state: loginState(location) });
       }
     } catch {
-      // useFavorites already rolls back optimistic state on failure
+      // useFavorites already rolled the heart back; say why it flipped.
+      setFavoriteError(true);
     }
   }
 
@@ -52,15 +68,20 @@ export default function TourCard({
       ref={ref}
     >
       <div className="tour-image-wrap">
+        {/* Same destination as the title link below — kept for pointer users,
+            out of the Tab order and the accessibility tree to avoid a
+            duplicate stop. */}
         <Link
           to={`/tours/${tour.id}`}
+          tabIndex={-1}
+          aria-hidden="true"
           className={`tour-media img-wrap ${
             broken || !imageUrl ? 'img-fallback' : ''
           }`}
         >
           {imageUrl ? (
             <img
-              src={imageUrl}
+              {...responsiveImage(imageUrl, CARD_WIDTHS, CARD_SIZES)}
               alt={imageAlt}
               loading="lazy"
               decoding="async"
@@ -84,7 +105,7 @@ export default function TourCard({
               ? t('tourCard.removeFromFavorites')
               : t('tourCard.addToFavorites')
           }
-          aria-pressed={isFavorited}
+          aria-describedby={titleId}
           onClick={handleWishlistClick}
         >
           {isFavorited ? (
@@ -93,6 +114,12 @@ export default function TourCard({
             <FavoriteBorderRoundedIcon />
           )}
         </button>
+
+        {favoriteError && (
+          <span className="wishlist-error" role="alert">
+            {t('tourCard.favoriteError')}
+          </span>
+        )}
 
         {tour.duration && (
           <span className="tour-duration-badge">
@@ -121,7 +148,7 @@ export default function TourCard({
           to={`/tours/${tour.id}`}
           className="tour-title-link"
         >
-          <h3>{tour.title}</h3>
+          <h3 id={titleId}>{tour.title}</h3>
         </Link>
 
         <p className="tour-description">
@@ -138,7 +165,8 @@ export default function TourCard({
 
           <Link
             to={`/tours/${tour.id}`}
-            className="tour-details-link"
+            className="text-link"
+            aria-describedby={titleId}
           >
             {t('common.learnMore')}
             <ArrowForwardRoundedIcon />
@@ -148,7 +176,8 @@ export default function TourCard({
         {bookHref === '#contact' ? (
           <a
             href="#contact"
-            className="btn btn-block tour-book-btn"
+            className="btn btn-primary btn-block tour-book-btn"
+            aria-describedby={titleId}
             onClick={handleBookClick}
           >
             {t('common.bookTour')}
@@ -157,7 +186,8 @@ export default function TourCard({
         ) : (
           <Link
             to={bookHref}
-            className="btn btn-block tour-book-btn"
+            className="btn btn-primary btn-block tour-book-btn"
+            aria-describedby={titleId}
           >
             {t('common.bookTour')}
             <ArrowForwardRoundedIcon />

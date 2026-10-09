@@ -1,24 +1,33 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 import { Trans, useTranslation } from 'react-i18next';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
+import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import { useAuth } from '../context/AuthContext';
-import { getApiErrorMessage } from '../utils/getApiErrorMessage';
-import './Register.css';
+import { getPublicErrorMessage } from '../utils/getPublicErrorMessage';
+import { getReturnPath } from '../utils/authRedirect';
+import { useSubmitLock } from '../hooks/useSubmitLock';
+import './Auth.css';
 import Seo from '../seo/Seo';
 
 const IDLE = 'idle';
 const SUBMITTING = 'submitting';
 
+// Same two-panel composition and styles as Login (pages/Auth.css), so the
+// two sides of authentication read as one flow.
 export default function Register() {
   const { t } = useTranslation();
-  const { register } = useAuth();
+  const { register, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnPath = getReturnPath(location.state);
+  const runOnce = useSubmitLock();
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -37,106 +46,101 @@ export default function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setStatus(SUBMITTING);
-    setError('');
+    await runOnce(async () => {
+      setStatus(SUBMITTING);
+      setError('');
 
-    try {
-      await register(form);
-      navigate('/');
-    } catch (err) {
-      setStatus(IDLE);
-      setError(
-        getApiErrorMessage(err, t, 'auth.register.error', {
-          409: 'auth.errors.emailTaken',
-        })
-      );
-    }
+      try {
+        await register(form);
+        navigate(returnPath, { replace: true });
+      } catch (err) {
+        setStatus(IDLE);
+        setError(
+          getPublicErrorMessage(err, t, 'auth.register.error', {
+            400: 'auth.errors.invalidRegistration',
+            409: 'auth.errors.emailTaken',
+          })
+        );
+      }
+    });
+  }
+
+  if (!isLoading && isAuthenticated && status !== SUBMITTING) {
+    return <Navigate to={returnPath} replace />;
   }
 
   return (
-    <div className="register-page">
+    <div className="auth-page">
       <Seo page="register" noindex />
-      <div className="container">
-        <div className="register-layout">
-          <section className="register-intro">
-            <div className="register-intro-icon">
-              <PersonAddRoundedIcon />
-            </div>
+      <div className="auth-container">
+        <section className="auth-card">
+          <div className="auth-visual">
+            <div className="auth-visual-glow auth-visual-glow-one" />
+            <div className="auth-visual-glow auth-visual-glow-two" />
 
-            <p className="eyebrow">{t('auth.register.eyebrow')}</p>
-
-            <h1>
-              <Trans i18nKey="auth.register.title" components={{ accent: <span /> }} />
-            </h1>
-
-            <p className="register-intro-description">
-              {t('auth.register.text')}
-            </p>
-
-            <div className="register-route">
-              <div className="register-route-line">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
-
-              <div className="register-route-plane">
+            <div className="auth-route">
+              <span />
+              <span />
+              <span />
+              <span />
+              <div className="auth-route-plane">
                 <FlightTakeoffRoundedIcon />
               </div>
-
-              <div className="register-route-copy">
-                <span>{t('common.yourJourney')}</span>
-                <strong>{t('common.startsHere')}</strong>
-              </div>
             </div>
 
-            <div className="register-benefits">
-              <div>
-                <span className="register-benefit-number">01</span>
-                <p>{t('auth.register.benefitFavorites')}</p>
+            <div className="auth-visual-content">
+              <span className="auth-visual-kicker">FAROSAYR · ACCOUNT</span>
+
+              <h2>
+                <Trans i18nKey="auth.register.title" components={{ accent: <span /> }} />
+              </h2>
+
+              <p>{t('auth.register.text')}</p>
+            </div>
+
+            <div className="auth-benefits">
+              <div className="auth-benefit">
+                <CheckCircleOutlineRoundedIcon />
+                <span>{t('auth.register.benefitFavorites')}</span>
               </div>
 
-              <div>
-                <span className="register-benefit-number">02</span>
-                <p>{t('auth.register.benefitBookOnline')}</p>
+              <div className="auth-benefit">
+                <CheckCircleOutlineRoundedIcon />
+                <span>{t('auth.register.benefitBookOnline')}</span>
               </div>
 
-              <div>
-                <span className="register-benefit-number">03</span>
-                <p>{t('auth.benefits.bestDeals')}</p>
+              <div className="auth-benefit">
+                <CheckCircleOutlineRoundedIcon />
+                <span>{t('auth.benefits.bestDeals')}</span>
               </div>
             </div>
-          </section>
+          </div>
 
-          <section className="register-card">
-            <div className="register-card-header">
-              <div className="register-card-icon">
+          <div className="auth-form-side">
+            <div className="auth-header">
+              <div className="auth-mobile-icon">
                 <PersonAddRoundedIcon />
               </div>
 
-              <div>
-                <span>FAROSAYR · ACCOUNT</span>
-                <h2>{t('account.register')}</h2>
-                <p>
-                  {t('auth.register.cardText')}
-                </p>
-              </div>
+              <p className="eyebrow">{t('auth.register.eyebrow')}</p>
+
+              <h1>{t('account.register')}</h1>
+
+              <p className="auth-description">{t('auth.register.cardText')}</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="register-form">
+            <form onSubmit={handleSubmit} className="auth-form">
               {error && (
-                <div className="register-error">
-                  {error}
+                <div className="auth-error" role="alert">
+                  <span>{error}</span>
                 </div>
               )}
 
-              <div className="register-field">
+              <div className="auth-field">
                 <label htmlFor="name">{t('common.name')}</label>
 
-                <div className="register-input-wrap">
-                  <PersonAddRoundedIcon />
+                <div className="auth-input-wrap">
+                  <PersonOutlineRoundedIcon />
 
                   <input
                     type="text"
@@ -147,15 +151,16 @@ export default function Register() {
                     onChange={handleChange}
                     required
                     autoComplete="name"
+                    maxLength={120}
                   />
                 </div>
               </div>
 
-              <div className="register-field">
+              <div className="auth-field">
                 <label htmlFor="email">{t('common.email')}</label>
 
-                <div className="register-input-wrap">
-                  <EmailRoundedIcon />
+                <div className="auth-input-wrap">
+                  <EmailOutlinedIcon />
 
                   <input
                     type="email"
@@ -166,15 +171,16 @@ export default function Register() {
                     onChange={handleChange}
                     required
                     autoComplete="email"
+                    maxLength={254}
                   />
                 </div>
               </div>
 
-              <div className="register-field">
+              <div className="auth-field">
                 <label htmlFor="password">{t('auth.password')}</label>
 
-                <div className="register-input-wrap">
-                  <LockRoundedIcon />
+                <div className="auth-input-wrap">
+                  <LockOutlinedIcon />
 
                   <input
                     type="password"
@@ -182,53 +188,54 @@ export default function Register() {
                     name="password"
                     placeholder={t('auth.register.passwordPlaceholder')}
                     minLength={8}
+                    maxLength={128}
                     value={form.password}
                     onChange={handleChange}
                     required
                     autoComplete="new-password"
+                    aria-describedby="password-hint"
                   />
                 </div>
 
-                <span className="register-field-hint">
+                <span id="password-hint" className="auth-field-hint">
                   {t('auth.register.passwordHint')}
                 </span>
               </div>
 
               <button
                 type="submit"
-                className="register-submit"
+                className="btn btn-primary btn-block auth-submit"
                 disabled={status === SUBMITTING}
               >
                 <span>
-                  {status === SUBMITTING
-                    ? t('auth.register.submitting')
-                    : t('account.register')}
+                  {status === SUBMITTING ? t('auth.register.submitting') : t('account.register')}
                 </span>
 
                 {status !== SUBMITTING && <ArrowForwardRoundedIcon />}
               </button>
             </form>
 
-            <div className="register-divider">
-              <span />
+            <div className="auth-divider">
               <span>{t('common.or')}</span>
-              <span />
             </div>
 
-            <p className="register-login">
-              {t('auth.register.hasAccount')}
-              <Link to="/login">
+            <div className="auth-register">
+              <span>{t('auth.register.hasAccount')}</span>
+
+              <Link to="/login" state={location.state}>
                 {t('account.login')}
                 <ArrowForwardRoundedIcon />
               </Link>
-            </p>
+            </div>
 
-            <Link to="/" className="register-back">
-              <ArrowBackRoundedIcon />
-              {t('common.returnHome')}
-            </Link>
-          </section>
-        </div>
+            <div className="auth-back">
+              <Link to="/" className="back-link">
+                <ArrowBackRoundedIcon />
+                {t('common.returnHome')}
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

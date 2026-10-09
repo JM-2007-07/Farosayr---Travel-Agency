@@ -1,22 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import Seo from './Seo';
-import { SITE_NAME, SITE_URL, absoluteUrl, buildBreadcrumbs } from './site';
-
-// Meta descriptions over ~160 chars get cut off in results anyway; cut at a
-// word boundary so the snippet doesn't end mid-word.
-function clip(text, max = 160) {
-  const clean = String(text ?? '').replace(/\s+/g, ' ').trim();
-  if (clean.length <= max) return clean;
-  const cut = clean.slice(0, max - 1);
-  return `${cut.slice(0, cut.lastIndexOf(' ') > 0 ? cut.lastIndexOf(' ') : cut.length)}…`;
-}
-
-const ORGANIZATION_REF = { '@id': `${SITE_URL}/#organization` };
+import { SITE_NAME, buildBreadcrumbs } from './site';
+import { buildDestinationMeta, buildTourMeta, clip, destinationPath, tourPath } from './detailMeta';
 
 /**
  * Shared loading / not-found handling for data-driven detail pages:
  * while loading, the URL is still the canonical one; once the API says
- * the record doesn't exist, the page turns noindex (a soft 404).
+ * the record doesn't exist, the page turns noindex (a soft 404) — and
+ * noindex pages carry no canonical.
  */
 function DetailSeo({ status, record, path, build }) {
   const { t } = useTranslation();
@@ -30,91 +21,20 @@ function DetailSeo({ status, record, path, build }) {
   return <Seo {...build(record, t)} path={path} />;
 }
 
+// Tour / destination metadata comes from seo/detailMeta.js — the same
+// builders write the static HTML shells at build time (vite.config.js).
 export function TourSeo({ status, tour, slug }) {
-  const path = `/tours/${encodeURIComponent(slug)}`;
-  return (
-    <DetailSeo
-      status={status}
-      record={tour}
-      path={path}
-      build={(tour, t) => {
-        const url = absoluteUrl(path);
-        const images = (tour.images ?? []).map((image) => image.url).filter(Boolean);
-        return {
-          title: t('seo.tourTitle', { title: tour.title }),
-          description: clip(
-            t('seo.tourDescription', {
-              description: tour.description ?? '',
-              location: tour.location ?? '',
-              duration: tour.duration ?? '',
-            })
-          ),
-          jsonLd: {
-            '@graph': [
-              {
-                '@type': 'TouristTrip',
-                name: tour.title,
-                description: tour.description,
-                url,
-                ...(images.length ? { image: images } : {}),
-                provider: ORGANIZATION_REF,
-                ...(tour.price != null
-                  ? {
-                      offers: {
-                        '@type': 'Offer',
-                        price: String(tour.price),
-                        priceCurrency: 'USD',
-                        url,
-                        offeredBy: ORGANIZATION_REF,
-                      },
-                    }
-                  : {}),
-              },
-              buildBreadcrumbs([
-                { name: t('seo.home'), path: '/' },
-                { name: t('navigation.tours'), path: '/tours' },
-                { name: tour.title, path },
-              ]),
-            ],
-          },
-        };
-      }}
-    />
-  );
+  return <DetailSeo status={status} record={tour} path={tourPath(slug)} build={buildTourMeta} />;
 }
 
 export function DestinationSeo({ status, destination, slug }) {
-  const path = `/destinations/${encodeURIComponent(slug)}`;
   return (
     <DetailSeo
       status={status}
       record={destination}
-      path={path}
-      build={(destination, t) => ({
-        title: t('seo.destinationTitle', { name: destination.title }),
-        description: clip(
-          t('seo.destinationDescription', {
-            name: destination.title,
-            description: destination.description ?? '',
-          })
-        ),
-        jsonLd: {
-          '@graph': [
-            {
-              '@type': 'TouristDestination',
-              name: destination.title,
-              description: destination.description,
-              url: absoluteUrl(path),
-              ...(destination.image ? { image: destination.image } : {}),
-            },
-            buildBreadcrumbs([
-              { name: t('seo.home'), path: '/' },
-              { name: t('navigation.destinations'), path: '/destinations' },
-              { name: destination.title, path },
-            ]),
-          ],
-        },
-      })}
+      path={destinationPath(slug)}
+      // The app maps the API's `name` to `title`.
+      build={(d, t) => buildDestinationMeta({ ...d, name: d.title, slug: d.slug ?? slug }, t)}
     />
   );
 }

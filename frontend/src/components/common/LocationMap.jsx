@@ -66,8 +66,32 @@ export default function LocationMap({ lat, lng, popupText }) {
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const [error, setError] = useState(false);
+  // The Yandex Maps script and tiles are only fetched once the map is about
+  // to scroll into view — both maps sit near the bottom of their pages.
+  const [nearViewport, setNearViewport] = useState(false);
 
   useEffect(() => {
+    const node = mapRef.current;
+    if (!node || nearViewport) return undefined;
+    if (!('IntersectionObserver' in window)) {
+      setNearViewport(true);
+      return undefined;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setNearViewport(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '400px 0px' },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [nearViewport]);
+
+  useEffect(() => {
+    if (!nearViewport) return undefined;
     let cancelled = false;
 
     async function initializeMap() {
@@ -99,12 +123,12 @@ export default function LocationMap({ lat, lng, popupText }) {
             zoom: 16,
           },
           mode: 'vector',
-          behaviors: [
-            'drag',
-            'scrollZoom',
-            'pinchZoom',
-            'dblClick',
-          ],
+          // On touch screens a one-finger drag would pan the map instead of
+          // scrolling the page (the map is nearly full-width on phones), so
+          // there it only zooms; panning stays available with a mouse.
+          behaviors: window.matchMedia('(pointer: coarse)').matches
+            ? ['pinchZoom', 'dblClick']
+            : ['drag', 'scrollZoom', 'pinchZoom', 'dblClick'],
         });
 
         map.addChild(
@@ -126,22 +150,23 @@ export default function LocationMap({ lat, lng, popupText }) {
 
         map.addChild(new YMapDefaultFeaturesLayer());
 
-        const markerElement = document.createElement('div');
+        // Built with DOM APIs + textContent rather than innerHTML, so the
+        // label (`popupText` is a prop) can never be interpreted as HTML.
+        const el = (tag, className, text) => {
+          const node = document.createElement(tag);
+          if (className) node.className = className;
+          if (text !== undefined) node.textContent = text;
+          return node;
+        };
 
-        markerElement.className = 'yandex-farosayr-marker';
-
-        markerElement.innerHTML = `
-          <div class="yandex-marker-pulse"></div>
-          <div class="yandex-marker-pin">
-            <div class="yandex-marker-inner">
-              <span class="yandex-marker-dot"></span>
-            </div>
-          </div>
-          <div class="yandex-marker-label">
-            <strong>Farosayr</strong>
-            <span>${markerText}</span>
-          </div>
-        `;
+        const markerElement = el('div', 'yandex-farosayr-marker');
+        const pin = el('div', 'yandex-marker-pin');
+        const inner = el('div', 'yandex-marker-inner');
+        inner.append(el('span', 'yandex-marker-dot'));
+        pin.append(inner);
+        const label = el('div', 'yandex-marker-label');
+        label.append(el('strong', null, 'Farosayr'), el('span', null, markerText));
+        markerElement.append(el('div', 'yandex-marker-pulse'), pin, label);
 
         const marker = new YMapMarker(
           {
@@ -178,13 +203,25 @@ export default function LocationMap({ lat, lng, popupText }) {
 
       markerRef.current = null;
     };
-  }, [lat, lng, markerText]);
+  }, [lat, lng, markerText, nearViewport]);
 
   if (error) {
     return (
       <div className="location-map-error">
-        <LocationOnIcon />
-        <span>{t('map.loadError')}</span>
+        <LocationOnIcon aria-hidden="true" />
+        <div>
+          <span>{t('map.loadError')}</span>
+          {/* The address is also written out next to every map; this link
+              is the way to the interactive map when it can't load here. */}
+          <a
+            className="location-map-error-link"
+            href={`https://yandex.ru/maps/?pt=${lng},${lat}&z=17&l=map`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('map.openInYandex')}
+          </a>
+        </div>
       </div>
     );
   }
@@ -193,6 +230,7 @@ export default function LocationMap({ lat, lng, popupText }) {
     <div
       ref={mapRef}
       className="location-map"
+      role="region"
       aria-label={t('map.ariaLabel')}
     />
   );

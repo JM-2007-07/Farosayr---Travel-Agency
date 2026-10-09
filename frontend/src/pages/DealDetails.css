@@ -1,0 +1,80 @@
+/* /deals/:id — same detail-page shell as tours and destinations.
+   Tag, countdown and price atoms come from components/common/DealCard.css. */
+.deal-details-page {
+  min-height: 100vh;
+  padding: var(--detail-page-pt) 0 var(--section-y);
+  background:
+    radial-gradient(circle at 5% 10%, rgba(47, 217, 196, 0.07), transparent 28%),
+    radial-gradient(circle at 95% 35%, rgba(212, 175, 106, 0.06), transparent 25%),
+    var(--color-surface-muted);
+}
+
+.deal-details-top {
+  margin-bottom: 22px;
+}
+
+.deal-details-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 52px);
+}
+
+.deal-details-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+.deal-details-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.deal-details-content {
+  padding: clamp(24px, 3.5vw, 40px);
+}
+.deal-details-content h1 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-title);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-heading);
+}
+.deal-details-content .section-desc {
+  margin-bottom: var(--space-5);
+}
+.deal-details-content .deal-countdown {
+  max-width: 300px;
+  margin: 0 0 var(--space-5);
+}
+.deal-details-expired {
+  margin-bottom: var(--space-5);
+  color: var(--color-text-secondary);
+}
+.deal-details-content .deal-price {
+  margin-bottom: var(--space-6);
+}
+.deal-details-content .deal-price .old {
+  font-size: 18px;
+}
+.deal-details-content .deal-price .new {
+  font-size: 30px;
+}
+.deal-details-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@media (max-width: 900px) {
+  .deal-details-layout {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .deal-details-actions .btn {
+    width: 100%;
+  }
+}

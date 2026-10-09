@@ -36,7 +36,7 @@ export default function FAQSection() {
   const [introRef, introInView] = useReveal();
   const [listRef, listInView] = useReveal();
   const [openId, setOpenId] = useState(null);
-  const { status, data: faqItems, isLoading, isError } = useAsyncData(getFaqItems, []);
+  const { status, data: faqItems, isLoading, isError, reload } = useAsyncData(getFaqItems, []);
 
   function handleContactClick(e) {
     e.preventDefault();
@@ -58,6 +58,7 @@ export default function FAQSection() {
         </div>
         <div className={`faq-list reveal ${listInView ? 'in-view' : ''}`} ref={listRef}>
           <AsyncState
+            onRetry={reload}
             isLoading={isLoading}
             isError={isError}
             isEmpty={status === 'success' && faqItems.length === 0}

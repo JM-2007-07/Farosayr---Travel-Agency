@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import Loader from '../components/loader/Loader';
 import ScrollProgress from '../components/scrollprogress/ScrollProgress';
 import Header from '../components/layout/header/Header';
@@ -11,13 +12,18 @@ export default function Layout() {
   // than in a Home section — matches where the original script.js applied
   // it (globally, via document.querySelectorAll('.btn')).
   useButtonRipple();
+  const { t } = useTranslation();
 
   return (
     <>
+      {/* First Tab stop: jump past the header navigation. */}
+      <a className="skip-link" href="#main-content">
+        {t('common.skipToContent')}
+      </a>
       <Loader />
       <ScrollProgress />
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

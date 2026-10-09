@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, Avatar, Chip, MenuItem, Select } from '@mui/material';
+import { Alert, Avatar, MenuItem, Select } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';

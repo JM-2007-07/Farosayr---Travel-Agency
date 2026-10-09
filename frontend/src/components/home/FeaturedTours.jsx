@@ -12,7 +12,7 @@ export default function FeaturedTours() {
   const { t } = useTranslation();
   const [headRef, headInView] = useReveal();
   const { isFavorited, toggleFavorite } = useFavorites();
-  const { status, data: tours, isLoading, isError } = useAsyncData(getTours, []);
+  const { status, data: tours, isLoading, isError, reload } = useAsyncData(getTours, []);
 
   const tourList = tours ?? [];
 
@@ -28,6 +28,7 @@ export default function FeaturedTours() {
         </div>
 
         <AsyncState
+          onRetry={reload}
           isLoading={isLoading}
           isError={isError}
           isEmpty={status === 'success' && tourList.length === 0}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 import { Trans, useTranslation } from 'react-i18next';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -9,8 +9,10 @@ import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import { useAuth } from '../context/AuthContext';
-import { getApiErrorMessage } from '../utils/getApiErrorMessage';
-import './Login.css';
+import { getPublicErrorMessage } from '../utils/getPublicErrorMessage';
+import { getReturnPath } from '../utils/authRedirect';
+import { useSubmitLock } from '../hooks/useSubmitLock';
+import './Auth.css';
 import Seo from '../seo/Seo';
 
 const IDLE = 'idle';
@@ -18,8 +20,11 @@ const SUBMITTING = 'submitting';
 
 export default function Login() {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnPath = getReturnPath(location.state);
+  const runOnce = useSubmitLock();
   const [form, setForm] = useState({ email: '', password: '' });
   const [status, setStatus] = useState(IDLE);
   const [error, setError] = useState('');
@@ -33,20 +38,29 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setStatus(SUBMITTING);
-    setError('');
+    await runOnce(async () => {
+      setStatus(SUBMITTING);
+      setError('');
 
-    try {
-      await login(form);
-      navigate('/');
-    } catch (err) {
-      setStatus(IDLE);
-      setError(
-        getApiErrorMessage(err, t, 'auth.login.error', {
-          401: 'auth.errors.invalidCredentials',
-        })
-      );
-    }
+      try {
+        await login(form);
+        // Back to the page that asked for a login (booking, favorites…).
+        navigate(returnPath, { replace: true });
+      } catch (err) {
+        setStatus(IDLE);
+        setError(
+          getPublicErrorMessage(err, t, 'auth.login.error', {
+            400: 'auth.errors.invalidCredentials',
+            401: 'auth.errors.invalidCredentials',
+          })
+        );
+      }
+    });
+  }
+
+  // Already signed in (e.g. opened /login from a bookmark) — nothing to do here.
+  if (!isLoading && isAuthenticated && status !== SUBMITTING) {
+    return <Navigate to={returnPath} replace />;
   }
 
   return (
@@ -120,7 +134,7 @@ export default function Login() {
 
             <form onSubmit={handleSubmit} className="auth-form">
               {error && (
-                <div className="auth-error">
+                <div className="auth-error" role="alert">
                   <span>{error}</span>
                 </div>
               )}
@@ -140,6 +154,7 @@ export default function Login() {
                     onChange={handleChange}
                     required
                     autoComplete="email"
+                    maxLength={254}
                   />
                 </div>
               </div>
@@ -159,6 +174,7 @@ export default function Login() {
                     onChange={handleChange}
                     required
                     autoComplete="current-password"
+                    maxLength={128}
                   />
 
                   <button
@@ -202,7 +218,7 @@ export default function Login() {
             <div className="auth-register">
               <span>{t('auth.login.noAccount')}</span>
 
-              <Link to="/register">
+              <Link to="/register" state={location.state}>
                 {t('account.register')}
                 <ArrowForwardRoundedIcon />
               </Link>

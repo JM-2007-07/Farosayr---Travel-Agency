@@ -2,11 +2,19 @@ import { prisma } from '../config/database.js';
 import { createReviewSchema } from '../validation/review.validation.js';
 import { notFoundError, conflictError, zodBadRequest } from '../utils/httpErrors.js';
 
+// Public, unauthenticated list: capped so its size doesn't grow with every
+// account that leaves a review. The newest come first.
+const MAX_PUBLIC_REVIEWS = 100;
+
 // Only the safe User fields needed for display — never passwordHash, never
 // email (this is a public endpoint, anyone can call it unauthenticated).
+// Optional `?tour=<slug>` narrows the list to one tour (the tour page).
 export async function listReviews(req, res) {
+  const tourSlug = typeof req.query.tour === 'string' ? req.query.tour.trim().slice(0, 200) : '';
   const reviews = await prisma.review.findMany({
+    where: tourSlug ? { tour: { slug: tourSlug } } : undefined,
     orderBy: [{ createdAt: 'desc' }, { id: 'asc' }], // id tiebreaker for deterministic order
+    take: MAX_PUBLIC_REVIEWS,
     include: {
       user: { select: { id: true, name: true } },
       tour: { select: { id: true, title: true, slug: true } },

@@ -10,11 +10,16 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import CloseIcon from '@mui/icons-material/Close'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+
+// Everything behind the open menu: made inert so Tab and screen readers
+// stay inside the menu (the overlay already blocks pointer input).
+const BACKGROUND = ['.skip-link', 'header.header', '#main-content', 'footer', '.back-to-top']
 
 export default function MobileMenu({ isOpen, onNavigate }) {
     const { t } = useTranslation()
     const { user, isAuthenticated, isLoading, logout } = useAuth()
+    const menuRef = useRef(null)
 
     useEffect(() => {
         if (!isOpen) return
@@ -27,6 +32,23 @@ export default function MobileMenu({ isOpen, onNavigate }) {
         return () => document.removeEventListener('keydown', handleKeyDown)
     }, [isOpen, onNavigate])
 
+    // Modal behaviour while open: background inert, focus moved into the
+    // menu; on close focus goes back to the burger button (unless the
+    // visitor already moved it somewhere else).
+    useEffect(() => {
+        if (!isOpen) return undefined
+        const background = BACKGROUND.flatMap((s) => [...document.querySelectorAll(s)])
+        background.forEach((el) => { el.inert = true })
+        menuRef.current?.querySelector('.mobile-close')?.focus()
+        return () => {
+            background.forEach((el) => { el.inert = false })
+            const active = document.activeElement
+            if (!active || active === document.body || menuRef.current?.contains(active)) {
+                document.querySelector('.burger')?.focus()
+            }
+        }
+    }, [isOpen])
+
     async function handleLogout() {
         onNavigate()
         await logout()
@@ -34,8 +56,19 @@ export default function MobileMenu({ isOpen, onNavigate }) {
 
     return (
         <>
-            <div className={`mobile-overlay ${isOpen ? 'open' : ''}`} onClick={onNavigate}></div>
-            <div className={`mobile-menu ${isOpen ? 'open' : ''}`} id="mobileMenu">
+            {/* Pointer-only backdrop: keyboard users close with Esc or the close button. */}
+            <div className={`mobile-overlay ${isOpen ? 'open' : ''}`} onClick={onNavigate} aria-hidden="true"></div>
+            {/* inert while closed: the panel is only translated off-screen, so
+                without it its links would still be reachable with Tab. */}
+            <div
+                ref={menuRef}
+                className={`mobile-menu ${isOpen ? 'open' : ''}`}
+                id="mobileMenu"
+                inert={!isOpen}
+                role="dialog"
+                aria-modal="true"
+                aria-label={t('header.menu')}
+            >
                 <div className="mobile-menu-header">
                     <Link to="/" className="mobile-menu-logo" onClick={onNavigate}>
                         <span>FARO<span>SAYR</span></span>
@@ -46,7 +79,7 @@ export default function MobileMenu({ isOpen, onNavigate }) {
                 </div>
 
                 <div className="mobile-menu-content">
-                    <nav className="mobile-navigation">
+                    <nav className="mobile-navigation" aria-label={t('header.navigationTitle')}>
                         <span className="mobile-section-title">{t('header.navigationTitle')}</span>
                         <ul>
                             {NAV_ITEMS.map((item) => (

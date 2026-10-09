@@ -2,37 +2,32 @@ import { useEffect, useState } from 'react';
 import './Loader.css';
 
 /**
- * Ports the original:
- *   window.addEventListener('load', () => setTimeout(() => loader.classList.add('hidden'), 350));
- *   setTimeout(() => loader.classList.add('hidden'), 2500); // fallback
+ * Brand splash shown while the app shell boots.
+ *
+ * It used to wait for window "load" (every image, up to 2.5 s), which kept
+ * the hero poster — the LCP element — covered. It now fades out as soon as
+ * React has painted the first frame, so the splash is a brief transition,
+ * never a blocker.
  */
 export default function Loader() {
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    let loadTimer;
-    const onLoad = () => {
-      loadTimer = setTimeout(() => setHidden(true), 350);
-    };
-
-    if (document.readyState === 'complete') {
-      onLoad();
-    } else {
-      window.addEventListener('load', onLoad);
-    }
-
-    // fallback in case 'load' is slow/unreachable
-    const fallbackTimer = setTimeout(() => setHidden(true), 2500);
+    let timer;
+    // Two frames: the first commits this render, the second guarantees
+    // the page underneath has been painted before the fade starts.
+    const frame = window.requestAnimationFrame(() => {
+      timer = window.setTimeout(() => setHidden(true), 120);
+    });
 
     return () => {
-      window.removeEventListener('load', onLoad);
-      clearTimeout(loadTimer);
-      clearTimeout(fallbackTimer);
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
     };
   }, []);
 
   return (
-    <div className={`loader ${hidden ? 'hidden' : ''}`} aria-hidden={hidden}>
+    <div className={`loader ${hidden ? 'hidden' : ''}`} aria-hidden="true">
       <div className="loader-mark">
         <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
           <circle

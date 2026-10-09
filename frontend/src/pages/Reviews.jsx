@@ -1,9 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ArrowRight, FormatQuote, Star } from '@mui/icons-material';
+import ArrowLeft from '@mui/icons-material/ArrowLeft';
+import ArrowRight from '@mui/icons-material/ArrowRight';
+import FormatQuote from '@mui/icons-material/FormatQuote';
+import Star from '@mui/icons-material/Star';
 import { getReviews } from '../services/reviewsService';
 import { useAsyncData } from '../hooks/useAsyncData';
+import { useAutoAdvance } from '../hooks/useAutoAdvance';
 import AsyncState from '../components/common/AsyncState';
+import PageHero from '../components/common/PageHero';
+import CTASection from '../components/common/CTASection';
 import './Reviews.css';
 import Seo from '../seo/Seo';
 
@@ -11,14 +18,22 @@ const AUTO_SLIDE_MS = 6000;
 
 export default function Reviews() {
   const { t } = useTranslation();
-  const { status, data: reviews, isLoading, isError } = useAsyncData(getReviews, []);
+  const { status, data: reviews, isLoading, isError, reload } = useAsyncData(getReviews, []);
   const [current, setCurrent] = useState(0);
-  const intervalRef = useRef(null);
   const count = reviews?.length ?? 0;
   const activeReview = reviews?.[current];
 
+  // Pauses on hover/focus, stops once the visitor navigates, never runs
+  // with reduced motion (hooks/useAutoAdvance).
+  const { containerProps, stop, isAuto } = useAutoAdvance(
+    count,
+    () => setCurrent((prev) => (prev + 1) % count),
+    AUTO_SLIDE_MS,
+  );
+
   function goTo(index) {
     if (count === 0) return;
+    stop();
     setCurrent((index + count) % count);
   }
 
@@ -30,50 +45,28 @@ export default function Reviews() {
     goTo(current - 1);
   }
 
-  function stopAutoSlide() {
-    clearInterval(intervalRef.current);
-  }
-
-  function startAutoSlide() {
-    stopAutoSlide();
-    if (count <= 1) return;
-    intervalRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % count);
-    }, AUTO_SLIDE_MS);
-  }
-
   useEffect(() => {
     if (current >= count && count > 0) {
       setCurrent(0);
     }
   }, [count, current]);
 
-  useEffect(() => {
-    startAutoSlide();
-    return () => stopAutoSlide();
-  }, [count]);
-
   return (
     <div className="reviews-page">
       <Seo page="reviews" path="/reviews" />
-      <section className="reviews-hero" style={{paddingTop: '50px'}}>
-        <div className="reviews-container">
-          <div className="reviews-hero-content">
-            <span className="reviews-eyebrow">{t('reviewsPage.eyebrow')}</span>
-            <h1 style={{color:'white'}}>{t('reviewsPage.title')}</h1>
-            <p>
-              {t('reviewsPage.text')}
-            </p>
-          </div>
-
+      <PageHero
+        eyebrow={t('reviewsPage.eyebrow')}
+        title={t('reviewsPage.title')}
+        text={t('reviewsPage.text')}
+        decoration={
           <div className="reviews-hero-decoration">
             <FormatQuote />
           </div>
-        </div>
-      </section>
+        }
+      />
 
       <section className="reviews-content">
-        <div className="reviews-container">
+        <div className="container">
           <div className="reviews-intro">
             <div>
               <span className="reviews-section-label">FaroSayr</span>
@@ -98,18 +91,17 @@ export default function Reviews() {
           </div>
 
           <AsyncState
+            onRetry={reload}
             isLoading={isLoading}
             isError={isError}
             isEmpty={status === 'success' && count === 0}
           />
 
           {status === 'success' && count > 0 && activeReview && (
-            <div
-              className="reviews-showcase"
-              onMouseEnter={stopAutoSlide}
-              onMouseLeave={startAutoSlide}
-            >
-              <div className="reviews-main-card">
+            <div className="reviews-showcase" {...containerProps}>
+              {/* Announce the review the visitor switched to — but stay
+                  silent while it changes on its own. */}
+              <div className="reviews-main-card" aria-live={isAuto ? 'off' : 'polite'}>
                 <div className="reviews-quote">
                   <FormatQuote />
                 </div>
@@ -166,6 +158,7 @@ export default function Reviews() {
                       type="button"
                       key={review.id}
                       className={index === current ? 'active' : ''}
+                      aria-current={index === current ? 'true' : undefined}
                       aria-label={t('reviewsPage.open', { number: index + 1 })}
                       onClick={() => goTo(index)}
                     />
@@ -177,24 +170,17 @@ export default function Reviews() {
         </div>
       </section>
 
-      <section className="reviews-bottom">
-        <div className="reviews-container">
-          <div className="reviews-bottom-card">
-            <div>
-              <span className="reviews-section-label">{t('contactPage.floatingJourney')}</span>
-              <h2>{t('reviewsPage.bottomTitle')}</h2>
-              <p>
-                {t('reviewsPage.bottomText')}
-              </p>
-            </div>
-
-            <a href="/tours" className="reviews-cta">
-              {t('common.viewTours')}
-              <ArrowRight />
-            </a>
-          </div>
-        </div>
-      </section>
+      <CTASection
+        eyebrow={t('contactPage.floatingJourney')}
+        title={t('reviewsPage.bottomTitle')}
+        text={t('reviewsPage.bottomText')}
+        actions={
+          <Link to="/tours" className="btn btn-primary">
+            {t('common.viewTours')}
+            <ArrowRight />
+          </Link>
+        }
+      />
     </div>
   );
 }

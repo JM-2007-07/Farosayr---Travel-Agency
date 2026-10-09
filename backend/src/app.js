@@ -5,73 +5,76 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 
-import { env } from './config/env.js';
+import { env, isAllowedOrigin } from './config/env.js';
 import routes from './routes/index.js';
+import { csrfProtection } from './middleware/csrf.middleware.js';
 import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
 app.set('trust proxy', 1);
+app.disable('x-powered-by');
 
 app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'FaroSayr Backend is working on Vercel',
-  });
-});
-
-app.get('/__debug', (req, res) => {
-  res.json({
-    url: req.url,
-    originalUrl: req.originalUrl,
-    path: req.path,
-    baseUrl: req.baseUrl,
-  });
+  res.json({ success: true, message: 'FaroSayr API' });
 });
 
 // --- security headers ---
 app.use(helmet());
 
 // --- CORS ---
-// Restricted to the configured client origin, not '*' — origin:'*' is
-// incompatible with credentialed (cookie-based) requests, which auth now
-// genuinely needs (this was set up ahead of time in the Backend Foundation
-// phase and didn't need to change here).
+// Only the configured site origin(s) (CLIENT_URL) may make credentialed
+// requests. A disallowed origin simply gets no CORS headers, so the browser
+// blocks the response. origin:'*' is impossible here anyway — it's
+// incompatible with cookies.
 app.use(
   cors({
-    origin: env.clientUrl,
+    origin(origin, callback) {
+      // No Origin header: same-origin or non-browser request — CORS doesn't apply.
+      callback(null, !origin || isAllowedOrigin(origin));
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Accept'],
+    maxAge: 600,
   })
 );
 
 // --- cookies ---
 // Required to read the httpOnly auth cookie via req.cookies in
-// middleware/auth.middleware.js — without this, req.cookies is undefined.
+// middleware/auth.middleware.js.
 app.use(cookieParser());
 
-// --- body parsers ---
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+// --- body parser ---
+// JSON only (no urlencoded parser): every client of this API sends JSON,
+// and refusing form bodies is part of the CSRF defence (see
+// middleware/csrf.middleware.js). 100kb is far above the largest legitimate
+// payload (an admin tour with 20 image URLs).
+app.use(express.json({ limit: '100kb' }));
 
 // --- HTTP request logging ---
+// Method, URL, status, timing, IP and user agent only — never bodies,
+// cookies or headers.
 app.use(morgan(env.isProduction ? 'combined' : 'dev'));
 
 // --- rate limiting ---
-// Global, development-friendly limit. Auth endpoints will get their own
-// stricter limiter once they exist.
+// Broad per-IP cap for the whole API. Stricter, per-purpose limiters sit
+// on individual routes (middleware/authRateLimit.js).
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     limit: 300,
     standardHeaders: true,
     legacyHeaders: false,
-    // The Telegram webhook has its own limiter (see
-    // middleware/authRateLimit.js): its traffic all comes from a few
-    // Telegram IPs, so this per-IP limit would throttle the bot itself.
+    // The Telegram webhook has its own limiter: its traffic all comes from
+    // a few Telegram IPs, so this per-IP limit would throttle the bot itself.
     skip: (req) => req.path === `${env.apiPrefix}/telegram/webhook`,
   })
 );
+
+// --- CSRF ---
+app.use(csrfProtection);
 
 // --- API routes ---
 app.use(env.apiPrefix, routes);

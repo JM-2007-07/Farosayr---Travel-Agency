@@ -8,7 +8,9 @@ import FlightTakeoffOutlinedIcon from '@mui/icons-material/FlightTakeoffOutlined
 import { getDestinationById } from '../services/destinationsService';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { useImgFallback } from '../hooks/useImgFallback';
+import { responsiveImage, CARD_WIDTHS, CARD_SIZES } from '../utils/responsiveImage';
 import AsyncState from '../components/common/AsyncState';
+import CTASection from '../components/common/CTASection';
 import './DestinationDetails.css';
 import { DestinationSeo } from '../seo/DetailSeo';
 
@@ -23,7 +25,7 @@ function RelatedTourCard({ tour }) {
         className={`destination-tour-image img-wrap ${broken ? 'img-fallback' : ''}`}
       >
         <img
-          src={tour.image}
+          {...responsiveImage(tour.image, CARD_WIDTHS, CARD_SIZES)}
           alt={tour.title}
           loading="lazy"
           decoding="async"
@@ -78,6 +80,7 @@ export default function DestinationDetails() {
     data: destination,
     isLoading,
     isError,
+    reload,
   } = useAsyncData(
     () => getDestinationById(id),
     [id]
@@ -90,12 +93,19 @@ export default function DestinationDetails() {
       <DestinationSeo status={status} destination={destination} slug={id} />
       <div className="container destination-details-container">
         <AsyncState
+          onRetry={reload}
           isLoading={isLoading}
           isError={isError}
           isEmpty={status === 'success' && destination === null}
           loadingLabel={t('destinationDetails.loading')}
           errorLabel={t('destinationDetails.loadError')}
           emptyLabel={t('destinationDetails.notFound')}
+          pageHeading
+          emptyAction={
+            <Link to="/destinations" className="btn btn-primary">
+              {t('navigation.destinations')}
+            </Link>
+          }
         />
 
         {status === 'success' && destination && (
@@ -219,37 +229,24 @@ export default function DestinationDetails() {
               </section>
             )}
 
-            <section className="destination-cta">
-              <div className="destination-cta-decoration destination-cta-decoration-one" />
-              <div className="destination-cta-decoration destination-cta-decoration-two" />
-
-              <div className="destination-cta-content">
-                <p className="eyebrow">{t('destinationDetails.ctaEyebrow')}</p>
-                <h2>
-                  <Trans i18nKey="destinationDetails.ctaTitle" components={{ accent: <span /> }} />
-                </h2>
-                <p>
-                  {t('destinationDetails.ctaText')}
-                </p>
-
-                <div className="destination-cta-actions">
-                  <Link
-                    to="/booking"
-                    className="btn btn-primary"
-                  >
+            <CTASection
+              contained={false}
+              eyebrow={t('destinationDetails.ctaEyebrow')}
+              title={<Trans i18nKey="destinationDetails.ctaTitle" components={{ accent: <span /> }} />}
+              text={t('destinationDetails.ctaText')}
+              actions={
+                <>
+                  <Link to="/booking" className="btn btn-primary">
                     {t('common.bookTour')}
                     <ArrowForwardIcon />
                   </Link>
 
-                  <Link
-                    to="/contact"
-                    className="destination-cta-contact"
-                  >
+                  <Link to="/contact" className="btn btn-outline">
                     {t('common.contactUs')}
                   </Link>
-                </div>
-              </div>
-            </section>
+                </>
+              }
+            />
           </>
         )}
       </div>

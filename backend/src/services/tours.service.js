@@ -15,7 +15,21 @@ const SORT_OPTIONS = {
  * the Telegram bot (telegram/sections.js). `skip`/`take` are optional —
  * the website fetches the full list, the bot pages through it.
  */
-export function findTours({ destination, minPrice, maxPrice, q, sort } = {}, { skip, take } = {}) {
+// Query-string values arrive as strings, but `?q=a&q=b` turns them into
+// arrays (and Prisma rejects an array where it expects a string, which
+// would surface as a 500). Keep only a single, length-bounded string.
+function queryString(value, maxLength = 100) {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  return trimmed ? trimmed.slice(0, maxLength) : undefined;
+}
+
+export function findTours(filters = {}, { skip, take } = {}) {
+  const destination = queryString(filters.destination);
+  const minPrice = queryString(filters.minPrice, 12);
+  const maxPrice = queryString(filters.maxPrice, 12);
+  const q = queryString(filters.q);
+  const sort = queryString(filters.sort, 20);
   const where = {};
 
   // `destination` is the Destination's slug (see destinations.controller.js
@@ -38,7 +52,7 @@ export function findTours({ destination, minPrice, maxPrice, q, sort } = {}, { s
     ];
   }
 
-  const orderBy = SORT_OPTIONS[sort] ?? [{ createdAt: 'desc' }, { id: 'asc' }];
+  const orderBy = sort && Object.hasOwn(SORT_OPTIONS, sort) ? SORT_OPTIONS[sort] : [{ createdAt: 'desc' }, { id: 'asc' }];
 
   return prisma.tour.findMany({
     where,
