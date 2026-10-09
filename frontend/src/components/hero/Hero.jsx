@@ -31,15 +31,15 @@ function useDeferredHeroVideo() {
   const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
-    const wideScreen = window.matchMedia('(min-width: 768px)').matches;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const connection = navigator.connection;
-    const constrained =
-      connection?.saveData === true || /(^|-)2g$/.test(connection?.effectiveType ?? '');
-    if (!wideScreen || reducedMotion || constrained) return undefined;
+    const constrained = connection?.saveData === true || /(^|-)2g$/.test(connection?.effectiveType ?? '');
+
+    if (reducedMotion || constrained) return;
 
     let idleId;
     let timerId;
+
     const start = () => {
       if ('requestIdleCallback' in window) {
         idleId = window.requestIdleCallback(() => setShouldLoad(true), { timeout: 3000 });

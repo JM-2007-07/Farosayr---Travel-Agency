@@ -1702,4 +1702,3 @@ Phases 2–12 as previously planned: componentize booking/destinations/why/deals
 about/gallery/reviews/faq/contact; port countdown/counter/lightbox/slider/accordion
 behavior; routing for real pages; API service layer; backend; database; auth; feature
 wiring; admin; security pass; QA.
-
